@@ -17,6 +17,8 @@
       href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
     />
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <!-- Personal CSS -->
     <link
       rel="stylesheet"
@@ -52,8 +54,14 @@
       crossorigin="anonymous"
     ></script>
 
+    <div style="margin-bottom: 20%;">
     {% block body %}{% endblock %}
+  </div>
 
+    <div class="footer" data-role="footer" data-position="fixed">
+      <a href="https://www.linkedin.com/in/vanshtiwari-me/" target="_blank"><i class="fa fa-linkedin-square" style="font-size:24px"></i></a>
+      <a style="padding-left:20px;" href="https://github.com/vansh-tiwari" target="_blank"><i class="fa fa-github" style="font-size:24px"></i> </a>
+         </div>
 
   </body>
 </html>
