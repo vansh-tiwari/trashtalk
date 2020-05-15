@@ -1,0 +1,80 @@
+{% extends 'base.html' %} {% block head %}
+<title>Let's Talk</title>
+{% endblock %} {% block body %}
+<div class="container">
+
+    <div class="grid-container"> 
+      <div class="grid">
+    
+    <div class="grid-item">
+      <a href="/codechef/">
+        <div class="grid-image-container">
+          <img
+            class="grid-content"
+            src="{{ url_for('static', filename='logos/codechef-logo.jpg') }}"
+            alt="CodeChef"
+          />
+          <div class="grid-image-overlay">
+            <div class="text"><b>CodeChef</b></div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="grid-item">
+      <a href="/codeforces/">
+        <div class="grid-image-container">
+          <img
+            class="grid-content"
+            src="{{ url_for('static', filename='logos/codeforces-logo.png') }}"
+            alt="CodeForces"
+          />
+          <div class="grid-image-overlay">
+            <div class="text"><b>CodeForces</b></div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="grid-item">
+      <a href="/github/">
+        <div class="grid-image-container">
+          <img
+            class="grid-content"
+            src="{{ url_for('static', filename='logos/github-mark-logo.png') }}"
+            alt="GitHub"
+          />
+          <div class="grid-image-overlay">
+            <div class="text"><b>GitHub</b></div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="grid-item">
+      <img
+        class="grid-content"
+        src="{{ url_for('static', filename='logos/github-mark-logo.png') }}"
+        alt="car interior from central back seat position showing driver and blurred view through windscreen of a busy road at night"
+      />
+    </div>
+
+    <div class="grid-item">
+      <img
+        class="grid-content"
+        src="{{ url_for('static', filename='logos/github-mark-logo.png') }}"
+        alt="back view of woman wearing a backpack and beanie waiting to cross the road on a busy street at night in New York City, USA"
+      />
+    </div>
+
+    <div class="grid-item">
+      <img
+        class="grid-content"
+        src="{{ url_for('static', filename='logos/github-mark-logo.png') }}"
+        alt="man wearing a black jacket, white shirt, blue jeans, and brown boots, playing a white electric guitar while sitting on an amp"
+      />
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %} {% block head %}
+<title>Let's Talk</title>
+{% endblock %} {% block body %}
+
+<div class="center">
+  <ul class="tabs">
+    <li>
+      <input type="radio" checked name="tabs" id="tab1" />
+      <label for="tab1">COMPARE</label>
+      <div id="tab-content1" class="tab-content animated fadeIn">
+        <form action="" method="POST">
+          <input name="user1" placeholder="Username 1" type="text" required="True" />
+          <br />
+          <input name="user2" placeholder="Username 2" type="text" required="True" />
+          <br />
+          <input type="submit" value="Compare" />
+        </form>
+      </div> 
+    </li>
+    <li>
+      <input type="radio" name="tabs" id="tab2" />
+      <label for="tab2">LOOK</label>
+      <div id="tab-content2" class="tab-content animated fadeIn">
+        <form action="" method="POST">
+          <input name="user" placeholder="Username" type="text" required="True" />
+          <br />
+          <input type="submit" value="Look" />
+        </form>
+      </div>
+    </li>
+  </ul>
+  <br />
+  <div style="clear: both;"></div>
+</div>
+
+{% endblock %}
