@@ -4,31 +4,53 @@
   href="{{ url_for('static', filename='css/codechef.css') }}"
 />
 <title>CodeChef</title>
-<script type="text/javascript">
+<script>
 
-function changeColor(){
-  var srp1 = document.getElementById("left_col");
-  var srp2 = document.getElementById("right_col");
+  function changeColor() {
+      var shortRank1 = '{{ shortrank1[2] }}';
+      var shortRank2 = '{{ shortrank2[2] }}';
+      var curRate1 = '{{ shortrank1[0] }}';
+      var curRate2 = '{{ shortrank2[0] }}';
+      var highRate1 = '{{ shortrank1[1] }}';
+      var highRate2 = '{{ shortrank2[1] }}';
 
-  var curRate1 = '{{ shortrank1[0] }}';
-  var curRate2 = '{{ shortrank2[0] }}';
+      var longRate1 = '{{ ccRank1[0][1] }}';
+      var longRate2 = '{{ ccRank2[0][1] }}';
+      var cookRate1 = '{{ ccRank1[1][1] }}';
+      var cookRate2 = '{{ ccRank2[1][1] }}';
+      var lunchRate1 = '{{ ccRank1[2][1] }}';
+      var lunchRate2 = '{{ ccRank2[2][1] }}';
 
-  var color = "#add0db"
-  if (curRate1 > curRate2) {
-  srp1.style.backgroundColor = color;
-  } else {
-  srp2.style.backgroundColor = color;
+      var color = "#add0db";
+      var addClass = 'table-primary';
+
+      if (shortRank1 > shortRank2) document.getElementById("shortRank1").classList.add(addClass);
+      else document.getElementById("shortRank2").classList.add(addClass);
+      if (curRate1 > curRate2) document.getElementById("curRate1").classList.add(addClass);
+      else document.getElementById("curRate2").classList.add(addClass);
+      if (highRate1 > highRate2) document.getElementById("highRate1").classList.add(addClass);
+      else document.getElementById("highRate2").classList.add(addClass);
+
+
+      if (longRate1 > longRate2) document.getElementById("long1").classList.add(addClass);
+      else document.getElementById("long2").classList.add(addClass);
+      if (cookRate1 > cookRate2) document.getElementById("cook1").classList.add(addClass);
+      else document.getElementById("cook2").classList.add(addClass);
+      if (lunchRate1 > lunchRate2) document.getElementById("lunch1").classList.add(addClass);
+      else document.getElementById("lunch2").classList.add(addClass);
+  
   }
-}
 
-window.onload = function() {
-   changeColor();
-}
+  window.onload = function () {
+      changeColor();
+  }
 </script>
 
-
 {% endblock %} {% block body %}
-<script src="{{ url_for('static', filename='js/cc.js') }}" type="text/javascript"></script>
+<script
+  src="{{ url_for('static', filename='js/cc.js') }}"
+  type="text/javascript"
+></script>
 
 <div id="row">
   <div id="left_col">
@@ -131,12 +153,12 @@ window.onload = function() {
                 </th>
               </tr>
             </thead>
-            <tbody id="shortRankPoints1">
-              <tr>
+            <tbody id="shortRank1">
+              <tr id="curRate1">
                 <th>Current Rating</th>
-                <td> {{ shortrank1[0] }}</td>
+                <td>{{ shortrank1[0] }}</td>
               </tr>
-              <tr>
+              <tr id="highRate1">
                 <th>Highest Rating</th>
                 <td>{{ shortrank1[1] }}</td>
               </tr>
@@ -358,12 +380,12 @@ window.onload = function() {
                 </th>
               </tr>
             </thead>
-            <tbody id="shortRankPoints2">
-              <tr>
+            <tbody id="shortRank2">
+              <tr id="curRate2">
                 <th>Current Rating</th>
                 <td>{{ shortrank2[0] }}</td>
               </tr>
-              <tr>
+              <tr id="highRate2">
                 <th>Highest Rating</th>
                 <td>{{ shortrank2[1] }}</td>
               </tr>
@@ -482,7 +504,6 @@ window.onload = function() {
         >
         {% endif %} {% endfor %}
       </div>
-   
     </div>
 
     {% endif %}
