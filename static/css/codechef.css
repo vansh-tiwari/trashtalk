@@ -16,7 +16,7 @@
   /* margin-right: 5%; */
   padding-right: 2%;
   margin-bottom: 5%;
-  height:fit-content;
+  height: fit-content;
 }
 
 #right_col {
@@ -59,6 +59,7 @@
   display: inline-block;
   width: 15%;
 }
+
 #in-right-col {
   float: right;
   width: 55%;
@@ -78,7 +79,6 @@
   float: right;
   width: 70%;
 }
-
 
 .profile-image {
   height: 90%;
@@ -101,6 +101,7 @@
   padding: 3px 1px 3px 5px;
   text-align: center;
 }
+
 .div-star {
   margin: 5px;
 }
@@ -112,8 +113,8 @@
 
 } */
 
-
 @media screen and (max-width: 767px) {
+
   /* mobile */
   .center {
     margin: 5% 20% 5% 20%;

@@ -21,13 +21,12 @@ def getInfo(user):
         ghInfo['Hireable'] = userInfo['hireable']
         ghInfo['Created at'] = userInfo['created_at']
         ghInfo['Updated at'] = userInfo['updated_at']
-        
+
         shortInfo['Followers'] = userInfo['followers']
         shortInfo['Following'] = userInfo['following']
         shortInfo['PublicRepos'] = userInfo['public_repos']
         shortInfo['PublicGists'] = userInfo['public_gists']
 
-
         return ghInfo, shortInfo, userInfo['avatar_url']
     else:
-        return {'Name': "NoInfo"}, {'Rank':'NoInfo'}, "NoInfo"
+        return {'Name': "NoInfo"}, {'Rank': 'NoInfo'}, "NoInfo"

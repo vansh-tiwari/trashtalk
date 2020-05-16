@@ -1,56 +1,82 @@
 {% extends 'base.html' %} {% block head %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/codechef.css') }}"
-/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codechef.css') }}" />
 <title>CodeChef</title>
-<script>
-
+<script type="text/javascript">
   function changeColor() {
-      var shortRank1 = '{{ shortrank1[2] }}';
-      var shortRank2 = '{{ shortrank2[2] }}';
-      var curRate1 = '{{ shortrank1[0] }}';
-      var curRate2 = '{{ shortrank2[0] }}';
-      var highRate1 = '{{ shortrank1[1] }}';
-      var highRate2 = '{{ shortrank2[1] }}';
 
-      var longRate1 = '{{ ccRank1[0][1] }}';
-      var longRate2 = '{{ ccRank2[0][1] }}';
-      var cookRate1 = '{{ ccRank1[1][1] }}';
-      var cookRate2 = '{{ ccRank2[1][1] }}';
-      var lunchRate1 = '{{ ccRank1[2][1] }}';
-      var lunchRate2 = '{{ ccRank2[2][1] }}';
+    var curRate1 = "{{ shortrank1[0] }}";
+    var curRate2 = "{{ shortrank2[0] }}";
+    var highRate1 = "{{ shortrank1[1] }}";
+    var highRate2 = "{{ shortrank2[1] }}";
+    var cntRate1 = "{{ shortrank1[2] }}";
+    var cntRate2 = "{{ shortrank2[2] }}";
 
-      var color = "#add0db";
-      var addClass = 'table-primary';
+    var longRate1 = "{{ ccRank1[0][1] }}";
+    var longRate2 = "{{ ccRank2[0][1] }}";
+    var cookRate1 = "{{ ccRank1[1][1] }}";
+    var cookRate2 = "{{ ccRank2[1][1] }}";
+    var lunchRate1 = "{{ ccRank1[2][1] }}";
+    var lunchRate2 = "{{ ccRank2[2][1] }}";
 
-      if (shortRank1 > shortRank2) document.getElementById("shortRank1").classList.add(addClass);
-      else document.getElementById("shortRank2").classList.add(addClass);
-      if (curRate1 > curRate2) document.getElementById("curRate1").classList.add(addClass);
-      else document.getElementById("curRate2").classList.add(addClass);
-      if (highRate1 > highRate2) document.getElementById("highRate1").classList.add(addClass);
-      else document.getElementById("highRate2").classList.add(addClass);
+    var color = "#add0db";
+    var primaryClass = "table-success";
+    var dangerClass = "table-danger";
 
-
-      if (longRate1 > longRate2) document.getElementById("long1").classList.add(addClass);
-      else document.getElementById("long2").classList.add(addClass);
-      if (cookRate1 > cookRate2) document.getElementById("cook1").classList.add(addClass);
-      else document.getElementById("cook2").classList.add(addClass);
-      if (lunchRate1 > lunchRate2) document.getElementById("lunch1").classList.add(addClass);
-      else document.getElementById("lunch2").classList.add(addClass);
-  
+    if (cntRate1 > cntRate1) {
+      document.getElementById("cntRate1").classList.add(primaryClass);
+      document.getElementById("globRate1").classList.add(primaryClass);
+      document.getElementById("cntRate2").classList.add(dangerClass);
+      document.getElementById("globRate2").classList.add(dangerClass);
+    } else {
+      document.getElementById("cntRate2").classList.add(primaryClass);
+      document.getElementById("globRate2").classList.add(primaryClass);
+      document.getElementById("cntRate1").classList.add(dangerClass);
+      document.getElementById("globRate1").classList.add(dangerClass);
+    }
+    if (curRate1 > curRate2) {
+      document.getElementById("curRate1").classList.add(primaryClass);
+      document.getElementById("curRate2").classList.add(dangerClass);
+    } else {
+      document.getElementById("curRate2").classList.add(primaryClass);
+      document.getElementById("curRate1").classList.add(dangerClass);
+    }
+    if (highRate1 > highRate2) {
+      document.getElementById("highRate1").classList.add(primaryClass);
+      document.getElementById("highRate2").classList.add(dangerClass);
+    } else {
+      document.getElementById("highRate2").classList.add(primaryClass);
+      document.getElementById("highRate1").classList.add(dangerClass);
+    }
+    if (longRate1 > longRate2) {
+      document.getElementById("long1").classList.add(primaryClass);
+      document.getElementById("long2").classList.add(dangerClass);
+    } else {
+      document.getElementById("long2").classList.add(primaryClass);
+      document.getElementById("long1").classList.add(dangerClass);
+    }
+    if (cookRate1 > cookRate2) {
+      document.getElementById("cook1").classList.add(primaryClass);
+      document.getElementById("cook2").classList.add(dangerClass);
+    } else {
+      document.getElementById("cook2").classList.add(primaryClass);
+      document.getElementById("cook1").classList.add(dangerClass);
+    }
+    if (lunchRate1 > lunchRate2) {
+      document.getElementById("lunch1").classList.add(primaryClass);
+      document.getElementById("lunch2").classList.add(dangerClass);
+    } else {
+      document.getElementById("lunch2").classList.add(primaryClass);
+      document.getElementById("lunch1").classList.add(dangerClass);
+    }
   }
 
   window.onload = function () {
-      changeColor();
-  }
+    changeColor();
+  };
 </script>
 
 {% endblock %} {% block body %}
-<script
-  src="{{ url_for('static', filename='js/cc.js') }}"
-  type="text/javascript"
-></script>
+<script src="{{ url_for('static', filename='js/cc.js') }}" type="text/javascript"></script>
 
 <div id="row">
   <div id="left_col">
@@ -58,52 +84,24 @@
 
     <!-- Err404 START -->
     <div id="container">
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 200 82.7"
-        style="enable-background: new 0 0 200 82.7;"
-        xml:space="preserve"
-      >
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        viewBox="0 0 200 82.7" style="enable-background: new 0 0 200 82.7;" xml:space="preserve">
         <g id="Calque_1">
-          <text
-            id="XMLID_3_"
-            transform="matrix(1.2187 0 0 1 13 75.6393)"
-            class="st0 st1"
-          >
+          <text id="XMLID_3_" transform="matrix(1.2187 0 0 1 13 75.6393)" class="st0 st1">
             4
           </text>
-          <text
-            id="XMLID_4_"
-            transform="matrix(1.2187 0 0 1 133.0003 73.6393)"
-            class="st0 st1"
-          >
+          <text id="XMLID_4_" transform="matrix(1.2187 0 0 1 133.0003 73.6393)" class="st0 st1">
             4
           </text>
         </g>
         <g id="Calque_2">
           <g>
-            <path
-              id="XMLID_11_"
-              d="M81.8,29.2c4.1-5.7,10.7-9.4,18.3-9.4c6.3,0,12.1,2.7,16.1,6.9c0.6-0.4,1.1-0.7,1.7-1.1
-                c-4.4-4.8-10.8-7.9-17.8-7.9c-8.3,0-15.6,4.2-20,10.6C80.7,28.5,81.3,28.8,81.8,29.2z"
-            />
-            <path
-              id="XMLID_2_"
-              d="M118.1,53.7c-4,5.7-10.7,9.5-18.2,9.5c-6.3,0-12.1-2.6-16.2-6.8c-0.6,0.4-1.1,0.7-1.7,1.1
-                c4.4,4.8,10.8,7.8,17.9,7.8c8.3,0,15.6-4.3,19.9-10.7C119.2,54.5,118.6,54.1,118.1,53.7z"
-            />
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="360 100 41.3"
-              to="0 100 41.3"
-              dur="10s"
-              repeatCount="indefinite"
-            />
+            <path id="XMLID_11_" d="M81.8,29.2c4.1-5.7,10.7-9.4,18.3-9.4c6.3,0,12.1,2.7,16.1,6.9c0.6-0.4,1.1-0.7,1.7-1.1
+                c-4.4-4.8-10.8-7.9-17.8-7.9c-8.3,0-15.6,4.2-20,10.6C80.7,28.5,81.3,28.8,81.8,29.2z" />
+            <path id="XMLID_2_" d="M118.1,53.7c-4,5.7-10.7,9.5-18.2,9.5c-6.3,0-12.1-2.6-16.2-6.8c-0.6,0.4-1.1,0.7-1.7,1.1
+                c4.4,4.8,10.8,7.8,17.9,7.8c8.3,0,15.6-4.3,19.9-10.7C119.2,54.5,118.6,54.1,118.1,53.7z" />
+            <animateTransform attributeName="transform" type="rotate" from="360 100 41.3" to="0 100 41.3" dur="10s"
+              repeatCount="indefinite" />
           </g>
           <g id="XMLID_6_">
             <g id="XMLID_18_">
@@ -115,13 +113,9 @@
               <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
             </filter>
           </defs>
-          <path
-            id="XMLID_5_"
-            class="st2"
-            d="M103.8,16.7c0.1,0.3,0.1,0.6,0.1,0.9c11.6,1.9,20.4,11.9,20.4,24.1c0,13.5-10.9,24.4-24.4,24.4
+          <path id="XMLID_5_" class="st2" d="M103.8,16.7c0.1,0.3,0.1,0.6,0.1,0.9c11.6,1.9,20.4,11.9,20.4,24.1c0,13.5-10.9,24.4-24.4,24.4
               S75.6,55.1,75.6,41.7c0-3.2,0.6-6.3,1.7-9.1c-0.3-0.2-0.5-0.3-0.7-0.5c-1.2,3-1.9,6.2-1.9,9.6c0,14,11.3,25.3,25.3,25.3
-              s25.3-11.3,25.3-25.3C125.3,29,115.9,18.5,103.8,16.7z"
-          />
+              s25.3-11.3,25.3-25.3C125.3,29,115.9,18.5,103.8,16.7z" />
         </g>
       </svg>
       <div class="message">User 1st not found</div>
@@ -153,7 +147,7 @@
                 </th>
               </tr>
             </thead>
-            <tbody id="shortRank1">
+            <tbody>
               <tr id="curRate1">
                 <th>Current Rating</th>
                 <td>{{ shortrank1[0] }}</td>
@@ -162,11 +156,11 @@
                 <th>Highest Rating</th>
                 <td>{{ shortrank1[1] }}</td>
               </tr>
-              <tr>
+              <tr id="cntRate1">
                 <th>Country Rank</th>
                 <td>{{ shortrank1[3] }}</td>
               </tr>
-              <tr>
+              <tr id="globRate1">
                 <th>Global Rank</th>
                 <td>{{ shortrank1[2] }}</td>
               </tr>
@@ -177,11 +171,7 @@
       <div id="rank-row">
         <div id="rank-left-col">
           <!-- RANK TABLE START -->
-          <table
-            id="short-rank-table"
-            class="table table-sm table-bordered"
-            style="text-align: center;"
-          >
+          <table id="short-rank-table" class="table table-sm table-bordered" style="text-align: center;">
             <thead class="thead-dark">
               <tr>
                 <th style="text-align: left;">Contests</th>
@@ -213,10 +203,7 @@
         </div>
 
         <div id="rank-right-col">
-          <table
-            id="short-rank-table"
-            class="table table-bordered table-sm table-dark"
-          >
+          <table id="short-rank-table" class="table table-bordered table-sm table-dark">
             <thead>
               <tr>
                 <th colspan="2">Problem Solved</th>
@@ -263,17 +250,15 @@
       <button id="show-hidden-menu1" class="problems">Solved Problems</button>
       <div id="hidden-menu1" style="display: none;">
         {% for v in problems1 %} {% if v in common_problems %}
-        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"
-          ><button type="button" class="btn btn-outline-primary btn-sm">
+        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"><button type="button"
+            class="btn btn-outline-primary btn-sm">
             <b>{{ v }}</b>
-          </button></a
-        >
+          </button></a>
         {% else %}
-        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"
-          ><button type="button" class="btn btn-outline-dark btn-sm">
+        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"><button type="button"
+            class="btn btn-outline-dark btn-sm">
             <b>{{ v }}</b>
-          </button></a
-        >
+          </button></a>
         {% endif %} {% endfor %}
       </div>
     </div>
@@ -285,52 +270,24 @@
 
     <!-- Err404 START -->
     <div id="container">
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 200 82.7"
-        style="enable-background: new 0 0 200 82.7;"
-        xml:space="preserve"
-      >
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        viewBox="0 0 200 82.7" style="enable-background: new 0 0 200 82.7;" xml:space="preserve">
         <g id="Calque_1">
-          <text
-            id="XMLID_3_"
-            transform="matrix(1.2187 0 0 1 13 75.6393)"
-            class="st0 st1"
-          >
+          <text id="XMLID_3_" transform="matrix(1.2187 0 0 1 13 75.6393)" class="st0 st1">
             4
           </text>
-          <text
-            id="XMLID_4_"
-            transform="matrix(1.2187 0 0 1 133.0003 73.6393)"
-            class="st0 st1"
-          >
+          <text id="XMLID_4_" transform="matrix(1.2187 0 0 1 133.0003 73.6393)" class="st0 st1">
             4
           </text>
         </g>
         <g id="Calque_2">
           <g>
-            <path
-              id="XMLID_11_"
-              d="M81.8,29.2c4.1-5.7,10.7-9.4,18.3-9.4c6.3,0,12.1,2.7,16.1,6.9c0.6-0.4,1.1-0.7,1.7-1.1
-                c-4.4-4.8-10.8-7.9-17.8-7.9c-8.3,0-15.6,4.2-20,10.6C80.7,28.5,81.3,28.8,81.8,29.2z"
-            />
-            <path
-              id="XMLID_2_"
-              d="M118.1,53.7c-4,5.7-10.7,9.5-18.2,9.5c-6.3,0-12.1-2.6-16.2-6.8c-0.6,0.4-1.1,0.7-1.7,1.1
-                c4.4,4.8,10.8,7.8,17.9,7.8c8.3,0,15.6-4.3,19.9-10.7C119.2,54.5,118.6,54.1,118.1,53.7z"
-            />
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="360 100 41.3"
-              to="0 100 41.3"
-              dur="10s"
-              repeatCount="indefinite"
-            />
+            <path id="XMLID_11_" d="M81.8,29.2c4.1-5.7,10.7-9.4,18.3-9.4c6.3,0,12.1,2.7,16.1,6.9c0.6-0.4,1.1-0.7,1.7-1.1
+                c-4.4-4.8-10.8-7.9-17.8-7.9c-8.3,0-15.6,4.2-20,10.6C80.7,28.5,81.3,28.8,81.8,29.2z" />
+            <path id="XMLID_2_" d="M118.1,53.7c-4,5.7-10.7,9.5-18.2,9.5c-6.3,0-12.1-2.6-16.2-6.8c-0.6,0.4-1.1,0.7-1.7,1.1
+                c4.4,4.8,10.8,7.8,17.9,7.8c8.3,0,15.6-4.3,19.9-10.7C119.2,54.5,118.6,54.1,118.1,53.7z" />
+            <animateTransform attributeName="transform" type="rotate" from="360 100 41.3" to="0 100 41.3" dur="10s"
+              repeatCount="indefinite" />
           </g>
           <g id="XMLID_6_">
             <g id="XMLID_18_">
@@ -342,13 +299,9 @@
               <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
             </filter>
           </defs>
-          <path
-            id="XMLID_5_"
-            class="st2"
-            d="M103.8,16.7c0.1,0.3,0.1,0.6,0.1,0.9c11.6,1.9,20.4,11.9,20.4,24.1c0,13.5-10.9,24.4-24.4,24.4
+          <path id="XMLID_5_" class="st2" d="M103.8,16.7c0.1,0.3,0.1,0.6,0.1,0.9c11.6,1.9,20.4,11.9,20.4,24.1c0,13.5-10.9,24.4-24.4,24.4
               S75.6,55.1,75.6,41.7c0-3.2,0.6-6.3,1.7-9.1c-0.3-0.2-0.5-0.3-0.7-0.5c-1.2,3-1.9,6.2-1.9,9.6c0,14,11.3,25.3,25.3,25.3
-              s25.3-11.3,25.3-25.3C125.3,29,115.9,18.5,103.8,16.7z"
-          />
+              s25.3-11.3,25.3-25.3C125.3,29,115.9,18.5,103.8,16.7z" />
         </g>
       </svg>
       <div class="message">User 2nd not found</div>
@@ -389,11 +342,11 @@
                 <th>Highest Rating</th>
                 <td>{{ shortrank2[1] }}</td>
               </tr>
-              <tr>
+              <tr id="cntRate2">
                 <th>Country Rank</th>
                 <td>{{ shortrank2[3] }}</td>
               </tr>
-              <tr>
+              <tr id="globRate2">
                 <th>Global Rank</th>
                 <td>{{ shortrank2[2] }}</td>
               </tr>
@@ -405,11 +358,7 @@
       <div id="rank-row">
         <div id="rank-left-col">
           <!-- RANK TABLE START -->
-          <table
-            id="short-rank-table"
-            class="table table-sm table-bordered"
-            style="text-align: center;"
-          >
+          <table id="short-rank-table" class="table table-sm table-bordered" style="text-align: center;">
             <thead class="thead-dark">
               <tr>
                 <th style="text-align: left;">Contests</th>
@@ -441,10 +390,7 @@
         </div>
 
         <div id="rank-right-col">
-          <table
-            id="short-rank-table"
-            class="table table-bordered table-sm table-dark"
-          >
+          <table id="short-rank-table" class="table table-bordered table-sm table-dark">
             <thead>
               <tr>
                 <th colspan="2">Problem Solved</th>
@@ -491,17 +437,15 @@
       <button id="show-hidden-menu2" class="problems">Solved Problems</button>
       <div id="hidden-menu2" style="display: none;">
         {% for v in problems2 %} {% if v in common_problems %}
-        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"
-          ><button type="button" class="btn btn-outline-primary btn-sm">
+        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"><button type="button"
+            class="btn btn-outline-primary btn-sm">
             <b>{{ v }}</b>
-          </button></a
-        >
+          </button></a>
         {% else %}
-        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"
-          ><button type="button" class="btn btn-outline-dark btn-sm">
+        <a href="https://www.codechef.com/problems/{{v}}" target="_blank"><button type="button"
+            class="btn btn-outline-dark btn-sm">
             <b>{{ v }}</b>
-          </button></a
-        >
+          </button></a>
         {% endif %} {% endfor %}
       </div>
     </div>

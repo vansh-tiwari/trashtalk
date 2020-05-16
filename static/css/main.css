@@ -1,6 +1,6 @@
 body,
 html {
-  background-color: lightsteelblue;
+  background-color: gainsboro;
   margin: 0;
   font-family: sans-serif;
 }
@@ -13,7 +13,7 @@ html {
 /* BLOCK Button START */
 
 input[type="text"] {
-  border: 2px solid lightsteelblue;
+  border: 2px solid lavender;
   width: 100%;
   border-radius: 4px;
   margin: 5px 0;
@@ -22,6 +22,7 @@ input[type="text"] {
   box-sizing: border-box;
   transition: 0.3s;
 }
+
 input[type="text"]:focus {
   border-color: dodgerBlue;
   box-shadow: 0 0 8px 0 dodgerBlue;
@@ -30,7 +31,7 @@ input[type="text"]:focus {
 input[type="submit"],
 .problems {
   background-color: mediumseagreen;
-  border: 2px solid lightsteelblue;
+  border: 2px solid lavender;
   width: 100%;
   border-radius: 4px;
   margin: 5px 0;
@@ -40,10 +41,12 @@ input[type="submit"],
   transition: 0.3s;
   text-align: center;
 }
+
 input[type="submit"]:focus {
   border-color: rgb(109, 63, 161);
   box-shadow: 0 0 8px 0 rgb(71, 39, 185);
 }
+
 .problems:hover,
 input[type="submit"]:hover {
   background-color: lightseagreen;
@@ -56,9 +59,11 @@ input[type="submit"]:hover {
 .st0 {
   font-family: "FootlightMTLight";
 }
+
 .st1 {
   font-size: 83.0285px;
 }
+
 .st2 {
   fill: gray;
 }
@@ -69,14 +74,17 @@ svg {
   text-align: center;
   fill: #f30000;
 }
+
 path#XMLID_5_ {
   fill: #f30000;
   filter: url(#blurFilter4);
 }
+
 path#XMLID_11_,
 path#XMLID_2_ {
   fill: #f30000;
 }
+
 .circle {
   animation: out 2s infinite ease-out;
   fill: #f30000;
@@ -88,12 +96,15 @@ path#XMLID_2_ {
   height: 100;
   padding: 10%;
 }
+
 .message {
   color: #e70000;
 }
+
 .message:after {
   content: "]";
 }
+
 .message:before {
   content: "[";
 }
@@ -115,20 +126,24 @@ path#XMLID_2_ {
 }
 
 @-webkit-keyframes opacity {
+
   0%,
   100% {
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
 }
 
 @keyframes opacity {
+
   0%,
   100% {
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
@@ -139,18 +154,22 @@ path#XMLID_2_ {
     r: 1;
     opacity: 0.9;
   }
+
   25% {
     r: 5;
     opacity: 0.3;
   }
+
   50% {
     r: 10;
     opacity: 0.2;
   }
+
   75% {
     r: 15;
     opacity: 0.1;
   }
+
   100% {
     r: 20;
     opacity: 0;
@@ -272,10 +291,12 @@ Remove or comment-out the code block below to see how the browser will fall-back
   padding: 0;
   margin: auto;
 }
+
 .tabs li {
   float: left;
   width: 50%;
 }
+
 .tabs label {
   text-align: center;
   display: block;
@@ -290,24 +311,25 @@ Remove or comment-out the code block below to see how the browser will fall-back
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
+
 .tabs label:hover {
   background: rgba(255, 255, 255, 0.5);
   top: 0;
 }
 
-.tabs input[id^="tab"]:checked + label {
+.tabs input[id^="tab"]:checked+label {
   background: rgb(26, 129, 160);
   color: #fff;
   top: 0;
 }
 
-.tabs2 input[id^="tab"]:checked + label {
+.tabs2 input[id^="tab"]:checked+label {
   background: green;
   color: #fff;
   top: 0;
 }
 
-.tabs [id^="tab"]:checked ~ [id^="tab-content"] {
+.tabs [id^="tab"]:checked~[id^="tab-content"] {
   display: block;
 }
 
@@ -316,7 +338,7 @@ Remove or comment-out the code block below to see how the browser will fall-back
   text-align: center;
   width: 100%;
   /* line-height: 140%; */
-  background: lightsteelblue;
+  background: lavender;
   padding: 15px;
   color: #fff;
   position: absolute;
@@ -354,6 +376,7 @@ a {
 .main-nav {
   margin-top: 5px;
 }
+
 .logo a,
 .main-nav a {
   padding: 10px 15px;
@@ -361,8 +384,9 @@ a {
   text-align: center;
   display: block;
 }
-.logo a:hover{
-  color: #cef; 
+
+.logo a:hover {
+  color: #cef;
 }
 
 .main-nav a {
@@ -398,8 +422,9 @@ a {
   color: white;
   text-align: center;
 }
-.footer a:hover{
-  color:khaki;
+
+.footer a:hover {
+  color: khaki;
 }
 
 
@@ -408,10 +433,12 @@ a {
 ==================================== */
 
 @media (min-width: 769px) {
+
   .header,
   .main-nav {
     display: flex;
   }
+
   .header {
     flex-direction: column;
     align-items: center;
@@ -426,6 +453,7 @@ a {
 }
 
 @media screen and (max-width: 767px) {
+
   /* mobile */
   .center {
     margin: 5% 20% 5% 20%;

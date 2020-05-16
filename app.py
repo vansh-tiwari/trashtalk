@@ -39,20 +39,8 @@ def codechef():
                 problems2,
                 prbSolved2,
             ) = cc.getInfo(user2)
-            print(type(problems1))
-            print(problems1)
-            print(problems2)
-            common_problems = problems1.intersection(problems2)
-            print(common_problems)
 
-            # print(user1, user2)
-            # print(ccInfo1)
-            # print(ccInfo2)
-            # print(image1)
-            # print(image2)
-            # print(star_bgcolor1, star_bgcolor2)
-            # print(ccRank1)
-            # print(ccRank2)
+            common_problems = problems1.intersection(problems2)
 
             if ccInfo1["Name"] == "NoInfo" and ccInfo2["Name"] == "NoInfo":
                 return render_template("notfound.html", user1=user1, user2=user2)
@@ -88,12 +76,6 @@ def codechef():
                 prbSolved,
             ) = cc.getInfo(user)
 
-            print(user)
-            print(ccInfo)
-            print(ccRank)
-            print(image)
-            print(shortrank)
-            print(star_bgcolor)
             return render_template(
                 "codechef_profile.html",
                 ccInfo=ccInfo,
@@ -117,9 +99,6 @@ def codeforces():
 
         cfInfo1, cfRank1, cfTitlePhoto1 = cf.getInfo(user1)
         cfInfo2, cfRank2, cfTitlePhoto2 = cf.getInfo(user2)
-        print(user1, user2)
-        print(cfInfo1)
-        print(cfInfo2)
 
         return render_template(
             "codeforces.html",
@@ -133,6 +112,7 @@ def codeforces():
     else:
         return render_template("input.html")
 
+
 @app.route("/github/", methods=["POST", "GET"])
 def github():
     if request.method == "POST":
@@ -141,9 +121,6 @@ def github():
 
         ghInfo1, shortInfo1, ghAvatar1 = gh.getInfo(user1)
         ghInfo2, shortInfo2, ghAvatar2 = gh.getInfo(user2)
-        print(user1, user2)
-        print(ghInfo1)
-        print(ghInfo2)
 
         return render_template(
             "github.html",
@@ -156,21 +133,6 @@ def github():
         )
     else:
         return render_template("input.html")
-
-
-    #     new_task = Todo(content=task_content)
-
-    #     try:
-    #         db.session.add(new_task)
-    #         db.session.commit()
-    #         return redirect('/')
-    #     except:
-    #         return 'Unable to Add'
-    # else:
-    # #     tasks = Todo.query.order_by(Todo.date_created).all()
-    # #     # print(tasks)
-    #     return "ERROR"
-    # return render_template('index.html')
 
 
 if __name__ == "__main__":
