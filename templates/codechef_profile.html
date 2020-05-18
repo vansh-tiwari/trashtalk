@@ -6,7 +6,17 @@
 <title>CodeChef</title>
 {% endblock %} {% block body %}
 
-
+<center>
+  <a href="/codechef/">
+    <button
+      style="padding: auto; font-size: medium;"
+      type="button"
+      class="btn btn-outline-info"
+    >
+    COMPARE ANOTHER PROFILE
+    </button>
+  </a>
+</center>
 <div class="container">
   {% if ccInfo.Name=='NoInfo' %}
 
@@ -84,7 +94,7 @@
   </div>
 
   {% else %}
-  <div style="visibility: visible;">
+    <div style="visibility: visible;">
     <div id="in-row">
       <div id="in-left-col">
         <img src="{{image}}" class="profile-image" alt="..." />

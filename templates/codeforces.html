@@ -3,9 +3,19 @@
   rel="stylesheet"
   href="{{ url_for('static', filename='css/codechef.css') }}"
 />
-<title>CodeChef</title>
+<title>CodeForces</title>
 {% endblock %} {% block body %}
-
+<center>
+  <a href="/codeforces/">
+    <button
+      style="padding: auto; font-size: medium;"
+      type="button"
+      class="btn btn-outline-info"
+    >
+    COMPARE ANOTHER PROFILE
+    </button>
+  </a>
+</center>
 <div id="row">
   <div id="left_col">
     {% if cfInfo1.Name=='NoInfo' %}
