@@ -16,7 +16,6 @@ def index():
 
 @app.route("/codechef/", methods=["POST", "GET"])
 def codechef():
-    urlRule = str(request.url_rule)
     if request.method == "POST":
         try:
             user1 = request.form["user1"]
@@ -89,7 +88,7 @@ def codechef():
             )
 
     else:
-        return render_template("input.html", urlRule = urlRule)
+        return render_template("input.html")
 
 
 @app.route("/codeforces/", methods=["POST", "GET"])
@@ -113,13 +112,11 @@ def codeforces():
             cfTitlePhoto2=cfTitlePhoto2,
         )
     else:
-        return render_template("input.html", urlRule=urlRule)
+        return render_template("input.html")
 
 
 @app.route("/github/", methods=["POST", "GET"])
 def github():
-
-    urlRule = str(request.url_rule)
     if request.method == "POST":
         user1 = request.form["user1"]
         user2 = request.form["user2"]
@@ -137,7 +134,7 @@ def github():
             ghAvatar2=ghAvatar2,
         )
     else:
-        return render_template("input.html", urlRule=urlRule)
+        return render_template("input.html")
 
 
 if __name__ == "__main__":
