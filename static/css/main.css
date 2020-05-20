@@ -433,6 +433,49 @@ a {
 }
 
 
+/* SOCIAL ICONS */
+/* fixed social*/
+#fixed-social {
+  position: fixed;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+#fixed-social a {
+  color: #fff;
+  display: block;
+  height: 40px;
+  position: relative;
+  text-align: center;
+  line-height: 40px;
+  width: 40px;
+  margin-bottom: 1px;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+#fixed-social a:hover{
+  background-color: #000;
+} 
+
+.fixed-facebook{
+  background: #3b5998;
+}
+
+.fixed-twitter{
+  background: #00acee;
+
+}
+.fixed-linkedin{
+ background: #0e76a8;
+}
+.fixed-share{
+  background: darkslategrey;
+ }
+/*end fixed social*/
+
+
 /* ================================= 
   Media Queries
 ==================================== */

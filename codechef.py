@@ -9,6 +9,7 @@ def getInfo(user):
     # user = "vanshtiwari"
     # user = input()
     url = "https://www.codechef.com/users/" + user
+    print(url)
     page = rq.get(url)
     soup = bs(page.content, "html5lib")
     infoTag = soup.find("main", attrs={"class": "content"})

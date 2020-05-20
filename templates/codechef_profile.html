@@ -17,6 +17,45 @@
     </button>
   </a>
 </center>
+
+
+<div id="fixed-social">
+  <div>
+    <a
+      href="https://www.facebook.com/sharer.php?u=&t="
+      class="fixed-facebook"
+      target="_blank"
+      onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"
+      ><i class="fa fa-facebook"></i
+    ></a>
+  </div>
+  <div>
+    <a
+      href="https://twitter.com/intent/tweet?"
+      class="fixed-twitter"
+      target="_blank"
+      title="Trashtalk"
+      onclick="window.open('https://twitter.com/intent/tweet?text=%20This%20is%20my%20profile%20status.%20Check%20it%20now%20and%20also%20check%20yours.%20' + encodeURIComponent(document.title) + ':%20 ' + encodeURIComponent(document.URL)); return false;"
+    >
+      <i class="fa fa-twitter"></i>
+    </a>
+  </div>
+  <div>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{share}}&title=Codechef+Profile+|+Trashtalk&summary=Check+my+profile+now+and+also+check+yours+and+share+with+me.&source="
+    target="_blank" 
+    title="Trashtalk"
+    class="fixed-linkedin"
+    ><i class="fa fa-linkedin"></i> </a>
+  </div>
+  <div>
+    <a href="#" class="fixed-share" target="_blank"
+      ><i class="fa fa-share-alt"></i>
+    </a>
+  </div>
+</div>
+
+
+
 <div class="container">
   {% if ccInfo.Name=='NoInfo' %}
 
