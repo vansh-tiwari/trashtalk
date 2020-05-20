@@ -32,7 +32,6 @@
   </head>
 
   <body>
-
     <header class="header">
       <h1 class="logo"><a href="/">TrashTalk</a></h1>
       <ul class="main-nav">
@@ -56,9 +55,42 @@
       crossorigin="anonymous"
     ></script>
 
+    <div id="fixed-social">
+      <div>
+        <a
+          href="https://www.facebook.com/sharer.php?u=&t="
+          class="fixed-facebook"
+          target="_blank"
+          onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"
+          ><i class="fa fa-facebook"></i
+        ></a>
+      </div>
+      <div>
+        <a
+          href="https://twitter.com/intent/tweet?"
+          class="fixed-twitter"
+          target="_blank"
+          title="Trashtalk"
+          onclick="window.open('https://twitter.com/intent/tweet?text=%20This%20is%20my%20profile%20status.%20Check%20it%20now%20and%20also%20compare%20yours.%20' + encodeURIComponent(document.title) + ':%20 ' + encodeURIComponent('{{share}}')); return false;"
+        >
+          <i class="fa fa-twitter"></i>
+        </a>
+      </div>
+
+      <div>
+        <a href="#" id="share-button" class="fixed-share">
+          <i class="fa fa-share-alt"></i>
+        </a>
+      </div>
+    </div>
+
     <div style="margin-bottom: 20%;">
       {% block body %}{% endblock %}
     </div>
+    <script
+      src="{{ url_for('static', filename='js/share.js') }}"
+      type="text/javascript"
+    ></script>
 
     <div class="footer" data-role="footer" data-position="fixed">
       <a href="https://www.linkedin.com/in/vanshtiwari-me/" target="_blank"
@@ -78,4 +110,4 @@
       </a>
     </div>
   </body>
-</html> 
+</html>

@@ -3,7 +3,15 @@
   rel="stylesheet"
   href="{{ url_for('static', filename='css/codechef.css') }}"
 />
-<title>CodeForces</title>
+<title>
+  
+  {% if cfInfo1.Name=='NoInfo' or cfInfo2.Name=='NoInfo' %}
+  Codeforces Comparison | Trashtalk
+  {% else %}
+  {{ cfInfo1.Handle }} vs {{ cfInfo2.Handle }} | Trashtalk
+  {% endif %}
+
+</title>
 {% endblock %} {% block body %}
 <center>
   <a href="/codeforces/">

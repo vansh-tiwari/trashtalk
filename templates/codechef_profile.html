@@ -3,7 +3,15 @@
   rel="stylesheet"
   href="{{ url_for('static', filename='css/codechef_profile.css') }}"
 />
-<title>CodeChef</title>
+<title>
+  
+  {% if ccInfo.Name=='NoInfo'%}
+  Err404 | Trashtalk
+  {% else %}
+  {{ ccInfo.Username }} | Trashtalk
+  {% endif %}
+
+</title>
 {% endblock %} {% block body %}
 
 <center>
