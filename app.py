@@ -1,7 +1,5 @@
 from flask import Flask, redirect, render_template, url_for, request
 
-# from flask_sqlalchemy import SQLAlchemy
-# from datetime import datetime
 import codechef as cc
 import codeforces as cf
 import github as gh
