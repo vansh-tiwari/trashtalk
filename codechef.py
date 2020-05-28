@@ -11,6 +11,7 @@ def getInfo(user):
     url = "https://www.codechef.com/users/" + user
     print(url)
     page = rq.get(url)
+    print(f'response code: {page.status_code}')
     soup = bs(page.content, "html5lib")
     infoTag = soup.find("main", attrs={"class": "content"})
     # rankData = {'LongChallenge':{'Rating':0, 'GlobalRank':0, 'CountryRank':0},
@@ -18,38 +19,32 @@ def getInfo(user):
     #             'LunchTime':{'Rating':0, 'GlobalRank':0, 'CountryRank':0},
     #            }
     userInfo = {}
-    rankList = [["0" for x in range(4)] for y in range(3)]
 
     try:
         image = infoTag.header.img.attrs["src"]
         if image[0] == "/":
             image = "https://www.codechef.com" + image
-        name = infoTag.div.contents[1][3:]
+
         userInfo["Name"] = infoTag.div.contents[1][3:]
-        #     print("Name:", name)
-        for i in range(1, len(infoTag.section.ul) - 2, 2):
-            key = infoTag.section.ul.contents[i].label.text[:-1]
-            value = infoTag.section.ul.contents[i].span.text
-            if key == "Username":
-                userInfo[key] = value[2:]
-                userInfo["Star"] = value[0:2]
-            elif key=="Country":
-                userInfo[key] = value[2:]
-            else:
-                userInfo[key] = infoTag.section.ul.contents[i].span.text
+
+        for li in infoTag.section.ul.findAll('li'):
+            key, value = li.text.strip().split(':', 1)
+            userInfo[key] = value.strip()
+        userInfo["Star"] = userInfo["Username"][:2]
+        userInfo["Username"] = userInfo["Username"][2:]
 
         prbTag = infoTag.contents[4].contents[3].contents[1].contents[1].contents[1].contents[18]
         prbList = prbTag.find_all("a")
         solved = prbTag.find_all("h5")
         fullSolved = solved[0].text.split(' ')[-1][1:-1]
         parSolved = solved[1].text.split(' ')[-1][1:-1]
-        totalSolved = str(int(solved[0].text.split(' ')[-1][1:-1])+int(solved[1].text.split(' ')[-1][1:-1]))
+        totalSolved = str(int(fullSolved)+int(parSolved))
         prbSolved = [fullSolved, parSolved, totalSolved]
         problems = set()
-        for x in prbList:
-            problems.add(x.text)
+        for prob in prbList:
+            problems.add(prob.text)
         # rateTag = soup.find("div", attrs={"class": "widget pl0 pr0 widget-rating"})
-        rateTag = rateTag=infoTag.contents[4].aside.contents[1]
+        rateTag = rateTag = infoTag.contents[4].aside.contents[1]
         star_bgcolor = rateTag.span.attrs['style']
 
         conRate = rateTag.div.contents[6].div.contents
@@ -65,18 +60,17 @@ def getInfo(user):
 
         rank = conRate[1].tbody.contents
         rankTitle = conTable.contents[1].contents
-        m, n = 0, 0
-        for i in range(0, len(rank) - 2, 2):
-            a = conRate[1].tbody.contents[i]
-            for x in range(1, len(a.contents), 2):
-                #         print(a.contents[x].text, x, type(a.contents[x].text))
-                #         print(a.contents[1].text)
-                #         print(rankTitle[x].text)
-                #         rankData[a.contents[1].text][rankTitle[x].text] = a.contents[x].text
-                rankList[m][n] = a.contents[x].text
-                n += 1
-            m += 1
-            n = 0
+
+        rankList = []
+        for ranks in rank:
+            try:
+                contestRank = [details.text for details in ranks.find_all('td')]
+                rankList.append(contestRank)
+            except AttributeError as e:
+                # AttributeError as each detail doesn't has <td>..</td>
+                continue
+        # print(rankList)
+
         return image, userInfo, rankList, shortrank, star_bgcolor, problems, prbSolved
 
     except Exception as e:
@@ -86,10 +80,3 @@ def getInfo(user):
         image = "https://www.dstech.net/images/easyblog_shared/November_2018/11-12-18/human_error_stop_400.png"
         return image, {'Name': "NoInfo"}, [user, "NoRank","Found"], ["NoRankInfo"], star_bgcolor, {'NoInfo'}, ['NoInfo']
 
-    # print(rankList)
-    # for x in range(3):
-    #     print(rankList[x])
-
-    # for x in userInfo:
-    #     print(x, userInfo[x])
-    # return userInfo, rankList
