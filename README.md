@@ -6,3 +6,5 @@ Lower ratings are red and greater ratings are green.
 
 Common solved problems are shown in blue buttons.
 ![](images/image2)
+
+### Contriubters are always welcome and appreciated.
