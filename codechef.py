@@ -14,10 +14,7 @@ def getInfo(user):
     print(f'response code: {page.status_code}')
     soup = bs(page.content, "html5lib")
     infoTag = soup.find("main", attrs={"class": "content"})
-    # rankData = {'LongChallenge':{'Rating':0, 'GlobalRank':0, 'CountryRank':0},
-    #             'Cook-off':{'Rating':0, 'GlobalRank':0, 'CountryRank':0},
-    #             'LunchTime':{'Rating':0, 'GlobalRank':0, 'CountryRank':0},
-    #            }
+
     userInfo = {}
 
     try:
@@ -27,11 +24,16 @@ def getInfo(user):
 
         userInfo["Name"] = infoTag.div.contents[1][3:]
 
-        for li in infoTag.section.ul.findAll('li'):
-            key, value = li.text.strip().split(':', 1)
-            userInfo[key] = value.strip()
-        userInfo["Star"] = userInfo["Username"][:2]
-        userInfo["Username"] = userInfo["Username"][2:]
+        for i in range(1, len(infoTag.section.ul) - 2, 2):
+            key = infoTag.section.ul.contents[i].label.text[:-1]
+            value = infoTag.section.ul.contents[i].span.text
+            if key == "Username":
+                userInfo[key] = value[2:]
+                userInfo["Star"] = value[0:2]
+            elif key=="Country":
+                userInfo[key] = value[2:]
+            else:
+                userInfo[key] = infoTag.section.ul.contents[i].span.text
 
         prbTag = infoTag.contents[4].contents[3].contents[1].contents[1].contents[1].contents[18]
         prbList = prbTag.find_all("a")
