@@ -1,5 +1,6 @@
 # TRASHTALK
 ### Codechef profile comparator
+DEMO: https://mytrashtalk.herokuapp.com
 
 Lower ratings are red and greater ratings are green.
 ![](images/image1)
