@@ -35,7 +35,7 @@ def getInfo(user):
             else:
                 userInfo[key] = infoTag.section.ul.contents[i].span.text
 
-        prbTag = infoTag.contents[4].contents[3].contents[1].contents[1].contents[1].contents[18]
+        prbTag = infoTag.contents[4].contents[3].contents[1].contents[1].contents[1].contents[15]
         prbList = prbTag.find_all("a")
         solved = prbTag.find_all("h5")
         fullSolved = solved[0].text.split(' ')[-1][1:-1]
