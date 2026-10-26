@@ -1,1 +1,42 @@
-__pycache__/*
+# Next.js
+.next/
+out/
+build/
+dist/
+.data/
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Legacy Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# System files
+.DS_Store
+*.pem
+.superpowers/
+test-results/
+playwright-report/
