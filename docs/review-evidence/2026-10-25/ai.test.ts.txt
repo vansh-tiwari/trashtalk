@@ -1,0 +1,13 @@
+import {it,expect,vi} from 'vitest';
+const stub=vi.hoisted(()=>({generate:vi.fn()}));
+vi.mock('@google/generative-ai',()=>({GoogleGenerativeAI:class {
+  getGenerativeModel(){return {generateContent:stub.generate};}
+}}));
+import {generateCommentary} from '@/lib/ai/roast-engine';
+import {PREPARED_TOURIST_VS_PETR} from '@/lib/demo/prepared-battles';
+it('rejects an explicit opposite verdict even with alternative wording',async()=>{
+  stub.generate.mockResolvedValue({response:{text:()=>JSON.stringify({headToHeadRoast:'Petr defeats tourist and claims the victory today.',player1Roast:'tourist arrived with plenty of code.',player2Roast:'Petr stole the spotlight in this battle.',punchline:'Victory belongs to Petr!'})}});
+  const c=await generateCommentary({p1Evidence:{} as any,p2Evidence:{} as any,verdict:PREPARED_TOURIST_VS_PETR.verdict,persona:'savage_dev',apiKey:'mock-only'});
+  expect(stub.generate).toHaveBeenCalledOnce();
+  expect(c.source).toBe('local');
+});

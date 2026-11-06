@@ -1,0 +1,41 @@
+import { describe, it, expect, vi } from 'vitest';
+import { MemoryBattleStore } from '@/lib/storage/battle-store';
+import { safeParseBattleSnapshot, CreateBattleRequestSchema } from '@/lib/battle/validation';
+import { PREPARED_TOURIST_VS_PETR } from '@/lib/demo/prepared-battles';
+import { scoreCodeforcesBattle } from '@/lib/battle/scoring';
+import { executeBattleFlow } from '@/lib/battle/service';
+import * as cf from '@/lib/platforms/codeforces';
+
+function evidence(handle: string, partial = false, rating = 2000): any {
+  return { platform:'codeforces', handle, status:'ok', fetchedAt:'2026-10-25T00:00:00Z',
+    profile:{handle,rating,maxRating:rating,contribution:0,friendCount:0},
+    solvedProblems:[{id:'CF:1A',platform:'codeforces',index:'A',name:'Theatre Square',rating:1000,tags:['math'],acceptedAt:1000,url:'https://codeforces.com/contest/1/problem/A'}],
+    coverage:{historyAvailability:partial?'partial':'complete',isComplete:!partial,totalSubmissionsFetched:partial?1000:1,totalAcceptedSolved:1} };
+}
+describe('Independent review regressions',()=>{
+  it('preserves statement links through snapshot schema parsing',()=>{
+    const parsed=safeParseBattleSnapshot(PREPARED_TOURIST_VS_PETR)!;
+    expect(parsed.overlap.common[0].url).toBe(PREPARED_TOURIST_VS_PETR.overlap.common[0].url);
+    expect(parsed.overlap.common[0].platform).toBe('codeforces');
+  });
+  it('does not crown a winner from truncated required history',()=>{
+    const result=scoreCodeforcesBattle(evidence('alpha',true,3000),evidence('beta',false,1500));
+    expect(result.outcome).toBe('insufficient_data');
+  });
+  it('can persist a battle for a handle accepted by its own request schema',async()=>{
+    expect(CreateBattleRequestSchema.safeParse({u1:'john.doe',u2:'beta'}).success).toBe(true);
+    const spy=vi.spyOn(cf,'fetchCodeforcesEvidence').mockImplementation(async(h)=>evidence(h));
+    try {
+      const store=new MemoryBattleStore();
+      const snapshot=await executeBattleFlow({u1:'john.doe',u2:'beta',store});
+      expect(await store.get(snapshot.id)).not.toBeNull();
+    } finally {spy.mockRestore();}
+  });
+  it('preserves problem links after creating and reloading a fresh snapshot',async()=>{
+    const store=new MemoryBattleStore();
+    const snapshot=structuredClone(PREPARED_TOURIST_VS_PETR);
+    snapshot.id='review-new-battle';
+    await store.create(snapshot);
+    expect((await store.get(snapshot.id))!.overlap.common[0].url).toBe(snapshot.overlap.common[0].url);
+  });
+});

@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrashTalk // Cyber-Bento Arena (Landing Mockup)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090e;
+      --bg-card: rgba(16, 21, 33, 0.75);
+      --bg-card-hover: rgba(22, 29, 46, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.18);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --cyan: #00f2fe;
+      --cyan-glow: rgba(0, 242, 254, 0.25);
+      --cyan-dim: rgba(0, 242, 254, 0.1);
+      
+      --magenta: #ff2a6d;
+      --magenta-glow: rgba(255, 42, 109, 0.25);
+      --magenta-dim: rgba(255, 42, 109, 0.1);
+      
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.25);
+      --emerald: #10b981;
+      
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(0, 242, 254, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(255, 42, 109, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 50% 60%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+        linear-gradient(to bottom, transparent, rgba(7, 9, 14, 0.8)),
+        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;
+    }
+
+    /* Ambient animated mesh flare */
+    .ambient-glow-cyan {
+      position: absolute;
+      top: 10%;
+      left: -150px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatAura 12s ease-in-out infinite alternate;
+    }
+
+    .ambient-glow-magenta {
+      position: absolute;
+      top: 15%;
+      right: -150px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, var(--magenta-glow) 0%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatAura 14s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes floatAura {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(60px) scale(1.15); }
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Typography Utilities */
+    .font-display { font-family: var(--font-display); }
+    .font-mono { font-family: var(--font-mono); }
+    
+    /* Top Navigation */
+    header {
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      background: rgba(7, 9, 14, 0.7);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--magenta) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
+    }
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand-title span.c { color: var(--cyan); }
+    .brand-title span.m { color: var(--magenta); }
+    
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--emerald);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--text);
+    }
+    .nav-links a.active {
+      color: var(--cyan);
+    }
+
+    .nav-cta {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-hover);
+      color: var(--text);
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .nav-cta:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 70px 0 40px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      backdrop-filter: blur(8px);
+    }
+    .hero-badge span.spark {
+      color: var(--amber);
+    }
+    .hero-badge strong {
+      color: var(--text);
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 6vw, 76px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero-title .grad-text {
+      background: linear-gradient(135deg, var(--cyan) 0%, #a855f7 50%, var(--magenta) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+    }
+
+    /* Cyber-Bar: Unified Battle Input */
+    .battle-bar-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(13, 17, 28, 0.85);
+      border: 1px solid var(--border-hover);
+      border-radius: 20px;
+      padding: 8px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(24px);
+    }
+    .battle-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .platform-select-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .platform-select-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--cyan);
+    }
+    .input-col {
+      flex: 1 1 180px;
+      position: relative;
+    }
+    .handle-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px 14px 38px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+    .input-col.p1 .handle-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 16px var(--cyan-glow);
+      background: rgba(0, 242, 254, 0.03);
+    }
+    .input-col.p2 .handle-input:focus {
+      border-color: var(--magenta);
+      box-shadow: 0 0 16px var(--magenta-glow);
+      background: rgba(255, 42, 109, 0.03);
+    }
+    .input-col.p1 .input-icon { color: var(--cyan); }
+    .input-col.p2 .input-icon { color: var(--magenta); }
+
+    .vs-core {
+      width: 44px;
+      height: 44px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      color: var(--amber);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .vs-core::after {
+      content: '';
+      position: absolute;
+      inset: -100%;
+      background: conic-gradient(from 0deg, transparent 0deg, var(--amber) 40deg, transparent 80deg);
+      animation: rotateLight 4s linear infinite;
+      opacity: 0.3;
+    }
+    @keyframes rotateLight {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .fight-btn {
+      background: linear-gradient(135deg, var(--cyan) 0%, #3b82f6 50%, var(--magenta) 100%);
+      color: #07090e;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+    }
+    .fight-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 42, 109, 0.4);
+      filter: brightness(1.1);
+    }
+    .fight-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Quick Shortcuts */
+    .quick-matches {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .quick-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .match-pill {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .match-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--cyan);
+      color: var(--text);
+    }
+    .match-pill span.vs-tag {
+      color: var(--amber);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* Bento Stage Preview */
+    .stage-section {
+      margin: 60px 0 80px;
+    }
+    .stage-bento {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr 1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+    @media (max-width: 960px) {
+      .stage-bento {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bento-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .bento-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Fighter Card Styling */
+    .fighter-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .fighter-card.cyan {
+      border-top: 3px solid var(--cyan);
+    }
+    .fighter-card.magenta {
+      border-top: 3px solid var(--magenta);
+    }
+    .fighter-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .fighter-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: #111624;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .fighter-card.cyan .fighter-avatar {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+      color: var(--cyan);
+    }
+    .fighter-card.magenta .fighter-avatar {
+      border-color: var(--magenta);
+      box-shadow: 0 0 15px var(--magenta-glow);
+      color: var(--magenta);
+    }
+    .fighter-info h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .fighter-rank {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .fighter-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .stat-tile {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .fighter-card.cyan .stat-val { color: var(--cyan); }
+    .fighter-card.magenta .stat-val { color: var(--magenta); }
+
+    .power-bar-wrapper {
+      margin-top: 10px;
+    }
+    .power-bar-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .power-track {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .power-fill-cyan {
+      height: 100%;
+      width: 94%;
+      background: linear-gradient(90deg, #3b82f6, var(--cyan));
+      border-radius: 999px;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .power-fill-magenta {
+      height: 100%;
+      width: 78%;
+      background: linear-gradient(90deg, #ec4899, var(--magenta));
+      border-radius: 999px;
+      box-shadow: 0 0 10px var(--magenta);
+    }
+
+    /* Center Combat Stage Card */
+    .combat-stage-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, var(--bg-card) 60%);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    .round-tabs {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      margin: 0 auto 16px;
+    }
+    .round-tab {
+      padding: 4px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all 0.2s;
+    }
+    .round-tab.active {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    .clash-score {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .clash-score .sc-c { color: var(--cyan); }
+    .clash-score .sc-div { color: var(--text-dim); font-size: 32px; font-weight: 300; }
+    .clash-score .sc-m { color: var(--magenta); }
+
+    .odds-meter {
+      margin: 16px 0;
+      padding: 0 10px;
+    }
+    .odds-track {
+      height: 6px;
+      background: var(--magenta);
+      border-radius: 999px;
+      position: relative;
+      overflow: hidden;
+    }
+    .odds-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 62%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .odds-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .odds-labels .o-c { color: var(--cyan); }
+    .odds-labels .o-m { color: var(--magenta); }
+
+    .roast-teaser-bubble {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      position: relative;
+    }
+    .roast-teaser-bubble strong {
+      color: var(--amber);
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Live Roast Marquee Ticker */
+    .marquee-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(7, 9, 14, 0.9);
+      padding: 14px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .marquee-bar::before, .marquee-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-bar::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--bg) 0%, transparent 100%);
+    }
+    .marquee-bar::after {
+      right: 0;
+      background: linear-gradient(-90deg, var(--bg) 0%, transparent 100%);
+    }
+    .marquee-track {
+      display: inline-block;
+      animation: marqueeScroll 45s linear infinite;
+    }
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 40px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .marquee-item span.burn-icon {
+      color: var(--magenta);
+    }
+    .marquee-item strong {
+      color: var(--text);
+    }
+
+    /* Bento Feature Showcase Grid */
+    .features-section {
+      padding: 90px 0 60px;
+    }
+    .section-head {
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .section-head p {
+      color: var(--text-muted);
+      max-width: 500px;
+      font-size: 15px;
+    }
+
+    .features-bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+    .col-8 { grid-column: span 8; }
+    .col-4 { grid-column: span 4; }
+    .col-6 { grid-column: span 6; }
+    .col-12 { grid-column: span 12; }
+
+    @media (max-width: 900px) {
+      .col-8, .col-4, .col-6 { grid-column: span 12; }
+    }
+
+    .feature-card {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 280px;
+    }
+    .feature-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .feature-card h3 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Interactive Persona Soundboard Component */
+    .persona-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0;
+    }
+    .persona-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-body);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .persona-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+    .persona-btn.active {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: var(--amber);
+      color: var(--amber);
+      box-shadow: 0 0 15px var(--amber-glow);
+    }
+    .persona-quote-display {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 14px;
+      color: var(--text);
+      font-style: italic;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .persona-quote-display::before {
+      content: '“';
+      font-family: var(--font-display);
+      font-size: 38px;
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      color: var(--amber);
+      opacity: 0.5;
+    }
+
+    /* Radar / Telemetry Mock Widget inside Bento */
+    .radar-preview-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 180px;
+      position: relative;
+    }
+    .radar-polygon {
+      position: relative;
+      width: 140px;
+      height: 140px;
+    }
+    .radar-polygon svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Fresh Roasts Live Stream */
+    .live-stream-section {
+      padding: 40px 0 80px;
+    }
+    .stream-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .stream-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      transition: all 0.2s;
+    }
+    .stream-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .stream-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .stream-players {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-family: var(--font-display);
+    }
+    .stream-players .p1 { color: var(--cyan); }
+    .stream-players .p2 { color: var(--magenta); }
+    .stream-quote {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+    .stream-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .reaction-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .reaction-pill:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text);
+    }
+
+    /* Final CTA Banner */
+    .cta-banner {
+      background: radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.1) 0%, rgba(255, 42, 109, 0.1) 50%, rgba(13, 17, 28, 0.9) 100%);
+      border: 1px solid var(--border-hover);
+      border-radius: 24px;
+      padding: 60px 30px;
+      text-align: center;
+      margin: 40px 0 90px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner h2 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .cta-banner p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 520px;
+      margin: 0 auto 30px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 50px 0 30px;
+      background: #040609;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow-cyan"></div>
+  <div class="ambient-glow-magenta"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-logo">⚡</div>
+        <div class="brand-title">TRASH<span class="c">TALK</span><span class="m">.AI</span></div>
+      </a>
+
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        <span>ARENA V2.5 ONLINE // LATENCY 12MS</span>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="#" class="active">Live Battles</a></li>
+        <li><a href="#">Hall of Shame</a></li>
+        <li><a href="#">Roast Engine</a></li>
+        <li><a href="#">Platforms</a></li>
+      </ul>
+
+      <a href="#arena-bar" class="nav-cta">
+        <span>Instant Duel</span>
+        <span>⚡</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero container">
+    <div class="hero-badge">
+      <span class="spark">⚡</span>
+      <span>ALL TALK? BRING THE RECEIPTS</span>
+      <span>•</span>
+      <strong>ZERO SIGNUP</strong>
+    </div>
+
+    <h1 class="hero-title">
+      WHERE DEVELOPER EGOS<br>
+      <span class="grad-text">GET REFACTORED.</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Two handles enter. Canonical contest records & Git history scraped live.
+      AI tears down your commits with zero mercy.
+    </p>
+
+    <!-- Unified Input Bar -->
+    <div class="battle-bar-wrapper" id="arena-bar">
+      <div class="battle-bar">
+        <button class="platform-select-btn" id="platformDropdownBtn">
+          <span>⚡ Codeforces</span>
+          <span style="font-size: 10px; color: var(--text-dim)">▼</span>
+        </button>
+
+        <div class="input-col p1">
+          <span class="input-icon">①</span>
+          <input type="text" class="handle-input" id="inputP1" value="tourist" placeholder="Handle 1 (e.g. tourist)">
+        </div>
+
+        <div class="vs-core">VS</div>
+
+        <div class="input-col p2">
+          <span class="input-icon">②</span>
+          <input type="text" class="handle-input" id="inputP2" value="Petr" placeholder="Handle 2 (e.g. Petr)">
+        </div>
+
+        <button class="fight-btn" id="startBattleBtn">
+          <span>ROAST 'EM</span>
+          <span>🔥</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Shortcuts -->
+    <div class="quick-matches">
+      <span class="quick-label">POPULAR CLASHES:</span>
+      <button class="match-pill" onclick="setMatch('tourist', 'Petr')">
+        <span>tourist</span> <span class="vs-tag">VS</span> <span>Petr</span>
+      </button>
+      <button class="match-pill" onclick="setMatch('torvalds', 'antirez')">
+        <span>torvalds</span> <span class="vs-tag">VS</span> <span>antirez</span>
+      </button>
+      <button class="match-pill" onclick="setMatch('gaearon', 'yyx990803')">
+        <span>gaearon</span> <span class="vs-tag">VS</span> <span>yyx990803</span>
+      </button>
+      <button class="match-pill" onclick="setMatch('karpathy', 'geohot')">
+        <span>karpathy</span> <span class="vs-tag">VS</span> <span>geohot</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Interactive Live Match Stage -->
+  <section class="stage-section container">
+    <div class="stage-bento">
+      <!-- Fighter 1 Card -->
+      <div class="bento-card fighter-card cyan">
+        <div>
+          <div class="fighter-header">
+            <div class="fighter-avatar">T</div>
+            <div class="fighter-info">
+              <div class="fighter-rank">#1 GLOBAL // GRANDMASTER</div>
+              <h3 id="displayP1">tourist</h3>
+            </div>
+          </div>
+
+          <div class="fighter-stat-grid">
+            <div class="stat-tile">
+              <div class="stat-label">CF Rating</div>
+              <div class="stat-val" id="ratingP1">3979</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Hard Solved</div>
+              <div class="stat-val">2,840</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Speed Factor</div>
+              <div class="stat-val">9.8/10</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Contest Wins</div>
+              <div class="stat-val">114</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="power-bar-wrapper">
+          <div class="power-bar-header">
+            <span>COMBAT POTENCY</span>
+            <span style="color: var(--cyan)">98.2%</span>
+          </div>
+          <div class="power-track">
+            <div class="power-fill-cyan"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Combat Node -->
+      <div class="bento-card combat-stage-card">
+        <div>
+          <div class="round-tabs">
+            <span class="round-tab active" onclick="switchRound(1, this)">R1: SPEED</span>
+            <span class="round-tab" onclick="switchRound(2, this)">R2: HARDNESS</span>
+            <span class="round-tab" onclick="switchRound(3, this)">R3: STAMINA</span>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--amber); letter-spacing: 0.1em; text-transform: uppercase;">
+            ACTIVE MATCHUP // ROUND 01
+          </div>
+
+          <div class="clash-score">
+            <span class="sc-c" id="scoreP1">88</span>
+            <span class="sc-div">:</span>
+            <span class="sc-m" id="scoreP2">64</span>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+            ESTIMATED WIN PROBABILITY
+          </div>
+
+          <div class="odds-meter">
+            <div class="odds-track">
+              <div class="odds-fill" id="oddsBar"></div>
+            </div>
+            <div class="odds-labels">
+              <span class="o-c" id="oddsP1">62% tourist</span>
+              <span class="o-m" id="oddsP2">38% Petr</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roast-teaser-bubble">
+          <strong>⚡ AI REFEREE VERDICT:</strong>
+          <span id="teaserRoastText">"tourist's memory efficiency makes Petr's recursive DFS look like an unintentional memory leak running in a Kubernetes pod."</span>
+        </div>
+      </div>
+
+      <!-- Fighter 2 Card -->
+      <div class="bento-card fighter-card magenta">
+        <div>
+          <div class="fighter-header">
+            <div class="fighter-avatar">P</div>
+            <div class="fighter-info">
+              <div class="fighter-rank">#3 GLOBAL // LEGENDARY GM</div>
+              <h3 id="displayP2">Petr</h3>
+            </div>
+          </div>
+
+          <div class="fighter-stat-grid">
+            <div class="stat-tile">
+              <div class="stat-label">CF Rating</div>
+              <div class="stat-val" id="ratingP2">3058</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Hard Solved</div>
+              <div class="stat-val">2,190</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Speed Factor</div>
+              <div class="stat-val">8.4/10</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Contest Wins</div>
+              <div class="stat-val">62</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="power-bar-wrapper">
+          <div class="power-bar-header">
+            <span>COMBAT POTENCY</span>
+            <span style="color: var(--magenta)">78.6%</span>
+          </div>
+          <div class="power-track">
+            <div class="power-fill-magenta"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee Ticker -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        <span class="burn-icon">🔥</span>
+        <span>"tourist's 10-line segment tree just invalidated your entire 4-year CS degree"</span>
+      </div>
+      <div class="marquee-item">
+        <span class="burn-icon">💀</span>
+        <span>"Petr has been submitting at 3 AM since before you knew what a compiler was"</span>
+      </div>
+      <div class="marquee-item">
+        <span class="burn-icon">🤡</span>
+        <span>"Your O(N!) solution is running so slow the universe will reach heat death first"</span>
+      </div>
+      <div class="marquee-item">
+        <span class="burn-icon">⚡</span>
+        <span>"15 years of competitive programming and still using 1-indexed arrays like a caveman"</span>
+      </div>
+      <div class="marquee-item">
+        <span class="burn-icon">🔥</span>
+        <span>"tourist's 10-line segment tree just invalidated your entire 4-year CS degree"</span>
+      </div>
+      <div class="marquee-item">
+        <span class="burn-icon">💀</span>
+        <span>"Petr has been submitting at 3 AM since before you knew what a compiler was"</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bento Feature Showcase -->
+  <section class="features-section container">
+    <div class="section-head">
+      <div>
+        <span class="feature-tag">SYSTEM ARCHITECTURE</span>
+        <h2>ENGINEERED FOR DESTRUCTION</h2>
+      </div>
+      <p>
+        We don't do generic astrology. We scrape genuine telemetry and weaponize it into unassailable group-chat roasts.
+      </p>
+    </div>
+
+    <div class="features-bento">
+      <!-- Feature 1: The Receipt Parser -->
+      <div class="bento-card feature-card col-8">
+        <div>
+          <span class="feature-tag">01 // TELEMETRY INGESTION</span>
+          <h3>Canonical 5-Axis Receipts Engine</h3>
+          <p>
+            We parse every public submission, contest timeline, penalty distribution, and speed percentile. Every single claim is backed by real timestamps.
+          </p>
+        </div>
+        
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <div class="stat-tile">
+            <div class="stat-label">Rating Delta</div>
+            <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--emerald);">+921 Differential</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">WA Penalty Rate</div>
+            <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--magenta);">3.2% vs 14.8%</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Median Solve Time</div>
+            <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--cyan);">11m 42s AC</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: 5-Axis Radar Preview -->
+      <div class="bento-card feature-card col-4">
+        <div>
+          <span class="feature-tag">02 // COMBAT MAPPING</span>
+          <h3>5-Axis Skill Spider</h3>
+          <p>Rating, Consistency, Speed, Problem Diversity, and Contest Stamina mapped in real-time.</p>
+        </div>
+
+        <div class="radar-preview-box">
+          <div class="radar-polygon">
+            <svg viewBox="-80 -80 160 160">
+              <!-- Grid Circles -->
+              <circle cx="0" cy="0" r="25" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"></circle>
+              <circle cx="0" cy="0" r="50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"></circle>
+              <circle cx="0" cy="0" r="70" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"></circle>
+              <!-- Axes -->
+              <line x1="0" y1="0" x2="0" y2="-70" stroke="rgba(255,255,255,0.1)"></line>
+              <line x1="0" y1="0" x2="66" y2="-21" stroke="rgba(255,255,255,0.1)"></line>
+              <line x1="0" y1="0" x2="41" y2="57" stroke="rgba(255,255,255,0.1)"></line>
+              <line x1="0" y1="0" x2="-41" y2="57" stroke="rgba(255,255,255,0.1)"></line>
+              <line x1="0" y1="0" x2="-66" y2="-21" stroke="rgba(255,255,255,0.1)"></line>
+              <!-- Cyan Poly (Tourist) -->
+              <polygon points="0,-68 60,-18 36,48 -35,52 -58,-19" fill="rgba(0,242,254,0.2)" stroke="#00f2fe" stroke-width="2"></polygon>
+              <!-- Magenta Poly (Petr) -->
+              <polygon points="0,-52 42,-12 28,34 -25,38 -42,-14" fill="rgba(255,42,109,0.2)" stroke="#ff2a6d" stroke-width="2"></polygon>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: Persona Soundboard -->
+      <div class="bento-card feature-card col-6">
+        <div>
+          <span class="feature-tag">03 // AI COMMENTARY</span>
+          <h3>Multi-Persona Roast Soundboard</h3>
+          <p>Choose your referee tone. Every persona generates tailor-made burns tailored to their ego.</p>
+          
+          <div class="persona-pills">
+            <button class="persona-btn active" onclick="setPersona('savage', this)">💀 Savage Dev</button>
+            <button class="persona-btn" onclick="setPersona('vc', this)">💼 Ruthless VC</button>
+            <button class="persona-btn" onclick="setPersona('ufc', this)">🎙️ UFC Announcer</button>
+            <button class="persona-btn" onclick="setPersona('hype', this)">🔥 Toxic Hype-man</button>
+          </div>
+        </div>
+
+        <div class="persona-quote-display" id="personaQuoteText">
+          "Your repo structure looks like a junior dev tried to implement microservices on a single Raspberry Pi."
+        </div>
+      </div>
+
+      <!-- Feature 4: 1-Click Export Receipts -->
+      <div class="bento-card feature-card col-6">
+        <div>
+          <span class="feature-tag">04 // SOCIAL WEAPONIZATION</span>
+          <h3>Group Chat Ready Cards</h3>
+          <p>
+            Generate gorgeous, high-resolution cards in 3 ratios: OpenGraph Link (1200×630), IG/TikTok Story (9:16), and Discord Square (1:1).
+          </p>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; gap: 8px;">
+            <span style="background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px;">1200×630 OG</span>
+            <span style="background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px;">1080×1920 Story</span>
+            <span style="background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px;">1080×1080 Square</span>
+          </div>
+          <button style="background: var(--text); color: #000; border: none; padding: 6px 14px; border-radius: 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; cursor: pointer;">
+            Export PNG ↗
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Fresh Roasts Feed -->
+  <section class="live-stream-section container">
+    <div class="section-head">
+      <div>
+        <span class="feature-tag">LIVE FEED</span>
+        <h2>FRESH OUT OF THE ARENA</h2>
+      </div>
+      <p>Recent community matchups and crowd reactions in real time.</p>
+    </div>
+
+    <div class="stream-grid">
+      <!-- Card 1 -->
+      <div class="stream-card">
+        <div class="stream-top">
+          <span style="color: var(--cyan);">CODEFORCES</span>
+          <span style="color: var(--text-dim);">2m ago</span>
+        </div>
+        <div class="stream-players">
+          <span class="p1">neal</span> <span style="color: var(--text-dim); font-size: 11px;">VS</span> <span class="p2">Um_nik</span>
+        </div>
+        <div class="stream-quote">
+          "Um_nik's contest submission speed is legendary, but his code readability looks like raw x86 bytecode dumped from memory."
+        </div>
+        <div class="stream-actions">
+          <button class="reaction-pill" onclick="react(this)">💀 <span>1.4k</span></button>
+          <button class="reaction-pill" onclick="react(this)">🔥 <span>892</span></button>
+          <button class="reaction-pill" onclick="react(this)">🤡 <span>310</span></button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="stream-card">
+        <div class="stream-top">
+          <span style="color: var(--cyan);">CODEFORCES</span>
+          <span style="color: var(--text-dim);">8m ago</span>
+        </div>
+        <div class="stream-players">
+          <span class="p1">Benq</span> <span style="color: var(--text-dim); font-size: 11px;">VS</span> <span class="p2">Radewoosh</span>
+        </div>
+        <div class="stream-quote">
+          "Benq solved problem F before Radewoosh finished writing his standard 200-line template includes."
+        </div>
+        <div class="stream-actions">
+          <button class="reaction-pill" onclick="react(this)">💀 <span>2.1k</span></button>
+          <button class="reaction-pill" onclick="react(this)">🔥 <span>1.2k</span></button>
+          <button class="reaction-pill" onclick="react(this)">🤡 <span>440</span></button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="stream-card">
+        <div class="stream-top">
+          <span style="color: var(--magenta);">GITHUB</span>
+          <span style="color: var(--text-dim);">14m ago</span>
+        </div>
+        <div class="stream-players">
+          <span class="p1">torvalds</span> <span style="color: var(--text-dim); font-size: 11px;">VS</span> <span class="p2">antirez</span>
+        </div>
+        <div class="stream-quote">
+          "Linus doesn't even read your pull request. He senses the bad memory alignment through telepathy and writes a 4-page roast."
+        </div>
+        <div class="stream-actions">
+          <button class="reaction-pill" onclick="react(this)">💀 <span>5.8k</span></button>
+          <button class="reaction-pill" onclick="react(this)">🔥 <span>4.2k</span></button>
+          <button class="reaction-pill" onclick="react(this)">🤡 <span>890</span></button>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="stream-card">
+        <div class="stream-top">
+          <span style="color: var(--amber);">LEETCODE</span>
+          <span style="color: var(--text-dim);">19m ago</span>
+        </div>
+        <div class="stream-players">
+          <span class="p1">faang_grinder</span> <span style="color: var(--text-dim); font-size: 11px;">VS</span> <span class="p2">bootcamp_chad</span>
+        </div>
+        <div class="stream-quote">
+          "Memorized 800 LeetCode problems just to fail the behavioral round because you couldn't explain what Git rebase does."
+        </div>
+        <div class="stream-actions">
+          <button class="reaction-pill" onclick="react(this)">💀 <span>3.9k</span></button>
+          <button class="reaction-pill" onclick="react(this)">🔥 <span>2.8k</span></button>
+          <button class="reaction-pill" onclick="react(this)">🤡 <span>1.7k</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="container">
+    <div class="cta-banner">
+      <h2>READY TO HUMILIATE A COWORKER?</h2>
+      <p>No passwords. No signups. Drop two handles and let the AI do what you've been wanting to say in Slack for 6 months.</p>
+      <button class="fight-btn" style="margin: 0 auto;" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <span>ENTER THE ARENA</span>
+        <span>⚡</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div style="font-family: var(--font-display); font-weight: 700; color: var(--text); font-size: 16px;">
+          TRASH<span style="color: var(--cyan)">TALK</span><span style="color: var(--magenta)">.AI</span>
+        </div>
+        <div style="margin-top: 4px;">Competitive Developer Roast Arena. Built for receipts, not feelings.</div>
+      </div>
+
+      <ul class="footer-links">
+        <li><a href="#">Codeforces Live</a></li>
+        <li><a href="#">LeetCode Beta</a></li>
+        <li><a href="#">GitHub Ready</a></li>
+        <li><a href="#">API Docs</a></li>
+        <li><a href="#">Privacy</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // Interactive Quick Match Setter
+    function setMatch(p1, p2) {
+      document.getElementById('inputP1').value = p1;
+      document.getElementById('inputP2').value = p2;
+      document.getElementById('displayP1').innerText = p1;
+      document.getElementById('displayP2').innerText = p2;
+      
+      // Update ratings & mock values based on players
+      if (p1 === 'tourist') {
+        document.getElementById('ratingP1').innerText = '3979';
+        document.getElementById('scoreP1').innerText = '88';
+      } else if (p1 === 'torvalds') {
+        document.getElementById('ratingP1').innerText = '9999';
+        document.getElementById('scoreP1').innerText = '96';
+      } else {
+        document.getElementById('ratingP1').innerText = '2840';
+        document.getElementById('scoreP1').innerText = '79';
+      }
+
+      if (p2 === 'Petr') {
+        document.getElementById('ratingP2').innerText = '3058';
+        document.getElementById('scoreP2').innerText = '64';
+      } else if (p2 === 'antirez') {
+        document.getElementById('ratingP2').innerText = '8400';
+        document.getElementById('scoreP2').innerText = '82';
+      } else {
+        document.getElementById('ratingP2').innerText = '2410';
+        document.getElementById('scoreP2').innerText = '61';
+      }
+      
+      // Flash the battle button
+      const btn = document.getElementById('startBattleBtn');
+      btn.style.transform = 'scale(1.05)';
+      setTimeout(() => btn.style.transform = 'scale(1)', 200);
+    }
+
+    // Interactive Round Switcher in Stage
+    function switchRound(round, el) {
+      document.querySelectorAll('.round-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+
+      const s1 = document.getElementById('scoreP1');
+      const s2 = document.getElementById('scoreP2');
+      const oddsBar = document.getElementById('oddsBar');
+      const teaser = document.getElementById('teaserRoastText');
+
+      if (round === 1) {
+        s1.innerText = '88';
+        s2.innerText = '64';
+        oddsBar.style.width = '62%';
+        teaser.innerText = '"tourist\'s memory efficiency makes Petr\'s recursive DFS look like an unintentional memory leak running in a Kubernetes pod."';
+      } else if (round === 2) {
+        s1.innerText = '94';
+        s2.innerText = '71';
+        oddsBar.style.width = '70%';
+        teaser.innerText = '"On 3200-rated graph problems, tourist solves in 14 minutes what takes Petr 45 minutes and 2 Wrong Answer penalties."';
+      } else {
+        s1.innerText = '82';
+        s2.innerText = '79';
+        oddsBar.style.width = '53%';
+        teaser.innerText = '"Contest stamina is a bloodbath: both hold 10+ year endurance records, but Petr\'s 2008 streak has aged like uncompiled C++98."';
+      }
+    }
+
+    // Persona Soundboard Quotes
+    const personaQuotes = {
+      savage: '"Your repo structure looks like a junior dev tried to implement microservices on a single Raspberry Pi."',
+      vc: '"I\'m seeing a lot of commits, but zero defensible IP, negative unit economics on your cloud compute, and zero traction. I\'m out."',
+      ufc: '"LADIES AND GENTLEMEN! IN THE BLUE CORNER, WE HAVE A CODEFORCES MONSTER WHO EXECUTES WHILE YOU\'RE STILL READING THE PROBLEM DESCRIPTION!"',
+      hype: '"BRO HE REALLY THOUGHT HE COULD RUN WITH TOURIST WITH A 2400 RATING?! ABSOLUTELY SENT TO THE SHADOW REALM FAM!!"'
+    };
+
+    function setPersona(pKey, el) {
+      document.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      const box = document.getElementById('personaQuoteText');
+      box.style.opacity = '0';
+      setTimeout(() => {
+        box.innerText = personaQuotes[pKey];
+        box.style.opacity = '1';
+      }, 150);
+    }
+
+    // Interactive Reaction Counter
+    function react(btn) {
+      const span = btn.querySelector('span');
+      let val = parseFloat(span.innerText);
+      if (span.innerText.includes('k')) {
+        val = (val + 0.1).toFixed(1) + 'k';
+      } else {
+        val = parseInt(span.innerText) + 1;
+      }
+      span.innerText = val;
+      btn.style.borderColor = 'var(--magenta)';
+      btn.style.color = '#fff';
+      setTimeout(() => {
+        btn.style.borderColor = 'var(--border)';
+      }, 300);
+    }
+
+    // Button click to battle redirect
+    document.getElementById('startBattleBtn').addEventListener('click', () => {
+      window.location.href = 'battle.html';
+    });
+  </script>
+</body>
+</html>

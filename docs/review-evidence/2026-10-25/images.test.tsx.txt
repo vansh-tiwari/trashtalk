@@ -1,0 +1,41 @@
+import { describe,it,expect,vi } from 'vitest';
+import fs from 'node:fs';
+const capture=vi.hoisted(()=>({element:null as any}));
+vi.mock('next/og',async(importOriginal)=>{
+  const actual:any=await importOriginal();
+  return {...actual,ImageResponse:class extends actual.ImageResponse {
+    constructor(element:any,options:any){capture.element=element;super(element,options);}
+  }};
+});
+import {renderBattleCard} from '@/lib/share/card-renderer';
+import {PREPARED_TOURIST_VS_PETR} from '@/lib/demo/prepared-battles';
+import {generateLocalCommentary} from '@/lib/ai/local-roaster';
+function texts(node:any):string{
+  if(node===null||node===undefined||typeof node==='boolean')return '';
+  if(typeof node==='string'||typeof node==='number')return String(node);
+  if(Array.isArray(node))return node.map(texts).join(' ');
+  return texts(node.props?.children);
+}
+describe('Independent export checks',()=>{
+  for(const [format,width,height] of [['og',1200,630],['story',1080,1920],['square',1080,1080]] as const){
+    it(`renders actual ${format} dimensions`,async()=>{
+      const r=renderBattleCard(PREPARED_TOURIST_VS_PETR,format);
+      const b=Buffer.from(await r.arrayBuffer());
+      expect(b.subarray(0,8).toString('hex')).toBe('89504e470d0a1a0a');
+      expect(b.readUInt32BE(16)).toBe(width);expect(b.readUInt32BE(20)).toBe(height);
+      fs.writeFileSync(`/private/tmp/trashtalk-review2-${format}.png`,b);
+    });
+  }
+  it('does not announce a winner for insufficient evidence',async()=>{
+    const s=structuredClone(PREPARED_TOURIST_VS_PETR);
+    s.verdict.outcome='insufficient_data';s.verdict.winnerHandle=null;
+    const r=renderBattleCard(s,'og');await r.arrayBuffer();
+    expect(texts(capture.element)).not.toContain('WINNER: @UNDEFINED');
+    expect(texts(capture.element).toLowerCase()).toContain('insufficient');
+  });
+  it('local roaster does not crown @null for insufficient evidence',()=>{
+    const verdict={...PREPARED_TOURIST_VS_PETR.verdict,outcome:'insufficient_data' as const,winnerHandle:null};
+    const c=generateLocalCommentary({p1Evidence:{} as any,p2Evidence:{} as any,verdict,persona:'savage_dev'});
+    expect(c.punchline).not.toContain('@null');
+  });
+});
