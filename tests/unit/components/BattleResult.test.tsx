@@ -190,4 +190,41 @@ describe("BattleResult Component (Cool Social Result Hierarchy)", () => {
     expect(html).not.toContain(">GIT<");
     expect(html).toContain("TALE OF THE TAPE");
   });
+
+  it("renders RoastLanguageToggle when regional commentary and non-English region are present", () => {
+    const regionalSnapshot: BattleSnapshot = {
+      ...PREPARED_TOURIST_VS_PETR,
+      commentary: {
+        source: "local",
+        persona: "savage_dev",
+        headToHeadRoast: "El ganador barrió con el perdedor en el tablero.",
+        player1Roast: "Mucho código espagueti.",
+        player2Roast: "TLE en el caso 2.",
+        punchline: "Winner: @tourist. El perdedor sigue releyendo Two Sum.",
+        winnerHandle: "tourist",
+        promptVersion: "2.0.0",
+      },
+      englishCommentary: {
+        source: "local",
+        persona: "savage_dev",
+        headToHeadRoast: "Algorithmic masterclass.",
+        player1Roast: "Clean execution.",
+        player2Roast: "Stuck on brute force.",
+        punchline: "Winner: @tourist. The scoreboard would like a word.",
+        winnerHandle: "tourist",
+        promptVersion: "2.0.0",
+      },
+      regionInfo: {
+        countryCode: "MX",
+        languageCode: "es",
+        languageName: "Español",
+        toggleLabel: "ESPAÑOL",
+        isEnglishDefault: false,
+      },
+    };
+
+    const html = renderToStaticMarkup(<BattleResult snapshot={regionalSnapshot} />);
+    expect(html).toContain("ESPAÑOL");
+    expect(html).toContain("ENGLISH");
+  });
 });

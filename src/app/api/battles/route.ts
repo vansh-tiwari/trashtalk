@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
         u2,
         persona,
         platform,
+        headers: req.headers,
       });
 
       await defaultIdempotencyStore.complete(idempotencyKey, snapshot.id);

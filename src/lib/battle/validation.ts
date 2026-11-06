@@ -217,6 +217,27 @@ export const BattleSnapshotSchema = z.object({
     winnerHandle: z.string().nullable(),
     promptVersion: z.string(),
   }),
+  englishCommentary: z
+    .object({
+      source: z.enum(["ai", "local"]),
+      persona: PersonaEnum,
+      headToHeadRoast: z.string(),
+      player1Roast: z.string(),
+      player2Roast: z.string(),
+      punchline: z.string(),
+      winnerHandle: z.string().nullable(),
+      promptVersion: z.string(),
+    })
+    .optional(),
+  regionInfo: z
+    .object({
+      countryCode: z.string(),
+      languageCode: z.string(),
+      languageName: z.string(),
+      toggleLabel: z.string(),
+      isEnglishDefault: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 export function safeParseBattleSnapshot(data: unknown): BattleSnapshot | null {

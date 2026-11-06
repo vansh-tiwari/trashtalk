@@ -3,13 +3,16 @@ import { CodechefEvidence, GithubEvidence, LeetcodeEvidence, PlatformEvidence } 
 import { PROMPT_VERSION } from "./personas";
 import { CommentaryResult, RoastPersona } from "./schemas";
 import { generateGithubLocalRoast } from "./github-roaster";
+import { GlobalRegionInfo } from "./global-regions";
+import { generateRegionalLocalRoast } from "./regional-templates";
 
-interface LocalRoasterInput {
+export interface LocalRoasterInput {
   p1Evidence: PlatformEvidence;
   p2Evidence: PlatformEvidence;
   verdict: BattleVerdict;
   persona: RoastPersona;
   platform?: string;
+  regionInfo?: GlobalRegionInfo;
 }
 
 export function generateLocalCommentary({
@@ -18,7 +21,18 @@ export function generateLocalCommentary({
   verdict,
   persona,
   platform,
+  regionInfo,
 }: LocalRoasterInput): CommentaryResult {
+  if (regionInfo && !regionInfo.isEnglishDefault) {
+    return generateRegionalLocalRoast({
+      p1Evidence,
+      p2Evidence,
+      verdict,
+      persona,
+      platform,
+      regionInfo,
+    });
+  }
   const p1 = verdict.player1Score;
   const p2 = verdict.player2Score;
   const isDraw = verdict.outcome === "draw";

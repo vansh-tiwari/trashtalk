@@ -149,4 +149,41 @@ describe("BattleCardModel & CARD_DIMENSIONS", () => {
     expect(model.player1.handle).toBe("abcdefghijklmnopqrstuvwx");
     expect(model.player1.initials).toBe("AB");
   });
+
+  it("guarantees English roast is used for cards even when snapshot commentary is in a regional language", () => {
+    const regionalSnapshot: BattleSnapshot = {
+      ...PREPARED_TOURIST_VS_PETR,
+      commentary: {
+        source: "local",
+        persona: "savage_dev",
+        headToHeadRoast: "Bhai 400 Easy solves karke bhi hawa nikal gayi.",
+        player1Roast: "Mummy ke account se star karwaya tha.",
+        player2Roast: "Pretest 2 pe TLE kha liya.",
+        punchline: "Winner: @tourist. Loser ko bolo resume me 'Hardworking' likhna band kare.",
+        winnerHandle: "tourist",
+        promptVersion: "2.0.0",
+      },
+      englishCommentary: {
+        source: "local",
+        persona: "savage_dev",
+        headToHeadRoast: "Algorithmic masterclass.",
+        player1Roast: "Clean execution.",
+        player2Roast: "Stuck on brute force.",
+        punchline: "Winner: @tourist. The scoreboard would like a word.",
+        winnerHandle: "tourist",
+        promptVersion: "2.0.0",
+      },
+      regionInfo: {
+        countryCode: "IN",
+        languageCode: "hi",
+        languageName: "Hinglish",
+        toggleLabel: "HINGLISH",
+        isEnglishDefault: false,
+      },
+    };
+
+    const model = buildBattleCardModel(regionalSnapshot, "https://trashtalk.dev");
+    expect(model.copy.roastText).toBe("The scoreboard would like a word.");
+    expect(model.copy.roastText).not.toContain("Hardworking");
+  });
 });

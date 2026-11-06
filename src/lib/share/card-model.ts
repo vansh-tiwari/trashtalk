@@ -130,7 +130,11 @@ export function buildBattleCardModel(
   snapshot: BattleSnapshot,
   origin: string
 ): BattleCardModel {
-  const copy = buildBattleCopy(snapshot);
+  // Always use English commentary for exportable social cards to ensure global understandability
+  const cardSnapshot = snapshot.englishCommentary
+    ? { ...snapshot, commentary: snapshot.englishCommentary }
+    : snapshot;
+  const copy = buildBattleCopy(cardSnapshot);
   const platform = getPlatformConfig(snapshot.platform);
   const canonicalUrl = getCanonicalBattleUrl(origin, snapshot.id);
   const killerReceipt = computeKillerReceipt(snapshot);

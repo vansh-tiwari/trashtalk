@@ -4,6 +4,7 @@ import { LeetcodeEvidence, Platform, PlatformEvidence } from "../platforms/contr
 import { generateLocalCommentary } from "./local-roaster";
 import { PERSONA_DEFINITIONS, PROMPT_VERSION } from "./personas";
 import { CommentaryResult, CommentaryResultSchema, RoastPersona } from "./schemas";
+import { GlobalRegionInfo } from "./global-regions";
 
 export interface CommentaryRequest {
   p1Evidence: PlatformEvidence;
@@ -13,6 +14,7 @@ export interface CommentaryRequest {
   platform?: Platform;
   apiKey?: string;
   modelName?: string;
+  regionInfo?: GlobalRegionInfo;
 }
 
 export async function generateCommentary({
@@ -23,6 +25,7 @@ export async function generateCommentary({
   platform,
   apiKey,
   modelName,
+  regionInfo,
 }: CommentaryRequest): Promise<CommentaryResult> {
   const key = apiKey || process.env.GEMINI_API_KEY;
   const isLeetcode =
@@ -46,6 +49,7 @@ export async function generateCommentary({
       verdict,
       persona,
       platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+      regionInfo,
     });
   }
 
@@ -72,13 +76,28 @@ export async function generateCommentary({
       ? "Platform: CodeChef (focus on star ratings 1★-7★, divisions Div 1-4, Starters/Cook-Off/Lunchtime/Long Challenge, chef hats, and kitchen roasting puns)."
       : "Platform: Codeforces (focus on rating pedigree, contest peaks, algorithmic grit, and speed).";
 
+    const languageDirective =
+      regionInfo && !regionInfo.isEnglishDefault
+        ? `
+CRITICAL LANGUAGE & CULTURAL REQUIREMENT:
+- You MUST write all fields of the JSON in ${regionInfo.languageName} using native informal developer slang!
+- Cultural Guide: ${regionInfo.culturalPromptGuidance}
+- Punchline must also be in ${regionInfo.languageName}.
+`
+        : `
+CRITICAL TONE REQUIREMENT:
+- Razor-sharp Sarcastic Senior Dev English.
+- BANNED: Corporate praise like "respectable", "clean AC", "solid effort", "clear market fit".
+- Attack dev vanity: 0-star repos, Two-Sum memorization, commit padding, hardstuck cyan, editorial tab open.
+`;
+
     const compactPrompt = `
 Showdown Evidence:
 - ${platformFlavor}
 - Player 1: @${verdict.player1Score.handle} (Rating: ${verdict.player1Score.metrics.rating}, Peak: ${verdict.player1Score.metrics.maxRating}, Solved: ${verdict.player1Score.metrics.solvedCount})
 - Player 2: @${verdict.player2Score.handle} (Rating: ${verdict.player2Score.metrics.rating}, Peak: ${verdict.player2Score.metrics.maxRating}, Solved: ${verdict.player2Score.metrics.solvedCount})
 - LOCKED VERDICT: ${winnerText}. Margin: ${verdict.margin} pts. Reason: ${verdict.reasoning}
-
+${languageDirective}
 Task: Write a concise, humorous commentary matching your persona.
 Respond ONLY with a valid JSON object matching this schema:
 {
@@ -129,13 +148,27 @@ Do not wrap in markdown quotes. Return raw JSON.
 
       if (indicatesLoserVictory) {
         console.warn("AI generated prose contradicts deterministic verdict. Falling back to local commentary.");
-        return generateLocalCommentary({ p1Evidence, p2Evidence, verdict, persona });
+        return generateLocalCommentary({
+          p1Evidence,
+          p2Evidence,
+          verdict,
+          persona,
+          platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+          regionInfo,
+        });
       }
     } else if (isDraw) {
       const punchlineLower = (parsed.punchline || "").toLowerCase();
       if (punchlineLower.startsWith("winner:")) {
         console.warn("AI generated winner in a draw match. Falling back to local commentary.");
-        return generateLocalCommentary({ p1Evidence, p2Evidence, verdict, persona });
+        return generateLocalCommentary({
+          p1Evidence,
+          p2Evidence,
+          verdict,
+          persona,
+          platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+          regionInfo,
+        });
       }
     }
 
@@ -161,6 +194,13 @@ Do not wrap in markdown quotes. Return raw JSON.
   } catch (err) {
     // Graceful, automatic fallback to local template roaster on timeout, rate-limit, or schema error
     console.warn("AI commentary unavailable or failed, falling back to local roaster:", err);
-    return generateLocalCommentary({ p1Evidence, p2Evidence, verdict, persona });
+    return generateLocalCommentary({
+      p1Evidence,
+      p2Evidence,
+      verdict,
+      persona,
+      platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+      regionInfo,
+    });
   }
 }

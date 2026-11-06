@@ -8,6 +8,7 @@ import { buildBattleCopy } from "@/lib/battle/copy";
 import MatchHeader from "@/components/battle/MatchHeader";
 import Scoreboard from "@/components/battle/Scoreboard";
 import RoastMoment from "@/components/battle/RoastMoment";
+import RoastLanguageToggle from "@/components/battle/RoastLanguageToggle";
 import MetricComparison from "@/components/battle/MetricComparison";
 import RadarComparison from "@/components/battle/RadarComparison";
 import ScoreBreakdown from "@/components/battle/ScoreBreakdown";
@@ -31,8 +32,25 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
   const [selectedFormat, setSelectedFormat] = useState<CardFormat>("og");
   const [copied, setCopied] = useState(false);
 
-  const vm = toBattleViewModel(snapshot);
-  const copy = buildBattleCopy(snapshot);
+  const hasRegionalRoast = Boolean(
+    snapshot.englishCommentary &&
+    snapshot.regionInfo &&
+    !snapshot.regionInfo.isEnglishDefault
+  );
+  const [languageMode, setLanguageMode] = useState<"regional" | "english">("regional");
+
+  const activeCommentary =
+    languageMode === "english" && snapshot.englishCommentary
+      ? snapshot.englishCommentary
+      : snapshot.commentary;
+
+  const activeSnapshot = {
+    ...snapshot,
+    commentary: activeCommentary,
+  };
+
+  const vm = toBattleViewModel(activeSnapshot);
+  const copy = buildBattleCopy(activeSnapshot);
   const persona: RoastPersona = (snapshot.persona as RoastPersona) || "savage_dev";
 
   const isP1Winner =
@@ -124,6 +142,15 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
           rematchHref={rematchHref}
           p1Handle={snapshot.player1.handle}
           p2Handle={snapshot.player2.handle}
+          languageToggle={
+            hasRegionalRoast ? (
+              <RoastLanguageToggle
+                languageMode={languageMode}
+                onToggle={setLanguageMode}
+                regionalLabel={snapshot.regionInfo?.toggleLabel || "REGIONAL"}
+              />
+            ) : undefined
+          }
         />
 
         {/* Head to Head (5 Axes Paired Bars + Radar Chart) */}

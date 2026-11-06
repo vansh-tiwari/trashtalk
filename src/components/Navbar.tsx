@@ -10,7 +10,7 @@ export default function Navbar() {
   const isBattlePage = pathname?.startsWith("/battle/");
 
   return (
-    <header className="w-full bg-[#15171B] text-[#F4F4F4] border-b border-white/10 select-none">
+    <header className="sticky top-0 z-50 w-full bg-[#15171B]/95 backdrop-blur-md text-[#F4F4F4] border-b border-white/10 select-none">
       <div className="w">
         <div className="top" style={{ borderBottom: "none" }}>
           <Link href="/" className="lg text-[#F4F4F4] no-underline hover:opacity-90 transition-opacity">

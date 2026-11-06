@@ -1,5 +1,6 @@
 import { generateCommentary } from "../ai/roast-engine";
 import { RoastPersona } from "../ai/schemas";
+import { resolveGlobalRegion, DEFAULT_GLOBAL_REGION } from "../ai/global-regions";
 import { fetchCodeforcesEvidence } from "../platforms/codeforces";
 import { fetchLeetcodeEvidence } from "../platforms/leetcode";
 import { fetchCodechefEvidence } from "../platforms/codechef";
@@ -32,6 +33,8 @@ export interface ExecuteBattleParams {
   platform?: Platform;
   store?: BattleStore;
   apiKey?: string;
+  headers?: Headers | Record<string, string | string[] | undefined> | null;
+  regionOverride?: string | null;
 }
 
 export async function executeBattleFlow({
@@ -41,6 +44,8 @@ export async function executeBattleFlow({
   platform = "codeforces",
   store = defaultBattleStore,
   apiKey,
+  headers,
+  regionOverride,
 }: ExecuteBattleParams): Promise<BattleSnapshot> {
   const cleanU1 = u1.trim();
   const cleanU2 = u2.trim();
@@ -49,6 +54,7 @@ export async function executeBattleFlow({
     throw new Error("Both Player 1 and Player 2 usernames are required.");
   }
 
+  const regionInfo = resolveGlobalRegion(headers, regionOverride);
   const uuidSuffix = crypto.randomUUID().slice(0, 12);
 
   if (platform === "leetcode") {
@@ -87,7 +93,20 @@ export async function executeBattleFlow({
       persona,
       platform: "leetcode",
       apiKey,
+      regionInfo,
     });
+
+    const englishCommentary = regionInfo.isEnglishDefault
+      ? commentary
+      : await generateCommentary({
+          p1Evidence: e1,
+          p2Evidence: e2,
+          verdict,
+          persona,
+          platform: "leetcode",
+          apiKey,
+          regionInfo: DEFAULT_GLOBAL_REGION,
+        });
 
     const canonicalId = `lc-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
@@ -122,6 +141,14 @@ export async function executeBattleFlow({
       verdict,
       overlap,
       commentary,
+      englishCommentary,
+      regionInfo: {
+        countryCode: regionInfo.countryCode,
+        languageCode: regionInfo.languageCode,
+        languageName: regionInfo.languageName,
+        toggleLabel: regionInfo.toggleLabel,
+        isEnglishDefault: regionInfo.isEnglishDefault,
+      },
     };
 
     await store.create(snapshot);
@@ -162,7 +189,20 @@ export async function executeBattleFlow({
       persona,
       platform: "codechef",
       apiKey,
+      regionInfo,
     });
+
+    const englishCommentary = regionInfo.isEnglishDefault
+      ? commentary
+      : await generateCommentary({
+          p1Evidence: e1,
+          p2Evidence: e2,
+          verdict,
+          persona,
+          platform: "codechef",
+          apiKey,
+          regionInfo: DEFAULT_GLOBAL_REGION,
+        });
 
     const canonicalId = `cc-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
@@ -203,6 +243,14 @@ export async function executeBattleFlow({
       verdict,
       overlap,
       commentary,
+      englishCommentary,
+      regionInfo: {
+        countryCode: regionInfo.countryCode,
+        languageCode: regionInfo.languageCode,
+        languageName: regionInfo.languageName,
+        toggleLabel: regionInfo.toggleLabel,
+        isEnglishDefault: regionInfo.isEnglishDefault,
+      },
     };
 
     await store.create(snapshot);
@@ -238,7 +286,20 @@ export async function executeBattleFlow({
       persona,
       platform: "github",
       apiKey,
+      regionInfo,
     });
+
+    const englishCommentary = regionInfo.isEnglishDefault
+      ? commentary
+      : await generateCommentary({
+          p1Evidence: e1,
+          p2Evidence: e2,
+          verdict,
+          persona,
+          platform: "github",
+          apiKey,
+          regionInfo: DEFAULT_GLOBAL_REGION,
+        });
 
     const canonicalId = `gh-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
@@ -306,6 +367,14 @@ export async function executeBattleFlow({
       verdict,
       overlap,
       commentary,
+      englishCommentary,
+      regionInfo: {
+        countryCode: regionInfo.countryCode,
+        languageCode: regionInfo.languageCode,
+        languageName: regionInfo.languageName,
+        toggleLabel: regionInfo.toggleLabel,
+        isEnglishDefault: regionInfo.isEnglishDefault,
+      },
       githubMetadata,
     };
 
@@ -343,7 +412,20 @@ export async function executeBattleFlow({
     persona,
     platform: "codeforces",
     apiKey,
+    regionInfo,
   });
+
+  const englishCommentary = regionInfo.isEnglishDefault
+    ? commentary
+    : await generateCommentary({
+        p1Evidence: e1,
+        p2Evidence: e2,
+        verdict,
+        persona,
+        platform: "codeforces",
+        apiKey,
+        regionInfo: DEFAULT_GLOBAL_REGION,
+      });
 
   const canonicalId = `cf-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
@@ -382,6 +464,14 @@ export async function executeBattleFlow({
     verdict,
     overlap,
     commentary,
+    englishCommentary,
+    regionInfo: {
+      countryCode: regionInfo.countryCode,
+      languageCode: regionInfo.languageCode,
+      languageName: regionInfo.languageName,
+      toggleLabel: regionInfo.toggleLabel,
+      isEnglishDefault: regionInfo.isEnglishDefault,
+    },
   };
 
   await store.create(snapshot);

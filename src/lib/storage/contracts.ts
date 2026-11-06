@@ -51,6 +51,14 @@ export interface BattleSnapshot {
   verdict: BattleVerdict;
   overlap: OverlapResult;
   commentary: CommentaryResult;
+  englishCommentary?: CommentaryResult;
+  regionInfo?: {
+    countryCode: string;
+    languageCode: string;
+    languageName: string;
+    toggleLabel: string;
+    isEnglishDefault?: boolean;
+  };
   isSample?: boolean;
   coverageNote?: string;
   githubMetadata?: GithubBattleMetadata;

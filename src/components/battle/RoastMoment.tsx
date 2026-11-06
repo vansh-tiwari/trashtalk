@@ -14,6 +14,7 @@ export interface RoastMomentProps {
   p2Handle?: string;
   p1Roast?: string;
   p2Roast?: string;
+  languageToggle?: React.ReactNode;
   onPersonaChange?: (persona: RoastPersona) => void;
 }
 
@@ -32,6 +33,7 @@ export default function RoastMoment({
   p2Handle = "player2",
   p1Roast,
   p2Roast,
+  languageToggle,
   onPersonaChange,
 }: RoastMomentProps) {
   const isDraw =
@@ -56,12 +58,13 @@ export default function RoastMoment({
   return (
     <section className="sec2 select-none" aria-label="The Roast" style={{ paddingTop: "48px" }}>
       {/* Section Header */}
-      <div className="sh2">
+      <div className="sh2 flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-baseline gap-3">
           <h2>The roast</h2>
           <span className="mono text-xs opacity-75">{copy.outcomeLine}</span>
         </div>
         <span className="sr-only">savage dev</span>
+        {languageToggle && <div>{languageToggle}</div>}
       </div>
 
       {/* Unified Single-Statement Roast */}
