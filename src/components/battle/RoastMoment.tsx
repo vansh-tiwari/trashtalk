@@ -12,6 +12,7 @@ export interface RoastMomentProps {
   sceneKey?: string;
   p1Handle?: string;
   p2Handle?: string;
+  headToHeadRoast?: string;
   p1Roast?: string;
   p2Roast?: string;
   languageToggle?: React.ReactNode;
@@ -31,6 +32,7 @@ export default function RoastMoment({
   rematchHref,
   p1Handle = "player1",
   p2Handle = "player2",
+  headToHeadRoast,
   p1Roast,
   p2Roast,
   languageToggle,
@@ -45,14 +47,14 @@ export default function RoastMoment({
   const winnerHandle = isP2Winner ? p2Handle : p1Handle;
   const loserHandle = isP2Winner ? p1Handle : p2Handle;
 
-  // Single or two-statement roast from winner perspective roasting loser
+  // Single punchline from winner perspective roasting loser
   let unifiedRoast = "";
   if (isDraw) {
     unifiedRoast = copy.roastText || "Same score. Twice the ego.";
   } else if (copy.roastText.toLowerCase().includes(`@${loserHandle.toLowerCase()}`)) {
     unifiedRoast = copy.roastText;
   } else {
-    unifiedRoast = `@${loserHandle}, legendary run, but the receipts on the scoreboard tell their own story. ${copy.roastText}`;
+    unifiedRoast = `@${loserHandle} — ${copy.roastText}`;
   }
 
   return (
@@ -104,6 +106,14 @@ export default function RoastMoment({
             })}
           </span>
         </p>
+
+        {headToHeadRoast && (
+          <div className="mt-5 pt-4 border-t border-ink/15">
+            <p className="text-ink/85 text-base sm:text-lg italic font-sans leading-relaxed">
+              &ldquo;{headToHeadRoast}&rdquo;
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Rematch Action (.rx) */}

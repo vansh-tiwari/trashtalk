@@ -81,10 +81,14 @@ describe("buildBattleCopy", () => {
     expect(copy.coverageNote).toBe("insufficient evidence");
   });
 
-  it("builds outcomeLine and coverageNote for partial recorded win", () => {
+  it("builds outcomeLine and coverageNote for partial recorded win with empty punchline fallback", () => {
     const partialSnap: BattleSnapshot = {
       ...baseDemo,
       id: "cf-partial-test",
+      commentary: {
+        ...baseDemo.commentary,
+        punchline: "",
+      },
       overlap: {
         ...baseDemo.overlap,
         isDefinitive: false,
@@ -99,6 +103,28 @@ describe("buildBattleCopy", () => {
 
     expect(copy.outcomeLine).toBe("recorded result: @tourist");
     expect(copy.roastText).toBe("Big claims. Limited receipts.");
+    expect(copy.scoreLabel).toBe("Recorded score");
+    expect(copy.coverageNote).toBe("partial history");
+  });
+
+  it("builds outcomeLine and preserves punchline for partial recorded win when present", () => {
+    const partialSnap: BattleSnapshot = {
+      ...baseDemo,
+      id: "cf-partial-test-punchline",
+      overlap: {
+        ...baseDemo.overlap,
+        isDefinitive: false,
+      },
+      verdict: {
+        ...baseDemo.verdict,
+        outcome: "win",
+        scoringVersion: "2.0.0",
+      },
+    };
+    const copy = buildBattleCopy(partialSnap);
+
+    expect(copy.outcomeLine).toBe("recorded result: @tourist");
+    expect(copy.roastText).toBe("The scoreboard crowns the all-time peak champion.");
     expect(copy.scoreLabel).toBe("Recorded score");
     expect(copy.coverageNote).toBe("partial history");
   });

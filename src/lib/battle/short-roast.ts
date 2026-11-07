@@ -16,17 +16,21 @@ export function selectShortRoast(snapshot: BattleSnapshot): string {
     return "Not enough receipts. No victory lap.";
   }
 
-  if (vm.evidenceState === "partial" || vm.evidenceState === "unknown") {
+  // Historical v1 snapshots with unknown evidence have no trusted receipts
+  if (vm.evidenceState === "unknown") {
     return "Big claims. Limited receipts.";
   }
 
-  // Supported win
+  // Supported win or modern recorded result
   const winner = vm.winnerHandle;
   const loser =
     vm.loserHandle ||
     (winner === snapshot.player1.handle ? snapshot.player2.handle : snapshot.player1.handle);
 
-  const fallbackRoast = `@${loser}, the scoreboard would like a word.`;
+  const fallbackRoast =
+    vm.evidenceState === "partial"
+      ? "Big claims. Limited receipts."
+      : `@${loser}, the scoreboard would like a word.`;
 
   const punchline = snapshot.commentary?.punchline;
   if (!punchline || typeof punchline !== "string") {

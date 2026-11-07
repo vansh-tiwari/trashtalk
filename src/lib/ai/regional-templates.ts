@@ -173,7 +173,7 @@ export function generateRegionalLocalRoast({
         headToHeadRoast = `Bhai 400 Easy solves karke bhi interviewer ke saamne 'recursion' sunte hi hawa nikal gayi. @${winner} ne optimal complexity se AC nikala jabki @${loser} abhi bhi discussion tab me hints dhoondh raha hai.`;
         player1Roast = `@${p1.handle}: GitHub pe 52 repos hain aur ek bhi star nahi hai, wo bhi mummy ke account se karwaya tha.`;
         player2Roast = `@${p2.handle}: Div 2 Problem A speedrun karke khush ho raha tha, Problem B dekhte hi TCS Ninja ka form yaad aa gaya.`;
-        punchline = `Winner: @${winner}. Loser ko bolo resume me 'Hardworking' likhna band kare.`;
+        punchline = `Winner: @${winner}. @${loser} ko bolo resume me 'Hardworking' likhna band kare.`;
       }
     }
   }

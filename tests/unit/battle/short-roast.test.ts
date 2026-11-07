@@ -164,9 +164,13 @@ describe("selectShortRoast", () => {
     expect(roast).toBe("Not enough receipts. No victory lap.");
   });
 
-  it("uses exact fallback for partial/unknown recorded win: 'Big claims. Limited receipts.'", () => {
+  it("uses exact fallback for partial/unknown recorded win when punchline is empty: 'Big claims. Limited receipts.'", () => {
     const partialSnap: BattleSnapshot = {
       ...baseDemo,
+      commentary: {
+        ...baseDemo.commentary,
+        punchline: "",
+      },
       overlap: {
         ...baseDemo.overlap,
         isDefinitive: false,
@@ -180,6 +184,23 @@ describe("selectShortRoast", () => {
 
     const roast = selectShortRoast(partialSnap);
     expect(roast).toBe("Big claims. Limited receipts.");
+  });
+
+  it("uses verified punchline for partial matches when punchline is present and valid", () => {
+    const partialWithRoast: BattleSnapshot = {
+      ...baseDemo,
+      overlap: {
+        ...baseDemo.overlap,
+        isDefinitive: false,
+      },
+      commentary: {
+        ...baseDemo.commentary,
+        punchline: "Winner: @tourist. Clean AC on all test cases.",
+      },
+    };
+
+    const roast = selectShortRoast(partialWithRoast);
+    expect(roast).toBe("Clean AC on all test cases.");
   });
 
   it("never mutates the input snapshot", () => {

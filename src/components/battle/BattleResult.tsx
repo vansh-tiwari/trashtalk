@@ -142,6 +142,7 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
           rematchHref={rematchHref}
           p1Handle={snapshot.player1.handle}
           p2Handle={snapshot.player2.handle}
+          headToHeadRoast={activeCommentary?.headToHeadRoast}
           languageToggle={
             hasRegionalRoast ? (
               <RoastLanguageToggle

@@ -36,7 +36,8 @@ export function generateLocalCommentary({
   const p1 = verdict.player1Score;
   const p2 = verdict.player2Score;
   const isDraw = verdict.outcome === "draw";
-  const winner = verdict.winnerHandle;
+  const winner = verdict.winnerHandle || p1.handle;
+  const loser = winner === p1.handle ? p2.handle : p1.handle;
   const isLeetcode =
     platform === "leetcode" ||
     p1Evidence.platform === "leetcode" ||
@@ -128,7 +129,7 @@ export function generateLocalCommentary({
           : `@${winner} takes the match. While @${p1.handle} and @${p2.handle} both know their two pointers, @${winner}'s problem depth left the competition stuck on an O(N^2) brute force.`;
         punchline = isDraw
           ? "DRAW: Both survived the test cases. Neither earned the interview offer."
-          : `Winner: @${winner}. Clean AC on all test cases with optimal time complexity.`;
+          : `Winner: @${winner}. 400 Easy solves didn't save @${loser} from an O(N^2) reality check.`;
         break;
     }
   } else if (isCodechef) {
@@ -192,7 +193,7 @@ export function generateLocalCommentary({
           : `Cooked to a crisp: @${winner} served @${loser} an absolute masterclass. While both showed up with chef hats, @${winner}'s rating ceiling (${peak}) left the competition washing dishes in Div 4.`;
         punchline = isDraw
           ? "DRAW: Both survived the kitchen timer. Neither earned a Michelin star."
-          : `Winner: @${winner}. Clean AC on all test cases; order up!`;
+          : `Winner: @${winner}. Served @${loser} a masterclass; dish duty awaits in Div 4.`;
         break;
     }
   } else {
@@ -240,7 +241,7 @@ export function generateLocalCommentary({
         player2Roast = `@${p2.handle}: ${p2.metrics.solvedCount} solves across the board, but still getting hacked during the last five minutes of the round.`;
         punchline = isDraw
           ? "DRAW: Both survived system tests. Neither earned the rating bump."
-          : `Winner: @${winner}. Clean AC on all test cases; no hacks required.`;
+          : `Winner: @${winner}. @${loser} got hacked in the final minutes while @${winner} took the podium.`;
         break;
     }
   }
