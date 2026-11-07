@@ -133,30 +133,48 @@ export function generateRegionalLocalRoast({
   // 7. Tanglish (Tamil Tech / Chennai)
   else if (lang === "ta") {
     if (isDraw) {
-      headToHeadRoast = `Dead heat match @${p1.handle} and @${p2.handle} rendu perum ${p1.total} points-la deadlock. Rendu perum ore test case-la TLE vaangitaanga.`;
+      headToHeadRoast = platform === "codechef"
+        ? `CodeChef kitchen-la @${p1.handle} and @${p2.handle} rendu perum ${p1.total} points-la katti pudichu dead heat! Rendu perum Starters problem B-la TLE vaangitaanga.`
+        : `Dead heat match @${p1.handle} and @${p2.handle} rendu perum ${p1.total} points-la deadlock. Rendu perum ore test case-la TLE vaangitaanga.`;
       player1Roast = `@${p1.handle}: College-la 6 arrear vechitu, grandmaster aaga poraaram namma thalaivar.`;
       player2Roast = `@${p2.handle}: OMR Tidel Park-la 9 hours AC room-la ukkandhu Todo app clone panradhu thappa vera onnum theriyaadhu.`;
       punchline = "DRAW: Vadivelu maadhiri rendu perum maatikitaanga. Yaarukkum offer illa.";
     } else {
-      headToHeadRoast = `OMR Tidel Park-la 9 hours AC room-la ukkandhu Todo app clone pannitu, LinkedIn-la '10x Architect' nu status podradhu. @${winner} optimal runtime-la AC panna, @${loser} Vadivelu maadhiri muzhikkaradhu!`;
-      player1Roast = `@${p1.handle}: GitHub profile full-ah star graveyard. 40 repo-la oru star kooda illa.`;
-      player2Roast = `@${p2.handle}: Machi, un code-ah paathu compiler-eh kannur vitturuchu da! Div 2 pretest 2-ve thaanda mudila.`;
-      punchline = `Winner: @${winner}. @${loser}-ukku oru cutting chai vaangi kuduthu, coding-ah vittutu vere business paakka sollunga.`;
+      if (platform === "codechef") {
+        headToHeadRoast = `@${winner} CodeChef kitchen-la @${loser}-ah nalla deep fry pannitaaru! 2-star badge vechitu 7-star scene podraaru @${loser}, aana @${winner} Division 3-la mass AC panni trophy eduthutaaru!`;
+        player1Roast = `@${p1.handle}: Chef hat potrukaaru, aana binary search kooda execute aagala.`;
+        player2Roast = `@${p2.handle}: Long challenge-la 10 naal ukkandhum penalty points-la rating drop aayiduchu!`;
+        punchline = `Winner: @${winner}. @${loser}-ukku oru cutting chai vaangi kuduthu kitchen-ah vittu veliya anupunga.`;
+      } else {
+        headToHeadRoast = `OMR Tidel Park-la 9 hours AC room-la ukkandhu Todo app clone pannitu, LinkedIn-la '10x Architect' nu status podradhu. @${winner} optimal runtime-la AC panna, @${loser} Vadivelu maadhiri muzhikkaradhu!`;
+        player1Roast = `@${p1.handle}: GitHub profile full-ah star graveyard. 40 repo-la oru star kooda illa.`;
+        player2Roast = `@${p2.handle}: Machi, un code-ah paathu compiler-eh kannur vitturuchu da! Div 2 pretest 2-ve thaanda mudila.`;
+        punchline = `Winner: @${winner}. @${loser}-ukku oru cutting chai vaangi kuduthu, coding-ah vittutu vere business paakka sollunga.`;
+      }
     }
   }
 
   // 8. Hinglish (North/West India)
   else if (lang === "hi") {
     if (isDraw) {
-      headToHeadRoast = `Dono candidates @${p1.handle} aur @${p2.handle} ${p1.total} pts pe deadlock ho gaye. Dono ne same O(N^2) brute force likha aur pretest 2 pe TLE kha liya.`;
+      headToHeadRoast = platform === "codechef"
+        ? `CodeChef kitchen me @${p1.handle} aur @${p2.handle} dono ${p1.total} pts pe barabar cook ho gaye. Starters contest me dono ne same brute force lagaya aur dono ka soufflé Div 3 me phat gaya.`
+        : `Dono candidates @${p1.handle} aur @${p2.handle} ${p1.total} pts pe deadlock ho gaye. Dono ne same O(N^2) brute force likha aur pretest 2 pe TLE kha liya.`;
       player1Roast = `@${p1.handle}: Resume me 'passionate problem solver' likha hai, par recursion dekh ke paseene chhoot gaye.`;
       player2Roast = `@${p2.handle}: 3 LPA ka package, 50 LPA ka attitude. Test cases fail hone pe system ko dosh de raha hai.`;
       punchline = "DRAW: Dono survive to kar gaye, par offer letter kisi ko nahi mila.";
     } else {
-      headToHeadRoast = `Bhai 400 Easy solves karke bhi interviewer ke saamne 'recursion' sunte hi hawa nikal gayi. @${winner} ne optimal complexity se AC nikala jabki @${loser} abhi bhi discussion tab me hints dhoondh raha hai.`;
-      player1Roast = `@${p1.handle}: GitHub pe 52 repos hain aur ek bhi star nahi hai, wo bhi mummy ke account se karwaya tha.`;
-      player2Roast = `@${p2.handle}: Div 2 Problem A speedrun karke khush ho raha tha, Problem B dekhte hi TCS Ninja ka form yaad aa gaya.`;
-      punchline = `Winner: @${winner}. Loser ko bolo resume me 'Hardworking' likhna band kare.`;
+      if (platform === "codechef") {
+        headToHeadRoast = `@${winner} ne @${loser} ko CodeChef ki kitchen me seedha fry kar diya! 2-star badge leke 7-star ka roab jhad rahe the, par @${winner} ne optimal AC se dish serve kar di jabki @${loser} Div 4 me abhi bhi bartan dho raha hai.`;
+        player1Roast = `@${p1.handle}: Chef hat pehen ke baithe hain par Problem B ka binary search lagate hi roti jal gayi.`;
+        player2Roast = `@${p2.handle}: Long challenge me 10 din laga ke bhi penalty points se rating minus me chali gayi.`;
+        punchline = `Winner: @${winner}. @${loser} ko bolo CodeChef chhod ke Maggie banane pe dhyan de.`;
+      } else {
+        headToHeadRoast = `Bhai 400 Easy solves karke bhi interviewer ke saamne 'recursion' sunte hi hawa nikal gayi. @${winner} ne optimal complexity se AC nikala jabki @${loser} abhi bhi discussion tab me hints dhoondh raha hai.`;
+        player1Roast = `@${p1.handle}: GitHub pe 52 repos hain aur ek bhi star nahi hai, wo bhi mummy ke account se karwaya tha.`;
+        player2Roast = `@${p2.handle}: Div 2 Problem A speedrun karke khush ho raha tha, Problem B dekhte hi TCS Ninja ka form yaad aa gaya.`;
+        punchline = `Winner: @${winner}. Loser ko bolo resume me 'Hardworking' likhna band kare.`;
+      }
     }
   }
 

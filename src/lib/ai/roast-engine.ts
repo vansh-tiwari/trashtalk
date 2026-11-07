@@ -54,17 +54,17 @@ export async function generateCommentary({
   }
 
   const personaDef = PERSONA_DEFINITIONS[persona] || PERSONA_DEFINITIONS.savage_dev;
-  const modelToUse = modelName || process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const configuredModel = modelName || process.env.GEMINI_MODEL;
+  const candidateModels = Array.from(
+    new Set(
+      [configuredModel, "gemini-3.8-flash", "gemini-2.0-flash", "gemini-1.5-flash"].filter(
+        (m): m is string => Boolean(m)
+      )
+    )
+  );
 
   try {
     const genAI = new GoogleGenerativeAI(key);
-    const model = genAI.getGenerativeModel({
-      model: modelToUse,
-      generationConfig: {
-        maxOutputTokens: 350,
-        temperature: 0.7,
-      },
-    });
 
     const isDraw = verdict.outcome === "draw";
     const winnerText = isDraw ? "DRAW (No winner)" : `Winner: @${verdict.winnerHandle}`;
@@ -109,23 +109,50 @@ Respond ONLY with a valid JSON object matching this schema:
 Do not wrap in markdown quotes. Return raw JSON.
 `;
 
-    // 3-second timeout deadline with clean timer disposal to ensure responsive user experience
-    let timeoutId: NodeJS.Timeout | undefined;
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      timeoutId = setTimeout(() => reject(new Error("AI generation timeout exceeded 3000ms")), 3000);
-    });
-
-    const callPromise = model.generateContent([
-      { text: personaDef.systemInstruction },
-      { text: compactPrompt },
-    ]);
-
     let text = "";
-    try {
-      const result = await Promise.race([callPromise, timeoutPromise]);
-      text = result.response.text().trim();
-    } finally {
-      if (timeoutId) clearTimeout(timeoutId);
+    let lastError: unknown = null;
+
+    for (const candidateModel of candidateModels) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: candidateModel,
+          generationConfig: {
+            maxOutputTokens: 350,
+            temperature: 0.7,
+          },
+        });
+
+        // 3.5-second timeout deadline with clean timer disposal to ensure responsive user experience
+        let timeoutId: NodeJS.Timeout | undefined;
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error(`AI generation timeout on ${candidateModel}`)), 3500);
+        });
+
+        const callPromise = model.generateContent([
+          { text: personaDef.systemInstruction },
+          { text: compactPrompt },
+        ]);
+
+        try {
+          const result = await Promise.race([callPromise, timeoutPromise]);
+          text = result.response.text().trim();
+          if (text) break;
+        } finally {
+          if (timeoutId) clearTimeout(timeoutId);
+        }
+      } catch (err: unknown) {
+        lastError = err;
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes("404") || msg.includes("not found") || msg.includes("no longer available")) {
+          console.warn(`Model ${candidateModel} unavailable (${msg}). Trying next fallback model...`);
+          continue;
+        }
+        throw err;
+      }
+    }
+
+    if (!text) {
+      throw lastError || new Error("Failed to generate content with available Gemini models");
     }
 
     const cleanJson = text.replace(/^```json\s*/, "").replace(/\s*```$/, "");

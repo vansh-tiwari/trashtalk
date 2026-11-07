@@ -183,14 +183,14 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
           />
         </section>
 
-        {/* Form Guide (Activity Heatmap + Rating Chart / Stack Summary) */}
+        {/* Form Guide (Activity Heatmap + Tale of the Tape / Stack Summary) */}
         <section className="sec2 select-none" aria-label="Form Guide" style={{ paddingTop: "48px" }}>
           <div className="sh2">
             <h2>Form guide</h2>
             <span>
               {snapshot.platform === "github"
                 ? "Shipping activity · Tech stack"
-                : "Last 10 contests · 26 weeks"}
+                : "Head-to-head stats · Activity"}
             </span>
           </div>
           <div className="g2b">
@@ -202,6 +202,13 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
                 p2Handle={snapshot.player2.handle}
                 p1Rating={snapshot.player1.score.metrics?.rating}
                 p2Rating={snapshot.player2.score.metrics?.rating}
+                p1PeakRating={snapshot.player1.score.metrics?.maxRating}
+                p2PeakRating={snapshot.player2.score.metrics?.maxRating}
+                p1Rank={snapshot.player1.rank}
+                p2Rank={snapshot.player2.rank}
+                p1Solves={snapshot.player1.score.metrics?.solvedCount}
+                p2Solves={snapshot.player2.score.metrics?.solvedCount}
+                platform={snapshot.platform}
               />
             )}
             <ActivityHeatmap
@@ -220,18 +227,27 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
         {snapshot.platform === "github" ? (
           <GithubShowcase snapshot={snapshot} />
         ) : (
-          <ProblemExplorer
-            overlap={snapshot.overlap}
-            p1Handle={snapshot.player1.handle}
-            p2Handle={snapshot.player2.handle}
-            platform={snapshot.platform}
-          />
-        )}
-
-        {snapshot.coverageNote && (
-          <div className="py-4 text-center text-xs text-muted">
-            <span>{snapshot.coverageNote}</span>
-          </div>
+          Boolean(
+            snapshot.overlap &&
+            ((snapshot.overlap.totalUnionCount ?? 0) > 0 ||
+              (snapshot.overlap.common?.length ?? 0) > 0 ||
+              (snapshot.overlap.player1Exclusive?.length ?? 0) > 0 ||
+              (snapshot.overlap.player2Exclusive?.length ?? 0) > 0)
+          ) && (
+            <>
+              <ProblemExplorer
+                overlap={snapshot.overlap}
+                p1Handle={snapshot.player1.handle}
+                p2Handle={snapshot.player2.handle}
+                platform={snapshot.platform}
+              />
+              {snapshot.coverageNote && (
+                <div className="py-4 text-center text-xs text-muted">
+                  <span>{snapshot.coverageNote}</span>
+                </div>
+              )}
+            </>
+          )
         )}
       </div>
 

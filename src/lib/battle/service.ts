@@ -38,6 +38,8 @@ export interface ExecuteBattleParams {
   headers?: Headers | Record<string, string | string[] | undefined> | null;
   regionOverride?: string | null;
   requestedId?: string;
+  clientTimezone?: string | null;
+  clientLang?: string | null;
 }
 
 export async function executeBattleFlow({
@@ -50,6 +52,8 @@ export async function executeBattleFlow({
   headers,
   regionOverride,
   requestedId,
+  clientTimezone,
+  clientLang,
 }: ExecuteBattleParams): Promise<BattleSnapshot> {
   const cleanU1 = u1.trim();
   const cleanU2 = u2.trim();
@@ -58,7 +62,7 @@ export async function executeBattleFlow({
     throw new Error("Both Player 1 and Player 2 usernames are required.");
   }
 
-  const regionInfo = resolveGlobalRegion(headers, regionOverride);
+  const regionInfo = resolveGlobalRegion(headers, regionOverride, clientTimezone, clientLang);
   const uuidSuffix = crypto.randomUUID().slice(0, 12);
 
   if (platform === "leetcode") {

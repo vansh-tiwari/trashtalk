@@ -215,4 +215,21 @@ describe("ProblemExplorer Component (Truthful Overlap & Cool Social Explorer)", 
     );
     expect(htmlSix).toContain("find a problem by name");
   });
+
+  it("returns null / empty markup when there is zero problem overlap data", () => {
+    const emptyOverlap: OverlapResult = {
+      common: [],
+      player1Exclusive: [],
+      player2Exclusive: [],
+      dnaPercentage: null,
+      isDefinitive: false,
+      totalUnionCount: 0,
+      commonCount: 0,
+    };
+
+    const htmlEmpty = renderToStaticMarkup(
+      <ProblemExplorer overlap={emptyOverlap} p1Handle="vanshtiwari" p2Handle="roch" />
+    );
+    expect(htmlEmpty).toBe("");
+  });
 });

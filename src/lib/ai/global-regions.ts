@@ -19,7 +19,9 @@ export const DEFAULT_GLOBAL_REGION: GlobalRegionInfo = {
 
 export function resolveGlobalRegion(
   headers?: Headers | Record<string, string | string[] | undefined> | null,
-  overrideLang?: string | null
+  overrideLang?: string | null,
+  clientTimezone?: string | null,
+  clientLang?: string | null
 ): GlobalRegionInfo {
   if (overrideLang) {
     const norm = overrideLang.toLowerCase().trim();
@@ -136,6 +138,27 @@ export function resolveGlobalRegion(
     }
   }
 
+  if (!country && clientTimezone) {
+    const tz = clientTimezone.toLowerCase();
+    if (tz.includes("kolkata") || tz.includes("calcutta")) {
+      country = "IN";
+    } else if (tz.includes("mexico") || tz.includes("cancun") || tz.includes("monterrey")) {
+      country = "MX";
+    } else if (tz.includes("paris")) {
+      country = "FR";
+    } else if (tz.includes("berlin")) {
+      country = "DE";
+    } else if (tz.includes("sao_paulo")) {
+      country = "BR";
+    } else if (tz.includes("moscow")) {
+      country = "RU";
+    }
+  }
+
+  if (clientLang) {
+    acceptLanguage = acceptLanguage ? `${clientLang},${acceptLanguage}` : clientLang;
+  }
+
   const cUpper = country.toUpperCase().trim();
   const rUpper = region.toUpperCase().trim();
   const lLower = acceptLanguage.toLowerCase();
@@ -234,8 +257,8 @@ export function resolveGlobalRegion(
     };
   }
 
-  // 7. India (Region-sensitive)
-  if (cUpper === "IN") {
+  // 7. India (Region-sensitive or en-IN / hi-IN browser language or Asia/Kolkata timezone)
+  if (cUpper === "IN" || lLower.includes("en-in") || lLower.includes("hi-in") || lLower.startsWith("hi")) {
     // Telangana / Andhra Pradesh
     if (rUpper === "TG" || rUpper === "AP" || lLower.includes("te")) {
       return {

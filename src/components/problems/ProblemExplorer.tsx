@@ -87,6 +87,11 @@ export default function ProblemExplorer({
     commonCount > 0 ||
     p1ExclusiveCount > 0 ||
     p2ExclusiveCount > 0;
+
+  if (!hasProblems) {
+    return null;
+  }
+
   const shouldShowDnaBar = hasProblems;
 
   const p1Label =

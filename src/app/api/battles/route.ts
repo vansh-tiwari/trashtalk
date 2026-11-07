@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { u1, u2, persona, platform } = parseResult.data;
+    const { u1, u2, persona, platform, clientTimezone, clientLang } = parseResult.data;
 
     // Compute request digest and identify idempotency key
     const canonicalPayload = JSON.stringify({
@@ -75,6 +75,8 @@ export async function POST(req: NextRequest) {
         persona,
         platform,
         headers: req.headers,
+        clientTimezone,
+        clientLang,
       });
 
       await defaultIdempotencyStore.complete(idempotencyKey, snapshot.id);

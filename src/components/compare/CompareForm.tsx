@@ -132,6 +132,12 @@ export default function CompareForm({
     setStatus("submitting");
     setErrorMessage(null);
 
+    const clientTimezone =
+      typeof Intl !== "undefined" && Intl.DateTimeFormat
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : undefined;
+    const clientLang = typeof navigator !== "undefined" ? navigator.language : undefined;
+
     const idempotencyKey =
       typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
@@ -144,7 +150,11 @@ export default function CompareForm({
           "Content-Type": "application/json",
           "idempotency-key": idempotencyKey,
         },
-        body: JSON.stringify(prepared),
+        body: JSON.stringify({
+          ...prepared,
+          clientTimezone,
+          clientLang,
+        }),
       });
 
       const data = await res.json().catch(() => null);
