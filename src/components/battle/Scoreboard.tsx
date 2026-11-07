@@ -3,6 +3,7 @@
 import React from "react";
 import type { BattleViewModel } from "@/lib/battle/presentation";
 import OdometerValue from "@/components/motion/OdometerValue";
+import { formatNum } from "@/lib/battle/formatters";
 
 export interface ScoreboardProps {
   vm: BattleViewModel;
@@ -47,10 +48,10 @@ export default function Scoreboard({ vm }: ScoreboardProps) {
             <span className="split-rating">
               {vm.p1.rating ? (
                 <>
-                  <strong className="split-rating-num">{vm.p1.rating.toLocaleString()}</strong>
+                  <strong className="split-rating-num">{formatNum(vm.p1.rating)}</strong>
                   <span className="split-rating-lbl"> rating</span>
                   {vm.p1.maxRating && vm.p1.maxRating !== vm.p1.rating ? (
-                    <span className="split-rating-peak"> (peak {vm.p1.maxRating.toLocaleString()})</span>
+                    <span className="split-rating-peak"> (peak {formatNum(vm.p1.maxRating)})</span>
                   ) : null}
                 </>
               ) : (
@@ -131,10 +132,10 @@ export default function Scoreboard({ vm }: ScoreboardProps) {
             <span className="split-rating">
               {vm.p2.rating ? (
                 <>
-                  <strong className="split-rating-num">{vm.p2.rating.toLocaleString()}</strong>
+                  <strong className="split-rating-num">{formatNum(vm.p2.rating)}</strong>
                   <span className="split-rating-lbl"> rating</span>
                   {vm.p2.maxRating && vm.p2.maxRating !== vm.p2.rating ? (
-                    <span className="split-rating-peak"> (peak {vm.p2.maxRating.toLocaleString()})</span>
+                    <span className="split-rating-peak"> (peak {formatNum(vm.p2.maxRating)})</span>
                   ) : null}
                 </>
               ) : (

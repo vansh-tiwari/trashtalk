@@ -2,6 +2,7 @@ import type { BattleSnapshot } from "../storage/contracts";
 import { type BattleCopy, buildBattleCopy } from "../battle/copy";
 import { type PlatformConfig, getPlatformConfig } from "../platforms/registry";
 import { type CardFormat, getCanonicalBattleUrl } from "./client";
+import { formatNum } from "../battle/formatters";
 
 export type { CardFormat } from "./client";
 
@@ -59,10 +60,10 @@ export function computeKillerReceipt(snapshot: BattleSnapshot): KillerReceipt | 
     if (starDiff > 0) {
       return {
         label: "TOTAL STARS",
-        p1Formatted: `${r1.toLocaleString()} stars`,
-        p2Formatted: `${r2.toLocaleString()} stars`,
+        p1Formatted: `${formatNum(r1)} stars`,
+        p2Formatted: `${formatNum(r2)} stars`,
         leaderHandle: r1 > r2 ? snapshot.player1.handle : snapshot.player2.handle,
-        delta: `+${starDiff.toLocaleString()} STARS`,
+        delta: `+${formatNum(starDiff)} STARS`,
       };
     }
 
@@ -72,10 +73,10 @@ export function computeKillerReceipt(snapshot: BattleSnapshot): KillerReceipt | 
     if (repoDiff > 0) {
       return {
         label: "ORIGINAL REPOS",
-        p1Formatted: `${repos1.toLocaleString()} repos`,
-        p2Formatted: `${repos2.toLocaleString()} repos`,
+        p1Formatted: `${formatNum(repos1)} repos`,
+        p2Formatted: `${formatNum(repos2)} repos`,
         leaderHandle: repos1 > repos2 ? snapshot.player1.handle : snapshot.player2.handle,
-        delta: `+${repoDiff.toLocaleString()} REPOS`,
+        delta: `+${formatNum(repoDiff)} REPOS`,
       };
     }
   }
@@ -87,10 +88,10 @@ export function computeKillerReceipt(snapshot: BattleSnapshot): KillerReceipt | 
     if (peakDiff > 0) {
       return {
         label: "PEAK RATING",
-        p1Formatted: `${peak1.toLocaleString()} PEAK`,
-        p2Formatted: `${peak2.toLocaleString()} PEAK`,
+        p1Formatted: `${formatNum(peak1)} PEAK`,
+        p2Formatted: `${formatNum(peak2)} PEAK`,
         leaderHandle: peak1 > peak2 ? snapshot.player1.handle : snapshot.player2.handle,
-        delta: `+${peakDiff.toLocaleString()} PEAK`,
+        delta: `+${formatNum(peakDiff)} PEAK`,
       };
     }
 
@@ -100,10 +101,10 @@ export function computeKillerReceipt(snapshot: BattleSnapshot): KillerReceipt | 
     if (solveDiff > 0) {
       return {
         label: "TOTAL SOLVES",
-        p1Formatted: `${solves1.toLocaleString()} solves`,
-        p2Formatted: `${solves2.toLocaleString()} solves`,
+        p1Formatted: `${formatNum(solves1)} solves`,
+        p2Formatted: `${formatNum(solves2)} solves`,
         leaderHandle: solves1 > solves2 ? snapshot.player1.handle : snapshot.player2.handle,
-        delta: `+${solveDiff.toLocaleString()} SOLVES`,
+        delta: `+${formatNum(solveDiff)} SOLVES`,
       };
     }
   }

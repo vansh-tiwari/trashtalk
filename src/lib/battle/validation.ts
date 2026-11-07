@@ -1,5 +1,63 @@
 import { z } from "zod";
 import { BattleSnapshot } from "../storage/contracts";
+import type { Platform } from "../platforms/contracts";
+
+/**
+ * Parses a canonical battle ID into platform and user handles.
+ * Supports:
+ * - Codeforces: cf-tourist-vs-petr-a1b2c3d4e5f6 -> { platform: "codeforces", u1: "tourist", u2: "petr" }
+ * - LeetCode: lc-neetcode-vs-larryny-a1b2c3d4e5f6 -> { platform: "leetcode", u1: "neetcode", u2: "larryny" }
+ * - CodeChef: cc-akulsareen-vs-gennady-a1b2c3d4e5f6 -> { platform: "codechef", u1: "akulsareen", u2: "gennady" }
+ * - GitHub: gh-torvalds-vs-antirez-a1b2c3d4e5f6 -> { platform: "github", u1: "torvalds", u2: "antirez" }
+ */
+export function parseBattleIdDetails(id: string): {
+  platform: Platform;
+  u1: string;
+  u2: string;
+} | null {
+  if (typeof id !== "string") return null;
+
+  const prefixes: Record<string, Platform> = {
+    "cf-": "codeforces",
+    "lc-": "leetcode",
+    "cc-": "codechef",
+    "gh-": "github",
+  };
+
+  let platform: Platform | null = null;
+  let body = "";
+
+  for (const [prefix, p] of Object.entries(prefixes)) {
+    if (id.startsWith(prefix)) {
+      platform = p;
+      body = id.slice(prefix.length);
+      break;
+    }
+  }
+
+  if (!platform || !body.includes("-vs-")) {
+    return null;
+  }
+
+  const parts = body.split("-vs-");
+  if (parts.length !== 2) return null;
+
+  const u1 = parts[0].trim();
+  const p2AndSuffix = parts[1].trim();
+
+  // Strip known trailing suffix patterns:
+  // 1) -legendary
+  // 2) -[0-9a-f]{12}
+  // 3) -[0-9a-f]{8}-[0-9a-f]{3}
+  // 4) -[0-9a-f]{6,16}
+  const suffixPattern = /-(legendary|[0-9a-f]{12}|[0-9a-f]{8}-[0-9a-f]{3}|[0-9a-f]{6,16})$/i;
+  const match = p2AndSuffix.match(suffixPattern);
+  const u2 = match ? p2AndSuffix.slice(0, match.index).trim() : p2AndSuffix;
+
+  if (!u1 || !u2) return null;
+
+  return { platform, u1, u2 };
+}
 
 /**
  * Safe Battle ID Grammar:

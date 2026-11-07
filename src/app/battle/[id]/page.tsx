@@ -1,9 +1,18 @@
 import React from "react";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { getBattleSnapshot } from "@/lib/battle/service";
 import BattleResult from "@/components/battle/BattleResult";
 import { buildBattleCopy } from "@/lib/battle/copy";
+
+async function getSafeHeaders(): Promise<Headers | null> {
+  try {
+    return await headers();
+  } catch {
+    return null;
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -11,7 +20,8 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const snapshot = await getBattleSnapshot(id);
+  const headerList = await getSafeHeaders();
+  const snapshot = await getBattleSnapshot(id, undefined, headerList);
 
   if (!snapshot) {
     return {
@@ -54,7 +64,8 @@ export default async function SavedBattlePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const snapshot = await getBattleSnapshot(id);
+  const headerList = await getSafeHeaders();
+  const snapshot = await getBattleSnapshot(id, undefined, headerList);
 
   if (!snapshot) {
     notFound();

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { formatNum } from "@/lib/battle/formatters";
 
 export interface ActivityHeatmapProps {
   p1Handle: string;
@@ -56,7 +57,7 @@ export default function ActivityHeatmap({
       <h3>Activity</h3>
       {/* Player 1 Heatmap */}
       <div className="mono" style={{ margin: "10px 0 6px", color: "var(--ink)" }}>
-        {p1Handle} · {p1TotalSolves.toLocaleString()} {unitLabel}
+        {p1Handle} · {formatNum(p1TotalSolves)} {unitLabel}
       </div>
       <div className="overflow-x-auto max-w-full pb-1">
         <div
@@ -77,7 +78,7 @@ export default function ActivityHeatmap({
 
       {/* Player 2 Heatmap */}
       <div className="mono" style={{ margin: "16px 0 6px", color: "var(--ord)" }}>
-        {p2Handle} · {p2TotalSolves.toLocaleString()} {unitLabel}
+        {p2Handle} · {formatNum(p2TotalSolves)} {unitLabel}
       </div>
       <div className="overflow-x-auto max-w-full pb-1">
         <div

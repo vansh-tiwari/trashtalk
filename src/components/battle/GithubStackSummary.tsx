@@ -3,6 +3,7 @@
 import React from "react";
 import type { BattleSnapshot } from "@/lib/storage/contracts";
 import { GitFork, MapPin, Building, Calendar, Code } from "lucide-react";
+import { formatNum } from "@/lib/battle/formatters";
 
 export interface GithubStackSummaryProps {
   snapshot: BattleSnapshot;
@@ -57,7 +58,7 @@ export default function GithubStackSummary({ snapshot }: GithubStackSummaryProps
           )}
           {p1Meta?.totalForks !== undefined && p1Meta.totalForks > 0 && (
             <span className="flex items-center gap-1">
-              <GitFork className="w-3 h-3" /> {p1Meta.totalForks.toLocaleString()} forks
+              <GitFork className="w-3 h-3" /> {formatNum(p1Meta.totalForks)} forks
             </span>
           )}
         </div>
@@ -115,7 +116,7 @@ export default function GithubStackSummary({ snapshot }: GithubStackSummaryProps
           )}
           {p2Meta?.totalForks !== undefined && p2Meta.totalForks > 0 && (
             <span className="flex items-center gap-1">
-              <GitFork className="w-3 h-3" /> {p2Meta.totalForks.toLocaleString()} forks
+              <GitFork className="w-3 h-3" /> {formatNum(p2Meta.totalForks)} forks
             </span>
           )}
         </div>

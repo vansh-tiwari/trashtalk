@@ -371,6 +371,98 @@ export class FileIdempotencyStore implements IdempotencyStore {
   }
 }
 
+export class UpstashBattleStore implements BattleStore {
+  private url: string;
+  private token: string;
+  private memoryCache = new BoundedCache<string, BattleSnapshot>(200);
+
+  constructor(url: string, token: string) {
+    this.url = url.replace(/\/$/, "");
+    this.token = token;
+    this.memoryCache.set(PREPARED_TOURIST_VS_PETR.id, structuredClone(PREPARED_TOURIST_VS_PETR));
+  }
+
+  async get(id: string): Promise<BattleSnapshot | null> {
+    let safeId: string;
+    try {
+      safeId = parseBattleId(id);
+    } catch {
+      return null;
+    }
+
+    const cached = this.memoryCache.get(safeId);
+    if (cached) return structuredClone(cached);
+
+    try {
+      const res = await fetch(`${this.url}/get/battles:${encodeURIComponent(safeId)}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+        cache: "no-store",
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data || !data.result) return null;
+      const parsed = typeof data.result === "string" ? JSON.parse(data.result) : data.result;
+      const validated = safeParseBattleSnapshot(parsed);
+      if (validated) {
+        this.memoryCache.set(safeId, structuredClone(validated));
+        return structuredClone(validated);
+      }
+    } catch {
+      // quiet fallback
+    }
+
+    return null;
+  }
+
+  async create(snapshot: BattleSnapshot): Promise<void> {
+    const safeId = parseBattleId(snapshot.id);
+    const validated = safeParseBattleSnapshot(snapshot);
+    if (!validated) {
+      throw new Error(`Invalid BattleSnapshot data for ID: ${snapshot.id}`);
+    }
+
+    this.memoryCache.set(safeId, structuredClone(validated));
+
+    try {
+      await fetch(`${this.url}/set/battles:${encodeURIComponent(safeId)}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(JSON.stringify(validated)),
+        cache: "no-store",
+      });
+    } catch {
+      // quiet fallback
+    }
+  }
+
+  async save(snapshot: BattleSnapshot): Promise<void> {
+    return this.create(snapshot);
+  }
+
+  async has(id: string): Promise<boolean> {
+    const snap = await this.get(id);
+    return snap !== null;
+  }
+
+  async listRecent(limit = 6): Promise<BattleSnapshot[]> {
+    return [];
+  }
+}
+
+export function createDefaultBattleStore(): BattleStore {
+  const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (kvUrl && kvToken) {
+    return new UpstashBattleStore(kvUrl, kvToken);
+  }
+
+  return new FileBattleStore();
+}
+
 export const memoryBattleStore = new MemoryBattleStore();
-export const defaultBattleStore: BattleStore = new FileBattleStore();
+export const defaultBattleStore: BattleStore = createDefaultBattleStore();
 export const defaultIdempotencyStore: IdempotencyStore = new FileIdempotencyStore();

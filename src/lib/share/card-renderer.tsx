@@ -8,6 +8,7 @@ import {
   buildBattleCardModel,
 } from "./card-model";
 import { getCardFonts } from "./fonts";
+import { formatNum } from "../battle/formatters";
 
 import { BRAND_COLORS } from "../platforms/visual-tokens";
 
@@ -43,26 +44,26 @@ function getCardPlayerSubtitle(
     const followers = githubMeta?.followers;
     const stars = githubMeta?.totalStars ?? rating;
     if (followers !== undefined && stars !== undefined) {
-      return `${followers.toLocaleString()} followers · ${stars.toLocaleString()} stars`;
+      return `${formatNum(followers)} followers · ${formatNum(stars)} stars`;
     }
     if (rating !== undefined && rating > 0) {
-      return `${safeRank} · ${rating.toLocaleString()} stars`;
+      return `${safeRank} · ${formatNum(rating)} stars`;
     }
     if (solved !== undefined && solved > 0) {
-      return `${safeRank} · ${solved.toLocaleString()} repos`;
+      return `${safeRank} · ${formatNum(solved)} repos`;
     }
     return safeRank;
   }
 
   if (rating !== undefined && rating > 0) {
     if (peak && peak > rating) {
-      return `${safeRank} · ${rating.toLocaleString()} (peak ${peak.toLocaleString()})`;
+      return `${safeRank} · ${formatNum(rating)} (peak ${formatNum(peak)})`;
     }
-    return `${safeRank} · ${rating.toLocaleString()} rating`;
+    return `${safeRank} · ${formatNum(rating)} rating`;
   }
 
   if (solved !== undefined && solved > 0) {
-    return `${safeRank} · ${solved.toLocaleString()} solved`;
+    return `${safeRank} · ${formatNum(solved)} solved`;
   }
 
   return safeRank;
@@ -76,16 +77,16 @@ function getCardMiniReceipts(snapshot: BattleSnapshot): Array<{ label: string; p
 
   if (isGithub) {
     return [
-      { label: "TOTAL STARS", p1: `${(m1.rating || 0).toLocaleString()} stars`, p2: `${(m2.rating || 0).toLocaleString()} stars` },
+      { label: "TOTAL STARS", p1: `${formatNum(m1.rating || 0)} stars`, p2: `${formatNum(m2.rating || 0)} stars` },
       { label: "ORIGINAL REPOS", p1: `${m1.solvedCount || 0}`, p2: `${m2.solvedCount || 0}` },
       { label: "SHIPPING (90D)", p1: `${m1.recentAcceptedCount || 0}`, p2: `${m2.recentAcceptedCount || 0}` },
     ];
   }
 
   return [
-    { label: "PEAK RATING", p1: `${(m1.maxRating || 0).toLocaleString()}`, p2: `${(m2.maxRating || 0).toLocaleString()}` },
-    { label: "UNIQUE SOLVES", p1: `${(m1.solvedCount || 0).toLocaleString()}`, p2: `${(m2.solvedCount || 0).toLocaleString()}` },
-    { label: "CURRENT RATING", p1: `${(m1.rating || 0).toLocaleString()}`, p2: `${(m2.rating || 0).toLocaleString()}` },
+    { label: "PEAK RATING", p1: `${formatNum(m1.maxRating || 0)}`, p2: `${formatNum(m2.maxRating || 0)}` },
+    { label: "UNIQUE SOLVES", p1: `${formatNum(m1.solvedCount || 0)}`, p2: `${formatNum(m2.solvedCount || 0)}` },
+    { label: "CURRENT RATING", p1: `${formatNum(m1.rating || 0)}`, p2: `${formatNum(m2.rating || 0)}` },
   ];
 }
 

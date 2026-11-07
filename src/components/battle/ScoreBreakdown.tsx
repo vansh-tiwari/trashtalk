@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import type { PlayerScore } from "@/lib/battle/types";
+import { formatNum } from "@/lib/battle/formatters";
 import { ChevronDown, ChevronUp, Scale, Zap } from "lucide-react";
 
 export interface ScoreBreakdownProps {
@@ -39,7 +40,7 @@ const AXIS_CONFIGS: AxisConfig[] = [
     },
     metricLabel: (s, platform) => {
       if (platform?.toLowerCase() === "github") {
-        return `${s.metrics?.rating?.toLocaleString() ?? 0} stars`;
+        return `${formatNum(s.metrics?.rating ?? 0)} stars`;
       }
       return `Depth rated solves`;
     },
@@ -58,9 +59,9 @@ const AXIS_CONFIGS: AxisConfig[] = [
     },
     metricLabel: (s, platform) => {
       if (platform?.toLowerCase() === "github") {
-        return `${s.metrics?.recentAcceptedCount?.toLocaleString() ?? 0} events`;
+        return `${formatNum(s.metrics?.recentAcceptedCount ?? 0)} events`;
       }
-      return `Peak: ${s.metrics?.maxRating?.toLocaleString() ?? "—"}`;
+      return `Peak: ${s.metrics?.maxRating !== undefined ? formatNum(s.metrics.maxRating) : "—"}`;
     },
   },
   {
@@ -77,9 +78,9 @@ const AXIS_CONFIGS: AxisConfig[] = [
     },
     metricLabel: (s, platform) => {
       if (platform?.toLowerCase() === "github") {
-        return `${s.metrics?.solvedCount?.toLocaleString() ?? 0} repos`;
+        return `${formatNum(s.metrics?.solvedCount ?? 0)} repos`;
       }
-      return `${s.metrics?.solvedCount?.toLocaleString() ?? 0} solves`;
+      return `${formatNum(s.metrics?.solvedCount ?? 0)} solves`;
     },
   },
   {
@@ -97,9 +98,9 @@ const AXIS_CONFIGS: AxisConfig[] = [
     metricLabel: (s, platform) => {
       if (platform?.toLowerCase() === "github") {
         const followers = s.axes.recentVelocity >= 100 ? 150 : Math.round(s.axes.recentVelocity * 1.5);
-        return `${followers.toLocaleString()} followers`;
+        return `${formatNum(followers)} followers`;
       }
-      return `${s.metrics?.recentAcceptedCount?.toLocaleString() ?? 0} recent`;
+      return `${formatNum(s.metrics?.recentAcceptedCount ?? 0)} recent`;
     },
   },
   {
@@ -151,9 +152,11 @@ export default function ScoreBreakdown({
     p1Sum += pts1;
     p2Sum += pts2;
     const diff = Number((pts1 - pts2).toFixed(2));
+    const axisLabel = typeof cfg.label === "function" ? cfg.label(platform) : cfg.label;
 
     return {
       cfg,
+      axisLabel,
       v1,
       v2,
       pts1,
@@ -217,12 +220,12 @@ export default function ScoreBreakdown({
                 </tr>
               </thead>
               <tbody className="divide-y divide-rule/70 font-mono">
-                {rows.map(({ cfg, v1, v2, pts1, pts2, diff }) => (
+                {rows.map(({ cfg, axisLabel, v1, v2, pts1, pts2, diff }) => (
                   <tr key={cfg.key} className="hover:bg-canvas/40 transition-colors">
                     {/* Axis and Description */}
                     <td className="py-2.5 px-2">
                       <div className="font-bold text-ink flex items-center gap-1.5">
-                        <span>{typeof cfg.label === "function" ? cfg.label(platform) : cfg.label}</span>
+                        <span>{axisLabel}</span>
                         <span className="px-1.5 py-0.2 bg-canvas border border-rule text-[10px] text-muted font-normal">
                           {cfg.weightPct}%
                         </span>
@@ -317,12 +320,12 @@ export default function ScoreBreakdown({
                     {p1Advantages.length > 0 && p2Advantages.length > 0 ? (
                       <>
                         @{p1Handle} held an advantage in{" "}
-                        {p1Advantages.map((a) => a.cfg.label).join(", ")} (
+                        {p1Advantages.map((a) => a.axisLabel).join(", ")} (
                         {p1Advantages
                           .map((a) => `+${a.diff.toFixed(1)} pts`)
                           .join(", ")}
                         ), while @{p2Handle} countered with an advantage in{" "}
-                        {p2Advantages.map((a) => a.cfg.label).join(", ")} (
+                        {p2Advantages.map((a) => a.axisLabel).join(", ")} (
                         {p2Advantages
                           .map((a) => `+${Math.abs(a.diff).toFixed(1)} pts`)
                           .join(", ")}
@@ -335,9 +338,15 @@ export default function ScoreBreakdown({
                 ) : (
                   <>
                     @{winnerHandle} won by +{margin} points. The decisive factor was{" "}
-                    {winnerHandle === p1Handle
-                      ? p1Advantages.map((a) => `${a.cfg.label} (+${a.diff.toFixed(1)} pts)`).join(" and ")
-                      : p2Advantages.map((a) => `${a.cfg.label} (+${Math.abs(a.diff).toFixed(1)} pts)`).join(" and ")}
+                    {(() => {
+                      const decisiveList = winnerHandle === p1Handle ? p1Advantages : p2Advantages;
+                      if (decisiveList.length === 0) {
+                        return "consistent performance across all evaluated axes";
+                      }
+                      return decisiveList
+                        .map((a) => `${a.axisLabel} (+${Math.abs(a.diff).toFixed(1)} pts)`)
+                        .join(" and ");
+                    })()}
                     .
                   </>
                 )}

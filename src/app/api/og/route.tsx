@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     return new Response(err instanceof Error ? err.message : "Invalid battle ID", { status: 400 });
   }
 
-  const snapshot = await getBattleSnapshot(safeId);
+  const snapshot = await getBattleSnapshot(safeId, undefined, req.headers);
   if (!snapshot) {
     return new Response("Battle snapshot not found", { status: 404 });
   }

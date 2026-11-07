@@ -22,7 +22,7 @@ export async function GET(
     );
   }
 
-  const snapshot = await getBattleSnapshot(safeId);
+  const snapshot = await getBattleSnapshot(safeId, undefined, req.headers);
 
   if (!snapshot) {
     return NextResponse.json({ error: "Battle snapshot not found" }, { status: 404 });

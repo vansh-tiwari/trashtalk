@@ -1,6 +1,7 @@
 import { generateCommentary } from "../ai/roast-engine";
 import { RoastPersona } from "../ai/schemas";
 import { resolveGlobalRegion, DEFAULT_GLOBAL_REGION } from "../ai/global-regions";
+import { formatNum } from "./formatters";
 import { fetchCodeforcesEvidence } from "../platforms/codeforces";
 import { fetchLeetcodeEvidence } from "../platforms/leetcode";
 import { fetchCodechefEvidence } from "../platforms/codechef";
@@ -19,6 +20,7 @@ import {
 } from "./activity";
 import { defaultBattleStore } from "../storage/battle-store";
 import { BattleSnapshot, BattleStore } from "../storage/contracts";
+import { parseBattleIdDetails } from "./validation";
 import {
   PREPARED_TOURIST_VS_PETR,
   PREPARED_NEETCODE_VS_LARRYNY,
@@ -35,6 +37,7 @@ export interface ExecuteBattleParams {
   apiKey?: string;
   headers?: Headers | Record<string, string | string[] | undefined> | null;
   regionOverride?: string | null;
+  requestedId?: string;
 }
 
 export async function executeBattleFlow({
@@ -46,6 +49,7 @@ export async function executeBattleFlow({
   apiKey,
   headers,
   regionOverride,
+  requestedId,
 }: ExecuteBattleParams): Promise<BattleSnapshot> {
   const cleanU1 = u1.trim();
   const cleanU2 = u2.trim();
@@ -108,7 +112,7 @@ export async function executeBattleFlow({
           regionInfo: DEFAULT_GLOBAL_REGION,
         });
 
-    const canonicalId = `lc-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
+    const canonicalId = requestedId || `lc-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
     const p1Activity = buildActivityLevelsFromLeetcodeCalendar(e1.submissionCalendar);
     const p2Activity = buildActivityLevelsFromLeetcodeCalendar(e2.submissionCalendar);
@@ -204,7 +208,7 @@ export async function executeBattleFlow({
           regionInfo: DEFAULT_GLOBAL_REGION,
         });
 
-    const canonicalId = `cc-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
+    const canonicalId = requestedId || `cc-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
     const p1Timestamps = (e1.solvedProblems ?? [])
       .map((p) => p.acceptedAt)
@@ -301,7 +305,7 @@ export async function executeBattleFlow({
           regionInfo: DEFAULT_GLOBAL_REGION,
         });
 
-    const canonicalId = `gh-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
+    const canonicalId = requestedId || `gh-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
     const p1Timestamps = (e1.solvedProblems ?? [])
       .map((p) => p.acceptedAt)
@@ -350,8 +354,8 @@ export async function executeBattleFlow({
         handle: e1.handle,
         displayName: e1.profile?.displayName || e1.handle,
         avatarUrl: e1.profile?.avatarUrl,
-        rank: e1.profile?.followers !== undefined ? `${e1.profile.followers.toLocaleString()} followers` : undefined,
-        maxRank: e1.profile?.followers !== undefined ? `${e1.profile.followers.toLocaleString()} followers` : undefined,
+        rank: e1.profile?.followers !== undefined ? `${formatNum(e1.profile.followers)} followers` : undefined,
+        maxRank: e1.profile?.followers !== undefined ? `${formatNum(e1.profile.followers)} followers` : undefined,
         score: verdict.player1Score,
         activityLevels: p1Activity,
       },
@@ -359,8 +363,8 @@ export async function executeBattleFlow({
         handle: e2.handle,
         displayName: e2.profile?.displayName || e2.handle,
         avatarUrl: e2.profile?.avatarUrl,
-        rank: e2.profile?.followers !== undefined ? `${e2.profile.followers.toLocaleString()} followers` : undefined,
-        maxRank: e2.profile?.followers !== undefined ? `${e2.profile.followers.toLocaleString()} followers` : undefined,
+        rank: e2.profile?.followers !== undefined ? `${formatNum(e2.profile.followers)} followers` : undefined,
+        maxRank: e2.profile?.followers !== undefined ? `${formatNum(e2.profile.followers)} followers` : undefined,
         score: verdict.player2Score,
         activityLevels: p2Activity,
       },
@@ -427,7 +431,7 @@ export async function executeBattleFlow({
         regionInfo: DEFAULT_GLOBAL_REGION,
       });
 
-  const canonicalId = `cf-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
+  const canonicalId = requestedId || `cf-${cleanU1.toLowerCase()}-vs-${cleanU2.toLowerCase()}-${uuidSuffix}`;
 
   const p1Timestamps = (e1.solvedProblems ?? [])
     .map((p) => p.acceptedAt)
@@ -474,13 +478,22 @@ export async function executeBattleFlow({
     },
   };
 
-  await store.create(snapshot);
+  try {
+    await store.create(snapshot);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (!msg.includes("already exists") && !msg.includes("Create-only")) {
+      throw err;
+    }
+  }
+
   return snapshot;
 }
 
 export async function getBattleSnapshot(
   id: string,
-  store: BattleStore = defaultBattleStore
+  store: BattleStore = defaultBattleStore,
+  headers?: Headers | Record<string, string | string[] | undefined> | null
 ): Promise<BattleSnapshot | null> {
   if (id === "cf-tourist-vs-petr-legendary") {
     return PREPARED_TOURIST_VS_PETR;
@@ -494,5 +507,33 @@ export async function getBattleSnapshot(
   if (id === "gh-torvalds-vs-antirez-legendary") {
     return PREPARED_TORVALDS_VS_ANTIREZ;
   }
-  return store.get(id);
+
+  // 1. Try local or configured persistent store
+  const existing = await store.get(id);
+  if (existing) {
+    return existing;
+  }
+
+  // 2. Serverless fallback: On-demand reconstruction
+  // On platforms like Vercel, separate lambda functions do not share local /tmp filesystem.
+  // Reconstruct the battle dynamically from the canonical battle ID so /battle/[id] never 404s.
+  const details = parseBattleIdDetails(id);
+  if (details) {
+    try {
+      const reconstructed = await executeBattleFlow({
+        u1: details.u1,
+        u2: details.u2,
+        platform: details.platform,
+        store,
+        requestedId: id,
+        headers,
+      });
+      return reconstructed;
+    } catch (err) {
+      console.error(`[TrashTalk] On-demand battle reconstruction failed for "${id}":`, err);
+      return null;
+    }
+  }
+
+  return null;
 }

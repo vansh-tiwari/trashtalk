@@ -3,6 +3,7 @@
 import React from "react";
 import type { BattleSnapshot } from "@/lib/storage/contracts";
 import { Star, GitFork, ExternalLink, Dna, Code2, FolderGit2 } from "lucide-react";
+import { formatNum } from "@/lib/battle/formatters";
 
 export interface GithubShowcaseProps {
   snapshot: BattleSnapshot;
@@ -156,7 +157,7 @@ export default function GithubShowcase({ snapshot }: GithubShowcaseProps) {
               </h3>
             </div>
             <span className="text-xs font-mono text-muted">
-              {p1Meta?.totalStars ? `${p1Meta.totalStars.toLocaleString()} total stars` : ""}
+              {p1Meta?.totalStars ? `${formatNum(p1Meta.totalStars)} total stars` : ""}
             </span>
           </div>
 
@@ -177,12 +178,12 @@ export default function GithubShowcase({ snapshot }: GithubShowcaseProps) {
                   <div className="flex items-center gap-2 text-xs font-mono">
                     <span className="flex items-center gap-1 font-bold text-ink">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
-                      {repo.stars.toLocaleString()}
+                      {formatNum(repo.stars)}
                     </span>
                     {repo.forks > 0 && (
                       <span className="flex items-center gap-1 text-muted hidden sm:flex">
                         <GitFork className="w-3.5 h-3.5" />
-                        {repo.forks.toLocaleString()}
+                        {formatNum(repo.forks)}
                       </span>
                     )}
                   </div>
@@ -215,7 +216,7 @@ export default function GithubShowcase({ snapshot }: GithubShowcaseProps) {
               </h3>
             </div>
             <span className="text-xs font-mono text-muted">
-              {p2Meta?.totalStars ? `${p2Meta.totalStars.toLocaleString()} total stars` : ""}
+              {p2Meta?.totalStars ? `${formatNum(p2Meta.totalStars)} total stars` : ""}
             </span>
           </div>
 
@@ -236,12 +237,12 @@ export default function GithubShowcase({ snapshot }: GithubShowcaseProps) {
                   <div className="flex items-center gap-2 text-xs font-mono">
                     <span className="flex items-center gap-1 font-bold text-ink">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
-                      {repo.stars.toLocaleString()}
+                      {formatNum(repo.stars)}
                     </span>
                     {repo.forks > 0 && (
                       <span className="flex items-center gap-1 text-muted hidden sm:flex">
                         <GitFork className="w-3.5 h-3.5" />
-                        {repo.forks.toLocaleString()}
+                        {formatNum(repo.forks)}
                       </span>
                     )}
                   </div>

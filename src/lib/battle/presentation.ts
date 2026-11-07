@@ -1,4 +1,5 @@
 import { BattleSnapshot } from "../storage/contracts";
+import { formatNum } from "./formatters";
 import { PlayerScore } from "./types";
 import { getPlatformConfig } from "../platforms/registry";
 
@@ -252,32 +253,32 @@ export function toBattleViewModel(snapshot: BattleSnapshot): BattleViewModel {
     const solved = score.metrics?.solvedCount ?? 0;
 
     if (snapshot.platform === "github") {
-      const stars = rating ? `${rating.toLocaleString()} stars` : "";
+      const stars = rating ? `${formatNum(rating)} stars` : "";
       if (rank) {
         return `${rank} · ${stars}`;
       }
-      return `${stars} · ${solved.toLocaleString()} repos`;
+      return `${stars} · ${formatNum(solved)} repos`;
     }
 
     if (snapshot.platform === "leetcode") {
       if (!rating || rating === 0) {
-        return `${solved.toLocaleString()} solved`;
+        return `${formatNum(solved)} solved`;
       }
-      const peakStr = maxRating && maxRating !== rating ? ` (peak ${maxRating.toLocaleString()})` : "";
-      return `${rating.toLocaleString()} rating${peakStr}`;
+      const peakStr = maxRating && maxRating !== rating ? ` (peak ${formatNum(maxRating)})` : "";
+      return `${formatNum(rating)} rating${peakStr}`;
     }
 
     if (snapshot.platform === "codechef") {
       if (!rating || rating === 0) {
-        return `${solved.toLocaleString()} solved`;
+        return `${formatNum(solved)} solved`;
       }
       const starPrefix = rank ? `${rank} · ` : "";
-      const peakStr = maxRating && maxRating !== rating ? ` (peak ${maxRating.toLocaleString()})` : "";
-      return `${starPrefix}${rating.toLocaleString()} rating${peakStr}`;
+      const peakStr = maxRating && maxRating !== rating ? ` (peak ${formatNum(maxRating)})` : "";
+      return `${starPrefix}${formatNum(rating)} rating${peakStr}`;
     }
 
-    const peakStr = maxRating && maxRating !== rating ? ` (peak ${maxRating.toLocaleString()})` : "";
-    return `${rating?.toLocaleString() ?? 0} rating${peakStr}`;
+    const peakStr = maxRating && maxRating !== rating ? ` (peak ${formatNum(maxRating)})` : "";
+    return `${formatNum(rating ?? 0)} rating${peakStr}`;
   };
 
   return {
@@ -380,8 +381,8 @@ function createMetricRow(
   return {
     key,
     label,
-    p1: { kind: "value", value: v1, formatted: v1.toLocaleString() },
-    p2: { kind: "value", value: v2, formatted: v2.toLocaleString() },
+    p1: { kind: "value", value: v1, formatted: formatNum(v1) },
+    p2: { kind: "value", value: v2, formatted: formatNum(v2) },
     advantage,
     delta,
   };

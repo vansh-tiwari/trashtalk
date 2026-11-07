@@ -2,6 +2,7 @@ import { BattleVerdict } from "../battle/types";
 import { GithubEvidence } from "../platforms/contracts";
 import { PROMPT_VERSION } from "./personas";
 import { CommentaryResult, RoastPersona } from "./schemas";
+import { formatNum } from "../battle/formatters";
 
 interface GithubRoasterParams {
   p1Evidence: GithubEvidence;
@@ -34,10 +35,10 @@ export function generateGithubLocalRoast({
       return `@${handle}: ${prof.publicRepos} repositories created, but an absolute star graveyard. Not even your own bot accounts starred the README.`;
     }
     if (prof.totalStars > 5000) {
-      return `@${handle}: ${prof.totalStars.toLocaleString()} stars across the catalog. Legitimate open-source heavyweight with real downstream users.`;
+      return `@${handle}: ${formatNum(prof.totalStars)} stars across the catalog. Legitimate open-source heavyweight with real downstream users.`;
     }
     if (prof.followers > 1000 && prof.publicRepos < 5) {
-      return `@${handle}: ${prof.followers.toLocaleString()} followers on Twitter hype, but only ${prof.publicRepos} public repos to back it up.`;
+      return `@${handle}: ${formatNum(prof.followers)} followers on Twitter hype, but only ${prof.publicRepos} public repos to back it up.`;
     }
     if (prof.languages.length === 1) {
       return `@${handle}: 100% of public code is in ${prof.languages[0].name}. Branching out into a second language might save your tech stack from deprecation.`;
@@ -58,7 +59,7 @@ export function generateGithubLocalRoast({
     case "silicon_valley_vc":
       headToHeadRoast = isDraw
         ? `Open-source stalemate. Both @${p1.handle} and @${p2.handle} closed their seed round with identical ${p1.total} composite points. Zero defensible software moat.`
-        : `Term sheet signed with @${winner}. While @${loser} pitched ${loserRepos} unstarred repositories, @${winner}'s ${winnerStars.toLocaleString()} stars demonstrated real product-market fit and developer traction.`;
+        : `Term sheet signed with @${winner}. While @${loser} pitched ${loserRepos} unstarred repositories, @${winner}'s ${formatNum(winnerStars)} stars demonstrated real product-market fit and developer traction.`;
       punchline = isDraw
         ? "DRAW: Both founders failed to capture developer mindshare. Pivot before the Series A."
         : `Winner: @${winner}. Clear product-market fit and open-source distribution dominance.`;
@@ -67,7 +68,7 @@ export function generateGithubLocalRoast({
     case "ufc_announcer":
       headToHeadRoast = isDraw
         ? `UNANIMOUS DRAW! Five punishing rounds inside the GitHub Octagon between @${p1.handle} and @${p2.handle}, and the commit judges are dead split at ${p1.total}!`
-        : `IT'S ALL OVER! In a brutal 5-round open-source slugfest, @${winner} drops @${loser} with an unstoppable ${winnerStars.toLocaleString()}-star knockout blow!`;
+        : `IT'S ALL OVER! In a brutal 5-round open-source slugfest, @${winner} drops @${loser} with an unstoppable ${formatNum(winnerStars)}-star knockout blow!`;
       punchline = isDraw
         ? "DRAW: Absolute bloodbath in the terminal! We need an immediate rematch!"
         : `Winner: @${winner}. AND STILL the undisputed champion of the open-source arena!`;
@@ -86,7 +87,7 @@ export function generateGithubLocalRoast({
     default:
       headToHeadRoast = isDraw
         ? `Open-source deadlock. Both @${p1.handle} and @${p2.handle} finished dead-even at ${p1.total} pts. Two identical README-driven developments, and neither one has production users.`
-        : `Git blame says it all: @${winner} completely outclassed @${loser}. While @${loser} was collecting empty repositories like browser tabs (${loserRepos} repos), @${winner}'s code actually has users (${winnerStars.toLocaleString()} stars).`;
+        : `Git blame says it all: @${winner} completely outclassed @${loser}. While @${loser} was collecting empty repositories like browser tabs (${loserRepos} repos), @${winner}'s code actually has users (${formatNum(winnerStars)} stars).`;
       punchline = isDraw
         ? "DRAW: Both push to main with failing CI. Neither deserves the merge."
         : `Winner: @${winner}. Clean production code merged to main; no revert required.`;
