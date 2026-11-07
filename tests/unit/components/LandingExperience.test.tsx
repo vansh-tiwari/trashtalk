@@ -31,8 +31,8 @@ describe("LandingExperience", () => {
     expect(html).toContain("Get roasted");
     expect(html).toContain("Send it to them");
 
-    // Wall and CTA
-    expect(html).toContain("Fresh roasts");
+    // Final CTA
+    expect(html).not.toContain("Fresh roasts");
     expect(html).toContain("Who’s next?");
   });
 

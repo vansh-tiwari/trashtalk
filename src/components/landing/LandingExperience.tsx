@@ -14,75 +14,11 @@ export interface LandingExperienceProps {
   initialPlatform?: Platform;
 }
 
-function BattleMarqueeCard({ battle }: { battle: BattleSnapshot }) {
-  const p1 = battle.player1;
-  const p2 = battle.player2;
-  const isP1Winner = battle.verdict?.winnerHandle === p1.handle;
-  const isP2Winner = battle.verdict?.winnerHandle === p2.handle;
-  const platformLabel = (battle.platform || "codeforces").toUpperCase();
-  const rawPunchline =
-    battle.commentary?.punchline ||
-    battle.commentary?.headToHeadRoast ||
-    "The receipts on the scoreboard tell their own story.";
-  const cleanPunchline = rawPunchline.replace(/^Winner:\s*@[a-zA-Z0-9_-]+\.?\s*/i, "");
-  const winnerHandle = battle.verdict?.winnerHandle || p1.handle;
-
-  return (
-    <Link
-      href={`/battle/${battle.id}`}
-      className="og2 block no-underline text-ink hover:opacity-95 transition-opacity"
-    >
-      <div className="oh">
-        <b className="big">TrashTalk</b>
-        <span>{platformLabel} · Battle result</span>
-      </div>
-      <div className="om">
-        <div className="op">
-          {isP1Winner && <span className="ow">Winner</span>}
-          <b className="big">{p1.handle.toUpperCase()}</b>
-          <span className="or2">
-            {p1.rank ?? "Rated"} · {p1.score?.metrics?.rating ?? p1.score?.total ?? "—"}
-          </span>
-        </div>
-        <div className="os big">
-          {p1.score?.total ?? "—"}–{p2.score?.total ?? "—"}
-        </div>
-        <div className="op r">
-          {isP2Winner && <span className="ow">Winner</span>}
-          <b className={`big ${!isP2Winner ? "out" : ""}`}>{p2.handle.toUpperCase()}</b>
-          <span className="or2">
-            {p2.rank ?? "Rated"} · {p2.score?.metrics?.rating ?? p2.score?.total ?? "—"}
-          </span>
-        </div>
-      </div>
-      <div className="oq">
-        <span>“{cleanPunchline.length > 90 ? cleanPunchline.slice(0, 87) + "..." : cleanPunchline}”</span>
-        <small>on {winnerHandle.toUpperCase()}</small>
-      </div>
-      <div className="of big">
-        <span>Think you can beat them?</span>
-        <span>trashtalk.dev</span>
-      </div>
-    </Link>
-  );
-}
-
 export default function LandingExperience({
   demo,
-  recentBattles = [],
   initialPlatform = "codeforces",
 }: LandingExperienceProps) {
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>(initialPlatform);
-
-  // Combine demo and recent battles into two marquee rows
-  const allBattles = React.useMemo(() => {
-    const list = [demo, ...recentBattles.filter((b) => b.id !== demo.id)];
-    return list;
-  }, [demo, recentBattles]);
-
-  const mid = Math.max(1, Math.ceil(allBattles.length / 2));
-  const row1Battles = allBattles.slice(0, mid);
-  const row2Battles = allBattles.length > 1 ? allBattles.slice(mid) : allBattles;
 
   return (
     <div className="w-full">
@@ -301,33 +237,7 @@ export default function LandingExperience({
         </div>
       </section>
 
-      {/* 4. Fresh Roasts Marquee Wall (.band) */}
-      <section id="fresh-roasts" className="band">
-        <div className="w">
-          <div className="sh2">
-            <h2>Fresh roasts</h2>
-            <span>Live from the arena</span>
-          </div>
-        </div>
-
-        <div style={{ overflow: "hidden" }}>
-          {/* Row 1 moving left */}
-          <div className="rowm">
-            {[...row1Battles, ...row1Battles].map((battle, idx) => (
-              <BattleMarqueeCard key={`row1-${battle.id}-${idx}`} battle={battle} />
-            ))}
-          </div>
-
-          {/* Row 2 moving right (reverse) */}
-          <div className="rowm rv">
-            {[...row2Battles, ...row2Battles].map((battle, idx) => (
-              <BattleMarqueeCard key={`row2-${battle.id}-${idx}`} battle={battle} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Who's Next Final CTA (.fin) */}
+      {/* 4. Who's Next Final CTA (.fin) */}
       <section className="fin">
         <div className="w">
           <div className="big">Who’s next?</div>

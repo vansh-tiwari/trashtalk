@@ -44,8 +44,8 @@ export default function Navbar() {
                 <Link href="/#how-it-works" className="hidden sm:inline hover:text-punch transition-colors text-white/90 font-medium">
                   How it works
                 </Link>
-                <Link href="/#fresh-roasts" className="hidden sm:inline hover:text-punch transition-colors text-white/90 font-medium">
-                  Fresh roasts
+                <Link href="/evolution" className="hidden sm:inline hover:text-punch transition-colors text-white/90 font-medium">
+                  The lore
                 </Link>
                 <Link
                   href="/battle"
