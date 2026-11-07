@@ -57,7 +57,7 @@ export async function generateCommentary({
   const configuredModel = modelName || process.env.GEMINI_MODEL;
   const candidateModels = Array.from(
     new Set(
-      [configuredModel, "gemini-3.8-flash", "gemini-2.0-flash", "gemini-1.5-flash"].filter(
+      [configuredModel, "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"].filter(
         (m): m is string => Boolean(m)
       )
     )

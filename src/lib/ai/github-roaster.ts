@@ -11,6 +11,16 @@ interface GithubRoasterParams {
   persona: RoastPersona;
 }
 
+function hashMatch(s1: string, s2: string): number {
+  let hash = 0;
+  const str = `${s1}:${s2}`;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
 export function generateGithubLocalRoast({
   p1Evidence,
   p2Evidence,
@@ -84,14 +94,28 @@ export function generateGithubLocalRoast({
       break;
 
     case "savage_dev":
-    default:
+    default: {
+      const hash = hashMatch(winner || p1.handle, loser || p2.handle);
+      const ghPunchlines = [
+        `Winner: @${winner}. Clean production code merged to main; no revert required.`,
+        `Winner: @${winner}. @${loser}'s 0-star ghost town repos were no match for real production code.`,
+        `Winner: @${winner}. @${loser} collects empty repos like browser tabs while @${winner} actually ships.`,
+        `Winner: @${winner}. Git blame says it all: @${loser} pushed broken CI while @${winner} merged to main.`,
+        `Winner: @${winner}. @${loser}'s README has 1 star from an alt account; @${winner} has real downstream users.`,
+      ];
+      const ghH2H = [
+        `Git blame says it all: @${winner} completely outclassed @${loser}. While @${loser} was collecting empty repositories like browser tabs (${loserRepos} repos), @${winner}'s code actually has users (${formatNum(winnerStars)} stars).`,
+        `Repository inspection: @${winner} actually builds software people clone and star, while @${loser} has 40 cloned tutorials gathering dust with zero commits this year.`,
+        `Open-source reality check: @${winner} shipped clean architectures and real releases, while @${loser}'s entire GitHub profile is a star desert.`,
+      ];
       headToHeadRoast = isDraw
         ? `Open-source deadlock. Both @${p1.handle} and @${p2.handle} finished dead-even at ${p1.total} pts. Two identical README-driven developments, and neither one has production users.`
-        : `Git blame says it all: @${winner} completely outclassed @${loser}. While @${loser} was collecting empty repositories like browser tabs (${loserRepos} repos), @${winner}'s code actually has users (${formatNum(winnerStars)} stars).`;
+        : ghH2H[hash % ghH2H.length];
       punchline = isDraw
         ? "DRAW: Both push to main with failing CI. Neither deserves the merge."
-        : `Winner: @${winner}. Clean production code merged to main; no revert required.`;
+        : ghPunchlines[hash % ghPunchlines.length];
       break;
+    }
   }
 
   return {

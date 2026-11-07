@@ -13,6 +13,16 @@ interface RegionalRoastParams {
   regionInfo: GlobalRegionInfo;
 }
 
+function hashMatch(s1: string, s2: string): number {
+  let hash = 0;
+  const str = `${s1}:${s2}`;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
 export function generateRegionalLocalRoast({
   p1Evidence,
   p2Evidence,
@@ -164,16 +174,47 @@ export function generateRegionalLocalRoast({
       player2Roast = `@${p2.handle}: 3 LPA ka package, 50 LPA ka attitude. Test cases fail hone pe system ko dosh de raha hai.`;
       punchline = "DRAW: Dono survive to kar gaye, par offer letter kisi ko nahi mila.";
     } else {
+      const hash = hashMatch(winner, loser || "");
       if (platform === "codechef") {
-        headToHeadRoast = `@${winner} ne @${loser} ko CodeChef ki kitchen me seedha fry kar diya! 2-star badge leke 7-star ka roab jhad rahe the, par @${winner} ne optimal AC se dish serve kar di jabki @${loser} Div 4 me abhi bhi bartan dho raha hai.`;
+        const ccPunchlines = [
+          `Winner: @${winner}. @${loser} ko bolo CodeChef chhod ke Maggie banane pe dhyan de.`,
+          `Winner: @${winner}. 2-star badge leke 7-star ka roab, @${loser} Div 4 me bartan dho raha hai.`,
+          `Winner: @${winner}. @${loser} ne Long Challenge me 10 din lagaye, fir bhi @${winner} ne fry kar diya.`,
+          `Winner: @${winner}. @${loser} ki binary search lagate hi roti jal gayi, @${winner} trophy le gaya.`,
+        ];
+        const ccH2H = [
+          `@${winner} ne @${loser} ko CodeChef ki kitchen me seedha fry kar diya! 2-star badge leke 7-star ka roab jhad rahe the, par @${winner} ne optimal AC se dish serve kar di jabki @${loser} Div 4 me abhi bhi bartan dho raha hai.`,
+          `CodeChef kitchen me kohraam: @${winner} ne Michelin star AC nikala aur @${loser} ke saare test cases jal ke raakh ho gaye.`,
+        ];
+        headToHeadRoast = ccH2H[hash % ccH2H.length];
         player1Roast = `@${p1.handle}: Chef hat pehen ke baithe hain par Problem B ka binary search lagate hi roti jal gayi.`;
         player2Roast = `@${p2.handle}: Long challenge me 10 din laga ke bhi penalty points se rating minus me chali gayi.`;
-        punchline = `Winner: @${winner}. @${loser} ko bolo CodeChef chhod ke Maggie banane pe dhyan de.`;
+        punchline = ccPunchlines[hash % ccPunchlines.length];
+      } else if (platform === "github") {
+        const ghPunchlines = [
+          `Winner: @${winner}. @${loser} ke 50 repos hain aur ek bhi star nahi; @${winner} ne dhool chata di.`,
+          `Winner: @${winner}. @${loser} YouTube dekh ke repo clone karta raha, @${winner} ne prod me code ship kar diya.`,
+          `Winner: @${winner}. Git log kholte hi @${loser} ki pol khul gayi; @${winner} ka code real users chala rahe hain.`,
+        ];
+        headToHeadRoast = `@${winner} ne GitHub pe @${loser} ki pol khol di. 50 empty repos create karke developer nahi bante jab tak ek bhi project me real users na hon. @${winner} ke paas real stars hain jabki @${loser} ka profile sirf ghost town repos ka kabristan hai.`;
+        player1Roast = `@${p1.handle}: Repositories itni saari hain par star ek bhi nahi mila, wo bhi mummy ke phone se star kiya tha.`;
+        player2Roast = `@${p2.handle}: 40 repo fork kiye hain aur ek line ka commit nahi kiya. Sirf README change karke developer ban rahe hain.`;
+        punchline = ghPunchlines[hash % ghPunchlines.length];
       } else {
-        headToHeadRoast = `Bhai 400 Easy solves karke bhi interviewer ke saamne 'recursion' sunte hi hawa nikal gayi. @${winner} ne optimal complexity se AC nikala jabki @${loser} abhi bhi discussion tab me hints dhoondh raha hai.`;
+        const cpHinglishPunchlines = [
+          `Winner: @${winner}. @${loser} ko bolo resume me 'Hardworking' likhna band kare.`,
+          `Winner: @${winner}. 400 Easy solves karke bhi recursion dekh ke @${loser} ki hawa nikal gayi.`,
+          `Winner: @${winner}. @${loser} abhi bhi discussion tab me hints dhoondh raha hai, @${winner} offer le gaya.`,
+          `Winner: @${winner}. 3 LPA ka package aur 50 LPA ka attitude, @${loser} pretest 2 pe phat gaya.`,
+        ];
+        const cpH2H = [
+          `Bhai 400 Easy solves karke bhi interviewer ke saamne 'recursion' sunte hi hawa nikal gayi. @${winner} ne optimal complexity se AC nikala jabki @${loser} abhi bhi discussion tab me hints dhoondh raha hai.`,
+          `Placement season reality check: @${winner} ne system tests clear kar liye jabki @${loser} TCS Ninja ka form bharne ki taiyari kar raha hai.`,
+        ];
+        headToHeadRoast = cpH2H[hash % cpH2H.length];
         player1Roast = `@${p1.handle}: GitHub pe 52 repos hain aur ek bhi star nahi hai, wo bhi mummy ke account se karwaya tha.`;
         player2Roast = `@${p2.handle}: Div 2 Problem A speedrun karke khush ho raha tha, Problem B dekhte hi TCS Ninja ka form yaad aa gaya.`;
-        punchline = `Winner: @${winner}. @${loser} ko bolo resume me 'Hardworking' likhna band kare.`;
+        punchline = cpHinglishPunchlines[hash % cpHinglishPunchlines.length];
       }
     }
   }

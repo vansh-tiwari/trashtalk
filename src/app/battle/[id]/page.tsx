@@ -1,4 +1,4 @@
-import React from "react";
+import React, { cache } from "react";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
@@ -14,6 +14,14 @@ async function getSafeHeaders(): Promise<Headers | null> {
   }
 }
 
+/**
+ * React cache deduplicates the snapshot fetch between generateMetadata and SavedBattlePage
+ * during the same SSR request lifecycle.
+ */
+const getCachedBattleSnapshot = cache(async (id: string, headerList: Headers | null) => {
+  return await getBattleSnapshot(id, undefined, headerList);
+});
+
 export async function generateMetadata({
   params,
 }: {
@@ -21,7 +29,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const headerList = await getSafeHeaders();
-  const snapshot = await getBattleSnapshot(id, undefined, headerList);
+  const snapshot = await getCachedBattleSnapshot(id, headerList);
 
   if (!snapshot) {
     return {
@@ -65,7 +73,7 @@ export default async function SavedBattlePage({
 }) {
   const { id } = await params;
   const headerList = await getSafeHeaders();
-  const snapshot = await getBattleSnapshot(id, undefined, headerList);
+  const snapshot = await getCachedBattleSnapshot(id, headerList);
 
   if (!snapshot) {
     notFound();

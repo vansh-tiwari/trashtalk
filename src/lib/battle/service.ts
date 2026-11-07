@@ -159,7 +159,14 @@ export async function executeBattleFlow({
       },
     };
 
-    await store.create(snapshot);
+    try {
+      await store.create(snapshot);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (!msg.includes("already exists") && !msg.includes("Create-only")) {
+        throw err;
+      }
+    }
     return snapshot;
   }
 
@@ -261,7 +268,14 @@ export async function executeBattleFlow({
       },
     };
 
-    await store.create(snapshot);
+    try {
+      await store.create(snapshot);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (!msg.includes("already exists") && !msg.includes("Create-only")) {
+        throw err;
+      }
+    }
     return snapshot;
   }
 
@@ -386,7 +400,14 @@ export async function executeBattleFlow({
       githubMetadata,
     };
 
-    await store.create(snapshot);
+    try {
+      await store.create(snapshot);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (!msg.includes("already exists") && !msg.includes("Create-only")) {
+        throw err;
+      }
+    }
     return snapshot;
   }
 
@@ -494,6 +515,9 @@ export async function executeBattleFlow({
   return snapshot;
 }
 
+// In-flight reconstruction map to deduplicate concurrent SSR / API requests for the same battle ID
+const inFlightReconstructions = new Map<string, Promise<BattleSnapshot | null>>();
+
 export async function getBattleSnapshot(
   id: string,
   store: BattleStore = defaultBattleStore,
@@ -523,19 +547,32 @@ export async function getBattleSnapshot(
   // Reconstruct the battle dynamically from the canonical battle ID so /battle/[id] never 404s.
   const details = parseBattleIdDetails(id);
   if (details) {
+    const inFlight = inFlightReconstructions.get(id);
+    if (inFlight) {
+      return inFlight;
+    }
+
+    const reconstructionPromise = (async () => {
+      try {
+        return await executeBattleFlow({
+          u1: details.u1,
+          u2: details.u2,
+          platform: details.platform,
+          store,
+          requestedId: id,
+          headers,
+        });
+      } catch (err) {
+        console.error(`[TrashTalk] On-demand battle reconstruction failed for "${id}":`, err);
+        return null;
+      }
+    })();
+
+    inFlightReconstructions.set(id, reconstructionPromise);
     try {
-      const reconstructed = await executeBattleFlow({
-        u1: details.u1,
-        u2: details.u2,
-        platform: details.platform,
-        store,
-        requestedId: id,
-        headers,
-      });
-      return reconstructed;
-    } catch (err) {
-      console.error(`[TrashTalk] On-demand battle reconstruction failed for "${id}":`, err);
-      return null;
+      return await reconstructionPromise;
+    } finally {
+      inFlightReconstructions.delete(id);
     }
   }
 

@@ -15,6 +15,16 @@ export interface LocalRoasterInput {
   regionInfo?: GlobalRegionInfo;
 }
 
+function hashMatch(s1: string, s2: string): number {
+  let hash = 0;
+  const str = `${s1}:${s2}`;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
 export function generateLocalCommentary({
   p1Evidence,
   p2Evidence,
@@ -123,14 +133,28 @@ export function generateLocalCommentary({
         break;
 
       case "savage_dev":
-      default:
+      default: {
+        const hash = hashMatch(winner, loser);
+        const leetcodePunchlines = [
+          `Winner: @${winner}. 400 Easy solves didn't save @${loser} from an O(N^2) reality check.`,
+          `Winner: @${winner}. @${loser} memorized Two Sum 50 times but froze when asked to optimize.`,
+          `Winner: @${winner}. @${loser} was still reading the hints tab while @${winner} submitted clean AC.`,
+          `Winner: @${winner}. @${loser}'s runtime complexity gave the interviewer second-hand embarrassment.`,
+          `Winner: @${winner}. @${loser} took a 90-minute time penalty on question 3 while @${winner} swept.`,
+        ];
+        const leetcodeH2H = [
+          `@${winner} takes the match. While @${p1.handle} and @${p2.handle} both know their two pointers, @${winner}'s problem depth left the competition stuck on an O(N^2) brute force.`,
+          `Grind culture reality check: @${winner} completely outclassed @${loser}. Grinding 500 Easy problems with the editorial open doesn't count when contest pressure hits.`,
+          `Algorithm clinic: @${winner} deployed optimal O(N) runtime while @${loser} was desperately trying to remember how to invert a binary tree.`,
+        ];
         headToHeadRoast = isDraw
           ? `Algorithmic deadlock. @${p1.handle} and @${p2.handle} both finished at ${p1.total} pts. Two identical submissions, both hitting TLE on the exact same test case.`
-          : `@${winner} takes the match. While @${p1.handle} and @${p2.handle} both know their two pointers, @${winner}'s problem depth left the competition stuck on an O(N^2) brute force.`;
+          : leetcodeH2H[hash % leetcodeH2H.length];
         punchline = isDraw
           ? "DRAW: Both survived the test cases. Neither earned the interview offer."
-          : `Winner: @${winner}. 400 Easy solves didn't save @${loser} from an O(N^2) reality check.`;
+          : leetcodePunchlines[hash % leetcodePunchlines.length];
         break;
+      }
     }
   } else if (isCodechef) {
     const cc1 = p1Evidence.platform === "codechef" ? (p1Evidence as CodechefEvidence).profile : undefined;
@@ -187,14 +211,28 @@ export function generateLocalCommentary({
         break;
 
       case "savage_dev":
-      default:
+      default: {
+        const hash = hashMatch(winner, loser);
+        const codechefPunchlines = [
+          `Winner: @${winner}. Served @${loser} a masterclass; dish duty awaits in Div 4.`,
+          `Winner: @${winner}. 10 days on a Long Challenge with 15 tabs open didn't save @${loser}.`,
+          `Winner: @${winner}. @${loser}'s rating dropped faster than a hot pan while @${winner} swept.`,
+          `Winner: @${winner}. Chef hat on the profile, but @${loser} burned the soufflé on Problem B.`,
+          `Winner: @${winner}. @${loser} got completely roasted in the kitchen while @${winner} earned the star.`,
+        ];
+        const codechefH2H = [
+          `Cooked to a crisp: @${winner} served @${loser} an absolute masterclass. While both showed up with chef hats, @${winner}'s rating ceiling (${peak}) left the competition washing dishes in Div 4.`,
+          `Kitchen disaster for @${loser}: @${winner} brought Michelin-tier problem solving while @${loser} was burning the test cases on basic greedy algorithms.`,
+          `Scoreboard demolition: @${winner} served up clean green AC while @${loser} took five consecutive WRONG_ANSWER penalties in Div 3.`,
+        ];
         headToHeadRoast = isDraw
           ? `Kitchen deadlock. @${p1.handle} and @${p2.handle} both finished at ${p1.total} pts. Two identical submissions, both burning the test cases on Div 1 problem B.`
-          : `Cooked to a crisp: @${winner} served @${loser} an absolute masterclass. While both showed up with chef hats, @${winner}'s rating ceiling (${peak}) left the competition washing dishes in Div 4.`;
+          : codechefH2H[hash % codechefH2H.length];
         punchline = isDraw
           ? "DRAW: Both survived the kitchen timer. Neither earned a Michelin star."
-          : `Winner: @${winner}. Served @${loser} a masterclass; dish duty awaits in Div 4.`;
+          : codechefPunchlines[hash % codechefPunchlines.length];
         break;
+      }
     }
   } else {
     // Codeforces Roaster
@@ -233,16 +271,30 @@ export function generateLocalCommentary({
         break;
 
       case "savage_dev":
-      default:
+      default: {
+        const hash = hashMatch(winner, loser);
+        const codeforcesPunchlines = [
+          `Winner: @${winner}. @${loser} got hacked in the final minutes while @${winner} took the podium.`,
+          `Winner: @${winner}. Pretest 2 was an impassable brick wall against @${winner}'s rating ceiling.`,
+          `Winner: @${winner}. @${loser} burned 5 WA submissions while @${winner} took the match with pure grit.`,
+          `Winner: @${winner}. Hardstuck cyan: @${loser} took a heavy rating drop while @${winner} celebrated.`,
+          `Winner: @${winner}. @${loser}'s segment tree had more bugs than the contest platform.`,
+        ];
+        const codeforcesH2H = [
+          `@${winner} takes the match. While @${p1.handle} and @${p2.handle} both know their segment trees, @${winner}'s rating ceiling (${Math.max(p1.metrics.maxRating, p2.metrics.maxRating)}) left the competition stuck on pretest 2.`,
+          `Algorithmic execution clinic: @${winner} locked down the victory with superior contest speed while @${loser} was desperately debugging edge cases.`,
+          `Rating gap exposed: @${winner} proved why verified contest peaks matter, leaving @${loser} with five wrong submissions on problem C.`,
+        ];
         headToHeadRoast = isDraw
           ? `Algorithmic deadlock. @${p1.handle} and @${p2.handle} both finished at ${p1.total} pts. Two identical submissions, and neither one passed system tests.`
-          : `@${winner} takes the match. While @${p1.handle} and @${p2.handle} both know their segment trees, @${winner}'s rating ceiling (${Math.max(p1.metrics.maxRating, p2.metrics.maxRating)}) left the competition stuck on pretest 2.`;
+          : codeforcesH2H[hash % codeforcesH2H.length];
         player1Roast = `@${p1.handle}: Peak of ${p1.metrics.maxRating} is respectable, but ${p1.metrics.solvedCount} solves suggest more brute force than finesse.`;
         player2Roast = `@${p2.handle}: ${p2.metrics.solvedCount} solves across the board, but still getting hacked during the last five minutes of the round.`;
         punchline = isDraw
           ? "DRAW: Both survived system tests. Neither earned the rating bump."
-          : `Winner: @${winner}. @${loser} got hacked in the final minutes while @${winner} took the podium.`;
+          : codeforcesPunchlines[hash % codeforcesPunchlines.length];
         break;
+      }
     }
   }
 

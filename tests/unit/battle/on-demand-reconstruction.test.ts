@@ -120,4 +120,18 @@ describe("On-Demand Serverless Battle Reconstruction", () => {
     expect(cached).not.toBeNull();
     expect(cached?.id).toBe(battleId);
   });
+
+  it("deduplicates concurrent on-demand reconstruction calls without create-only collision", async () => {
+    const battleId = "gh-alice-vs-bob-a1b2c3d4e5f6";
+
+    const [snap1, snap2] = await Promise.all([
+      getBattleSnapshot(battleId, mockStore),
+      getBattleSnapshot(battleId, mockStore),
+    ]);
+
+    expect(snap1).not.toBeNull();
+    expect(snap2).not.toBeNull();
+    expect(snap1?.id).toBe(battleId);
+    expect(snap2?.id).toBe(battleId);
+  });
 });
