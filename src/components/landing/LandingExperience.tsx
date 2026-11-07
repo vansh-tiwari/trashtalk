@@ -97,6 +97,29 @@ export default function LandingExperience({
               <h1 className="h1">
                 Where developer profiles go to get roasted.
               </h1>
+              <div className="mt-4 flex flex-wrap items-center gap-2 select-none">
+                <span className="mono text-[11px] uppercase tracking-wider text-white/60 mr-1">
+                  Quick Showdowns:
+                </span>
+                <Link
+                  href="/battle/cf-tourist-vs-petr-legendary"
+                  className="px-2.5 py-1 text-xs font-mono font-bold bg-white/10 hover:bg-punch hover:text-white text-white/90 border border-white/20 transition-all rounded-none"
+                >
+                  tourist vs Petr
+                </Link>
+                <Link
+                  href="/battle/lc-neetcode-vs-larryny-legendary"
+                  className="px-2.5 py-1 text-xs font-mono font-bold bg-white/10 hover:bg-punch hover:text-white text-white/90 border border-white/20 transition-all rounded-none"
+                >
+                  NeetCode vs LarryNY
+                </Link>
+                <Link
+                  href="/battle/gh-torvalds-vs-antirez-legendary"
+                  className="px-2.5 py-1 text-xs font-mono font-bold bg-white/10 hover:bg-punch hover:text-white text-white/90 border border-white/20 transition-all rounded-none"
+                >
+                  Torvalds vs Antirez
+                </Link>
+              </div>
             </div>
 
             <div>

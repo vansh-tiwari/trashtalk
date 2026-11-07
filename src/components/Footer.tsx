@@ -16,6 +16,10 @@ export default function Footer() {
               The lore
             </Link>
             <span aria-hidden="true">·</span>
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Privacy
+            </Link>
+            <span aria-hidden="true">·</span>
             <a
               href="https://github.com/vansh-tiwari/trashtalk"
               target="_blank"

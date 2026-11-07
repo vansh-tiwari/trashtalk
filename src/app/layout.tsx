@@ -4,18 +4,41 @@ import { hanken } from "./fonts/fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { Analytics } from "@vercel/analytics/react";
 
 const publicAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://trashtalk.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(publicAppUrl),
-  title: "TrashTalk — Developer Battle Arena & Profile Comparison",
+  title: {
+    default: "TrashTalk — Developer Battle Arena & Profile Roaster",
+    template: "%s · TrashTalk",
+  },
   description:
-    "All talk? Bring receipts. Compare developer profiles head-to-head with verified numbers, problem overlap breakdown, and one concise roast.",
+    "Deterministic 5-axis algorithmic battle arena and developer profile roaster. Compare Codeforces, LeetCode, CodeChef, and GitHub handles with verified receipts.",
+  keywords: [
+    "developer rivalry",
+    "competitive programming",
+    "codeforces battle",
+    "leetcode comparison",
+    "codechef battle",
+    "github profile roaster",
+    "algorithmic grit",
+    "developer roast",
+  ],
+  authors: [{ name: "TrashTalk Team" }],
+  creator: "TrashTalk",
   openGraph: {
-    title: "TrashTalk — Developer Battle Arena",
-    description: "Compare developer stats and let the receipts do the talking.",
+    title: "TrashTalk — Developer Battle Arena & Profile Roaster",
+    description: "Compare developer stats and let the verified receipts do the talking.",
     type: "website",
+    url: publicAppUrl,
+    siteName: "TrashTalk",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TrashTalk — Developer Battle Arena & Profile Roaster",
+    description: "Compare developer stats and let the verified receipts do the talking.",
   },
 };
 
@@ -46,6 +69,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <Analytics />
         </MotionProvider>
       </body>
     </html>
