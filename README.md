@@ -66,24 +66,24 @@ Six years later, it has been re-architected to showcase the evolution from a **s
 
 ```mermaid
 flowchart TD
-    User([Visitor]) -->|Browser| WebUI[Next.js 15 App Router]
+    User([Visitor]) -->|Browser| WebUI["Next.js 15 App Router"]
     
-    subgraph Battle Creation [POST /api/battles]
-        WebUI --> Service[Battle Orchestration Service]
-        Service --> CF[Codeforces Adapter: user.info + user.status + user.rating]
-        CF --> Scorer[Pure Deterministic Scorer: 5-Axis Score & Locked Verdict]
-        CF --> Overlap[Problem Overlap Engine: Set Intersection & Exclusives]
-        Scorer --> Commentary{Commentary Engine}
-        Commentary -->|No Key / Fallback| Local[Local-First Template Roaster]
-        Commentary -->|Key Provided| Gemini[Optional Gemini 2.5 Flash]
-        Local --> Snapshot[(Immutable BattleSnapshot)]
+    subgraph BattleCreation ["Battle Creation: POST /api/battles"]
+        WebUI --> Service["Battle Orchestration Service"]
+        Service --> CF["Codeforces Adapter: user.info + user.status + user.rating"]
+        CF --> Scorer["Pure Deterministic Scorer: 5-Axis Score & Locked Verdict"]
+        CF --> Overlap["Problem Overlap Engine: Set Intersection & Exclusives"]
+        Scorer --> Commentary{"Commentary Engine"}
+        Commentary -->|No Key / Fallback| Local["Local-First Template Roaster"]
+        Commentary -->|Key Provided| Gemini["Optional Gemini 2.5 Flash"]
+        Local --> Snapshot[("Immutable BattleSnapshot")]
         Gemini --> Snapshot
-        Snapshot --> Store[Durable BattleStore]
+        Snapshot --> Store["Durable BattleStore"]
     end
 
-    subgraph Canonical Sharing [/battle/{id}]
-        Store --> CanonicalView[Read-Only Frozen Snapshot]
-        CanonicalView --> OG[/api/og: Dynamic Social Card Generator]
+    subgraph CanonicalSharing ["Canonical Sharing: /battle/{id}"]
+        Store --> CanonicalView["Read-Only Frozen Snapshot"]
+        CanonicalView --> OG["/api/og: Dynamic Social Card Generator"]
         CanonicalView --> WebUI
     end
 ```
