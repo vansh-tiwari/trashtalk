@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import ArenaAnalytics from "@/components/analytics/ArenaAnalytics";
 
-const publicAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://trashtalk.vercel.app";
+const publicAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://trashtalk.vanshtiwari.dev";
 
 export const viewport: Viewport = {
   themeColor: "#15171B",

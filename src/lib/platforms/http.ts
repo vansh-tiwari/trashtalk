@@ -85,18 +85,18 @@ export const githubThrottler = new RequestThrottler({
 
 export const GITHUB_API_HEADERS: Record<string, string> = {
   Accept: "application/vnd.github.v3+json",
-  "User-Agent": "TrashTalk-App/2.0 (+https://trashtalk.vercel.app)",
+  "User-Agent": "TrashTalk-App/2.0 (+https://trashtalk.vanshtiwari.dev)",
 };
 
 export const LEETCODE_GRAPHQL_HEADERS = {
   "Content-Type": "application/json",
   "Origin": "https://leetcode.com",
   "Referer": "https://leetcode.com",
-  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 (compatible; TrashTalk/2.0; +https://trashtalk.vercel.app)",
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 (compatible; TrashTalk/2.0; +https://trashtalk.vanshtiwari.dev)",
 };
 
 export const CODECHEF_HEADERS = {
-  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 (compatible; TrashTalk/2.0; +https://trashtalk.vercel.app)",
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 (compatible; TrashTalk/2.0; +https://trashtalk.vanshtiwari.dev)",
   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
   "Accept-Language": "en-US,en;q=0.9",
 };

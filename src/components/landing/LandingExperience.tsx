@@ -560,11 +560,11 @@ export default function LandingExperience({
 
                     <div className="oq">
                       <span>“{copy.outcomeLine}”</span>
-                      <small>trashtalk.vercel.app</small>
+                      <small>trashtalk.vanshtiwari.dev</small>
                     </div>
                     <div className="of big">
                       <span>Think you can beat them?</span>
-                      <span>trashtalk.vercel.app</span>
+                      <span>trashtalk.vanshtiwari.dev</span>
                     </div>
                   </div>
                 ) : selectedFormat === "square" ? (
@@ -609,7 +609,7 @@ export default function LandingExperience({
                     </div>
                     <div className="of big">
                       <span>Think you can beat them?</span>
-                      <span>trashtalk.vercel.app</span>
+                      <span>trashtalk.vanshtiwari.dev</span>
                     </div>
                   </div>
                 ) : (
@@ -649,7 +649,7 @@ export default function LandingExperience({
                     </div>
                     <div className="of big">
                       <span>Think you can beat them?</span>
-                      <span>trashtalk.vercel.app</span>
+                      <span>trashtalk.vanshtiwari.dev</span>
                     </div>
                   </div>
                 )}

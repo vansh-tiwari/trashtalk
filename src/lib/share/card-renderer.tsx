@@ -98,7 +98,7 @@ export async function renderBattleCard(
   const dimensions = CARD_DIMENSIONS[format] || CARD_DIMENSIONS.og;
   const { width, height } = dimensions;
 
-  const origin = options.canonicalOrigin || "https://trashtalk.vercel.app";
+  const origin = options.canonicalOrigin || "https://trashtalk.vanshtiwari.dev";
   const model = buildBattleCardModel(snapshot, origin);
   const fonts = await getCardFonts();
 
@@ -578,7 +578,7 @@ export async function renderBattleCard(
                   textTransform: "uppercase",
                 }}
               >
-                Settle your beef at trashtalk.vercel.app
+                Settle your beef at trashtalk.vanshtiwari.dev
               </span>
               <span
                 style={{
@@ -587,7 +587,7 @@ export async function renderBattleCard(
                   color: "#FFFFFF",
                 }}
               >
-                trashtalk.vercel.app
+                trashtalk.vanshtiwari.dev
               </span>
             </div>
           </div>
@@ -1016,7 +1016,7 @@ export async function renderBattleCard(
                   textTransform: "uppercase",
                 }}
               >
-                Settle your beef at trashtalk.vercel.app
+                Settle your beef at trashtalk.vanshtiwari.dev
               </span>
               <span
                 style={{
@@ -1025,7 +1025,7 @@ export async function renderBattleCard(
                   color: "#FFFFFF",
                 }}
               >
-                trashtalk.vercel.app
+                trashtalk.vanshtiwari.dev
               </span>
             </div>
           </div>
@@ -1457,7 +1457,7 @@ export async function renderBattleCard(
                 color: "#FFFFFF",
               }}
             >
-              trashtalk.vercel.app
+              trashtalk.vanshtiwari.dev
             </span>
           </div>
         </div>

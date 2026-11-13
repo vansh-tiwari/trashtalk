@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
   }
 
   const canonicalOrigin =
-    process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin || "https://trashtalk.vercel.app";
+    process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin || "https://trashtalk.vanshtiwari.dev";
 
   return renderBattleCard(snapshot, format, { download, canonicalOrigin });
 }
