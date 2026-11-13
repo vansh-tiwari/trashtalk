@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import type { BattleSnapshot } from "@/lib/storage/contracts";
 import { toBattleViewModel } from "@/lib/battle/presentation";
@@ -19,7 +19,16 @@ import GithubShowcase from "@/components/battle/GithubShowcase";
 import ProblemExplorer from "@/components/problems/ProblemExplorer";
 import CompareForm from "@/components/compare/CompareForm";
 import ShareDialog from "@/components/share/ShareDialog";
-import { getCardUrl, copyText, shareBattle } from "@/lib/share/client";
+import SocialShareStrip from "@/components/share/SocialShareStrip";
+import {
+  getCanonicalBattleUrl,
+  getCardUrl,
+  buildSocialShareText,
+  getTwitterShareUrl,
+  getWhatsAppShareUrl,
+  shareOrDownloadCardImage,
+  copyText,
+} from "@/lib/share/client";
 import type { CardFormat } from "@/lib/share/card-model";
 import type { RoastPersona } from "@/lib/ai/schemas";
 
@@ -31,6 +40,12 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
   const [shareOpen, setShareOpen] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<CardFormat>("og");
   const [copied, setCopied] = useState(false);
+  const [instaReady, setInstaReady] = useState(false);
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const hasRegionalRoast = Boolean(
     snapshot.englishCommentary &&
@@ -66,27 +81,74 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
   });
   const rematchHref = `/battle?${rematchParams.toString()}`;
 
-  // Build the verdict banner headline
+  // Build the verdict banner headline dynamically from snapshot.id so every battle/rematch gets a fresh headline
   let verdictText = `${vm.p1.handle} vs ${vm.p2.handle}`;
   if (vm.isMirrorMatch) {
     verdictText = `${vm.p1.handle} faces their toughest rival: themselves.`;
   } else if (vm.outcome === "win" && vm.winnerHandle) {
     const winner = vm.winnerHandle;
     const loser = winner === vm.p1.handle ? vm.p2.handle : vm.p1.handle;
-    verdictText = `${winner} wins. ${loser} has the better README tho.`;
+    const idSeed = Array.from(snapshot.id || `${winner}-${loser}`).reduce(
+      (acc, ch, idx) => acc + ch.charCodeAt(0) * (idx + 1),
+      0
+    );
+    const verdictOptions =
+      snapshot.platform === "github"
+        ? [
+            `${winner} wins. ${loser} has the better README tho.`,
+            `${winner} ships to prod. ${loser} collects empty repos.`,
+            `${winner} owns the git log by +${vm.margin} pts.`,
+            `${winner} merges clean. ${loser} broke the build.`,
+            `${winner} takes the stars. ${loser} gets the issue ticket.`,
+          ]
+        : snapshot.platform === "leetcode"
+        ? [
+            `${winner} gets the offer. ${loser} is still on Two Sum.`,
+            `${winner} clears by +${vm.margin} pts. ${loser} hit TLE.`,
+            `${winner} optimal runtime. ${loser} needed the hints tab.`,
+            `${winner} takes the crown. ${loser} choked on Q3.`,
+            `${winner} dominates the tape. ${loser} is back to Easy arrays.`,
+          ]
+        : snapshot.platform === "codechef"
+        ? [
+            `${winner} cooks the arena. ${loser} is on dish duty.`,
+            `${winner} takes the star by +${vm.margin} pts.`,
+            `${winner} serves clean AC. ${loser} burned Problem B.`,
+            `${winner} runs the kitchen. ${loser} overcooked the greedy.`,
+          ]
+        : [
+            `${winner} takes the crown by +${vm.margin} pts.`,
+            `${winner} passes system tests. ${loser} died on pretest 2.`,
+            `${winner} owns the scoreboard. ${loser} takes the rating drop.`,
+            `${winner} wins the clash. ${loser} is still debugging edge cases.`,
+            `${winner} dominates the tape. ${loser} brought brute force.`,
+          ];
+    verdictText = verdictOptions[idSeed % verdictOptions.length];
   } else if (vm.outcome === "draw") {
     verdictText = "Same score. Twice the ego.";
   } else if (vm.outcome === "insufficient_data") {
     verdictText = "not enough data. Not enough receipts. No victory lap.";
   }
 
+  const canonicalUrl = getCanonicalBattleUrl(origin, snapshot.id);
+  const socialText = buildSocialShareText({
+    p1Handle: snapshot.player1.handle,
+    p2Handle: snapshot.player2.handle,
+    winnerHandle: snapshot.verdict.winnerHandle,
+    loserHandle: snapshot.verdict.loserHandle,
+    margin: snapshot.verdict.margin,
+    roastText: copy.roastText,
+    url: canonicalUrl,
+  });
+  const twitterShareUrl = getTwitterShareUrl(socialText);
+  const whatsappShareUrl = getWhatsAppShareUrl(socialText);
   const downloadUrl = getCardUrl(snapshot.id, selectedFormat, true);
 
   const handleCopyLink = async () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const url = `${origin}/battle/${snapshot.id}`;
+    const liveOrigin = origin || (typeof window !== "undefined" ? window.location.origin : "");
+    const liveUrl = getCanonicalBattleUrl(liveOrigin, snapshot.id);
     try {
-      await copyText(url);
+      await copyText(liveUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -94,14 +156,24 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
     }
   };
 
-  const handleGroupChatShare = async () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const url = `${origin}/battle/${snapshot.id}`;
-    await shareBattle({
-      title: "TrashTalk Battle",
-      text: `@${snapshot.player1.handle} vs @${snapshot.player2.handle} on TrashTalk: "${copy.roastText}"`,
-      url,
-    });
+  const handleInstagramShare = async () => {
+    const targetFormat = selectedFormat === "og" ? "story" : selectedFormat;
+    if (selectedFormat === "og") {
+      setSelectedFormat("story");
+    }
+    try {
+      await shareOrDownloadCardImage({
+        id: snapshot.id,
+        format: targetFormat,
+        title: "TrashTalk Battle Receipt",
+        caption: socialText,
+        url: canonicalUrl,
+      });
+      setInstaReady(true);
+      setTimeout(() => setInstaReady(false), 3000);
+    } catch {
+      // quiet fallback
+    }
   };
 
   return (
@@ -143,6 +215,13 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
           p1Handle={snapshot.player1.handle}
           p2Handle={snapshot.player2.handle}
           headToHeadRoast={activeCommentary?.headToHeadRoast}
+          onShareClick={() => setShareOpen(true)}
+          twitterShareUrl={twitterShareUrl}
+          whatsappShareUrl={whatsappShareUrl}
+          onInstagramShare={handleInstagramShare}
+          onCopyLink={handleCopyLink}
+          copied={copied}
+          instaReady={instaReady}
           languageToggle={
             hasRegionalRoast ? (
               <RoastLanguageToggle
@@ -259,7 +338,7 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
             <div className="shl">
               <div className="mono">Share</div>
               <h2>Send it to them.</h2>
-              <p>group chat’s waiting. Pick a format. One tap and it’s in the group chat.</p>
+              <p>group chat’s waiting. Pick a format. One tap and it’s on X, Instagram, or WhatsApp.</p>
 
               {/* Format Switcher */}
               <div className="fmt" role="tablist" aria-label="Share card formats">
@@ -296,28 +375,28 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
               </div>
 
               {/* Share Action Buttons */}
-              <div className="acts">
+              <div className="acts flex flex-wrap items-center gap-3">
+                <SocialShareStrip
+                  twitterUrl={twitterShareUrl}
+                  whatsappUrl={whatsappShareUrl}
+                  onInstagramShare={handleInstagramShare}
+                  onCopyLink={handleCopyLink}
+                  copied={copied}
+                  instaReady={instaReady}
+                  theme="dark"
+                  onChannelSelect={(ch) => {
+                    if (ch === "instagram") setSelectedFormat("story");
+                    else if (ch === "x") setSelectedFormat("og");
+                  }}
+                />
                 <a
                   href={downloadUrl}
                   download
-                  className="fb y"
+                  className="fb gw"
+                  style={{ minHeight: "48px" }}
                 >
                   Download PNG
                 </a>
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="fb gw"
-                >
-                  {copied ? "Copied!" : "Copy link"}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleGroupChatShare}
-                  className="fb gw"
-                >
-                  Send to group chat
-                </button>
               </div>
             </div>
 
@@ -385,11 +464,11 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
 
                     <div className="oq">
                       <span>“{copy.outcomeLine}”</span>
-                      <small>trashtalk.dev</small>
+                      <small>trashtalk.vercel.app</small>
                     </div>
                     <div className="of big">
                       <span>Think you can beat them?</span>
-                      <span>trashtalk.dev</span>
+                      <span>trashtalk.vercel.app</span>
                     </div>
                   </div>
                 ) : selectedFormat === "square" ? (
@@ -439,7 +518,7 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
                     </div>
                     <div className="of big">
                       <span>Think you can beat them?</span>
-                      <span>trashtalk.dev</span>
+                      <span>trashtalk.vercel.app</span>
                     </div>
                   </div>
                 ) : (
@@ -481,7 +560,7 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
                     </div>
                     <div className="of big">
                       <span>Think you can beat them?</span>
-                      <span>trashtalk.dev</span>
+                      <span>trashtalk.vercel.app</span>
                     </div>
                   </div>
                 )}

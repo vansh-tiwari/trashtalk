@@ -98,7 +98,7 @@ export async function renderBattleCard(
   const dimensions = CARD_DIMENSIONS[format] || CARD_DIMENSIONS.og;
   const { width, height } = dimensions;
 
-  const origin = options.canonicalOrigin || "https://trashtalk.dev";
+  const origin = options.canonicalOrigin || "https://trashtalk.vercel.app";
   const model = buildBattleCardModel(snapshot, origin);
   const fonts = await getCardFonts();
 
@@ -572,22 +572,22 @@ export async function renderBattleCard(
             >
               <span
                 style={{
-                  fontSize: "20px",
+                  fontSize: "18px",
                   fontWeight: 900,
-                  letterSpacing: "1px",
+                  letterSpacing: "0.8px",
                   textTransform: "uppercase",
                 }}
               >
-                Settle your beef at trashtalk.dev
+                Settle your beef at trashtalk.vercel.app
               </span>
               <span
                 style={{
-                  fontSize: "16px",
+                  fontSize: "15px",
                   fontWeight: 800,
                   color: "#FFFFFF",
                 }}
               >
-                trashtalk.dev
+                trashtalk.vercel.app
               </span>
             </div>
           </div>
@@ -1010,22 +1010,22 @@ export async function renderBattleCard(
             >
               <span
                 style={{
-                  fontSize: "17px",
+                  fontSize: "16px",
                   fontWeight: 900,
-                  letterSpacing: "1px",
+                  letterSpacing: "0.8px",
                   textTransform: "uppercase",
                 }}
               >
-                Settle your beef at trashtalk.dev
+                Settle your beef at trashtalk.vercel.app
               </span>
               <span
                 style={{
-                  fontSize: "15px",
+                  fontSize: "14px",
                   fontWeight: 800,
                   color: "#FFFFFF",
                 }}
               >
-                trashtalk.dev
+                trashtalk.vercel.app
               </span>
             </div>
           </div>
@@ -1452,12 +1452,12 @@ export async function renderBattleCard(
             </span>
             <span
               style={{
-                fontSize: "13px",
+                fontSize: "12px",
                 fontWeight: 700,
                 color: "#FFFFFF",
               }}
             >
-              trashtalk.dev
+              trashtalk.vercel.app
             </span>
           </div>
         </div>

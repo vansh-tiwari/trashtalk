@@ -1,0 +1,6 @@
+{
+  "name": "TrashTalk 2.0 — Brutalist Developer Battle Arena",
+  "description": "Where developer profiles go to get roasted. Compare Codeforces, LeetCode, CodeChef, and GitHub profiles across 5 mathematical grit axes with brutalist receipts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

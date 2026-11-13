@@ -25,6 +25,9 @@ export default function Scoreboard({ vm }: ScoreboardProps) {
 
   return (
     <section className="split-hero-stage select-none" aria-label="Scoreboard">
+      <h1 className="sr-only">
+        @{vm.p1.handle} vs @{vm.p2.handle} Battle Receipt
+      </h1>
       {/* Top Half: Player 1 (Left: Info, Right: Giant Score) */}
       <div className="split-top-row">
         <div className="split-p1-info" data-testid="player1-panel">
@@ -37,12 +40,12 @@ export default function Scoreboard({ vm }: ScoreboardProps) {
             )}
             {isDraw && <span className="tagw-leading">TIED</span>}
           </div>
-          <h1
+          <h2
             className={`split-nm ${isP2Winner ? "out" : ""}`}
             title={vm.p1.handle}
           >
             <span className="sl">{vm.p1.handle}</span>
-          </h1>
+          </h2>
           <div className="split-meta">
             {vm.p1.rank ? <span className="split-bd">{vm.p1.rank}</span> : null}
             <span className="split-rating">
@@ -122,12 +125,12 @@ export default function Scoreboard({ vm }: ScoreboardProps) {
             {isDraw && <span className="tagw-leading">TIED</span>}
             <span className="split-k">PLAYER 02</span>
           </div>
-          <h1
+          <h2
             className={`split-nm ${isP1Winner ? "out" : ""}`}
             title={vm.p2.handle}
           >
             <span className="sl">{vm.p2.handle}</span>
-          </h1>
+          </h2>
           <div className="split-meta">
             <span className="split-rating">
               {vm.p2.rating ? (

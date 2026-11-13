@@ -137,4 +137,23 @@ describe("Reliable Persona Commentary Engine", () => {
     expect(result.winnerHandle).toBeNull();
     expect(result.punchline.toLowerCase()).toContain("draw");
   });
+
+  it("produces varied roast sentences across repeated battles for the same matchup", async () => {
+    const seenPunchlines = new Set<string>();
+    const seenH2H = new Set<string>();
+
+    for (let i = 0; i < 12; i++) {
+      const result = await generateCommentary({
+        p1Evidence: p1,
+        p2Evidence: p2,
+        verdict: mockVerdict,
+        persona: "savage_dev",
+      });
+      seenPunchlines.add(result.punchline);
+      seenH2H.add(result.headToHeadRoast);
+    }
+
+    expect(seenPunchlines.size).toBeGreaterThan(1);
+    expect(seenH2H.size).toBeGreaterThan(1);
+  });
 });

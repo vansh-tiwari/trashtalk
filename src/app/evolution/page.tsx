@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "2020 vs 2026 Architectural Evolution & Lore",
   description:
     "How TrashTalk evolved from a fragile 2020 student Flask app to an immutable Next.js 15 production system with rate-pacing and deterministic scoring.",
+  alternates: {
+    canonical: "/evolution",
+  },
   openGraph: {
     title: "2020 vs 2026 Architectural Evolution & Lore · TrashTalk",
     description: "From a college hackathon project to an immutable 5-axis algorithmic arena.",

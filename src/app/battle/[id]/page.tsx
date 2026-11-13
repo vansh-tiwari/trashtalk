@@ -44,6 +44,9 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: {
+      canonical: `/battle/${snapshot.id}`,
+    },
     openGraph: {
       title,
       description,

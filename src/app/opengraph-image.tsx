@@ -169,7 +169,7 @@ export default async function OpenGraphImage() {
               textTransform: "uppercase",
             }}
           >
-            trashtalk.vanshtiwari.dev
+            trashtalk.vercel.app
           </div>
         </div>
       </div>

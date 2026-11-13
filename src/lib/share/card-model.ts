@@ -148,6 +148,7 @@ export function buildBattleCardModel(
         month: "short",
         day: "numeric",
         year: "numeric",
+        timeZone: "UTC",
       });
     }
   } catch {

@@ -4,17 +4,16 @@
   "private": true,
   "description": "TrashTalk 2.0 - The AI-Powered Developer Battle Arena & Profile Roaster",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3000 -H 0.0.0.0",
     "lint": "node scripts/lint.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.0",
-    "@vercel/analytics": "^2.0.1",
+    "@google/genai": "^3.0.0",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "framer-motion": "^12.4.7",

@@ -16,6 +16,8 @@ export interface CompareFormProps {
   initialU2?: string;
   initialPersona?: RoastPersona;
   mode?: "battle" | "mirror";
+  showQuickTry?: boolean;
+  idPrefix?: string;
   onCreated?: (battleId: string) => void;
   onPlatformChange?: (platform: Platform) => void;
   className?: string;
@@ -28,6 +30,8 @@ export default function CompareForm({
   initialU2,
   initialPersona = "savage_dev",
   mode = "battle",
+  showQuickTry = false,
+  idPrefix = "",
   onCreated,
   onPlatformChange,
   className = "",
@@ -126,6 +130,14 @@ export default function CompareForm({
     } catch (gateErr) {
       setStatus("error");
       setErrorMessage(gateErr instanceof Error ? gateErr.message : "Unsupported platform.");
+      return;
+    }
+
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      setStatus("error");
+      setErrorMessage(
+        "You appear to be offline. Reconnect to the internet or explore the saved demo battles."
+      );
       return;
     }
 
@@ -236,9 +248,9 @@ export default function CompareForm({
                 key={pid}
                 type="button"
                 role="tab"
-                id={`tab-${pid}`}
+                id={`${idPrefix}tab-${pid}`}
                 aria-selected={isSelected}
-                aria-controls={`panel-${pid}`}
+                aria-controls={`${idPrefix}panel-${pid}`}
                 onClick={() => {
                   setSelectedPlatform(pid);
                   setErrorMessage(null);
@@ -255,7 +267,7 @@ export default function CompareForm({
         </div>
 
         {!isBattleEnabled(selectedPlatform) ? (
-          <div className="platform-preview-panel" role="tabpanel" id={`panel-${selectedPlatform}`}>
+          <div className="platform-preview-panel" role="tabpanel" id={`${idPrefix}panel-${selectedPlatform}`}>
             <div className="preview-message">
               <span className="preview-title">
                 {`${PLATFORM_REGISTRY[selectedPlatform]?.label || selectedPlatform} is coming later.`}
@@ -276,9 +288,12 @@ export default function CompareForm({
           </div>
         ) : (
           /* The Brutalist Input Bar (.bar) */
-          <div className="bar" role="tabpanel" id={`panel-${selectedPlatform}`}>
+          <div className="bar" role="tabpanel" id={`${idPrefix}panel-${selectedPlatform}`}>
+            <label htmlFor={`${idPrefix}you`} className="sr-only">
+              Player 1 handle
+            </label>
             <input
-              id="you"
+              id={`${idPrefix}you`}
               type="text"
               required
               autoCapitalize="none"
@@ -303,8 +318,11 @@ export default function CompareForm({
               vs
             </b>
 
+            <label htmlFor={`${idPrefix}rival`} className="sr-only">
+              Player 2 handle
+            </label>
             <input
-              id="rival"
+              id={`${idPrefix}rival`}
               type="text"
               required
               autoCapitalize="none"
@@ -347,100 +365,101 @@ export default function CompareForm({
         )}
         </div>
 
-        {/* Quick Battle Shortcuts (.try) */}
-        {selectedPlatform === "github" ? (
-          <div className="try">
-            <span className="mono">One click</span>
-            <Link
-              href="/battle/gh-torvalds-vs-antirez-legendary"
-              className="hover:text-punch transition-colors"
-            >
-              torvalds vs antirez
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setU1("gaearon");
-                setU2("yyx990803");
-              }}
-              className="hover:text-punch transition-colors"
-            >
-              gaearon vs yyx990803
-            </button>
-          </div>
-        ) : selectedPlatform === "codechef" ? (
-          <div className="try">
-            <span className="mono">One click</span>
-            <Link
-              href="/battle/cc-akulsareen-vs-gennady-legendary"
-              className="hover:text-punch transition-colors"
-            >
-              akulsareen vs gennady
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setU1("akulsareen");
-                setU2("gennady");
-              }}
-              className="hover:text-punch transition-colors"
-            >
-              5★ vs 7★ Showdown
-            </button>
-          </div>
-        ) : selectedPlatform === "leetcode" ? (
-          <div className="try">
-            <span className="mono">One click</span>
-            <Link
-              href="/battle/lc-neetcode-vs-larryny-legendary"
-              className="hover:text-punch transition-colors"
-            >
-              neetcode vs larryny
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setU1("lee215");
-                setU2("StefanPochmann");
-              }}
-              className="hover:text-punch transition-colors"
-            >
-              lee215 vs StefanPochmann
-            </button>
-          </div>
-        ) : (
-          <div className="try">
-            <span className="mono">One click</span>
-            <Link
-              href="/battle/cf-tourist-vs-petr-legendary"
-              className="hover:text-punch transition-colors"
-            >
-              tourist vs Petr
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedPlatform("codeforces");
-                setU1("ecnerwala");
-                setU2("Benq");
-              }}
-              className="hover:text-punch transition-colors"
-            >
-              ecnerwala vs Benq
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedPlatform("codeforces");
-                setU1("Radewoosh");
-                setU2("Um_nik");
-              }}
-              className="hover:text-punch transition-colors"
-            >
-              Radewoosh vs Um_nik
-            </button>
-          </div>
-        )}
+        {/* Quick Battle Shortcuts (.try) — only shown when explicitly enabled */}
+        {showQuickTry &&
+          (selectedPlatform === "github" ? (
+            <div className="try">
+              <span className="mono">One click</span>
+              <Link
+                href="/battle/gh-torvalds-vs-antirez-legendary"
+                className="hover:text-punch transition-colors"
+              >
+                torvalds vs antirez
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setU1("gaearon");
+                  setU2("yyx990803");
+                }}
+                className="hover:text-punch transition-colors"
+              >
+                gaearon vs yyx990803
+              </button>
+            </div>
+          ) : selectedPlatform === "codechef" ? (
+            <div className="try">
+              <span className="mono">One click</span>
+              <Link
+                href="/battle/cc-akulsareen-vs-gennady-legendary"
+                className="hover:text-punch transition-colors"
+              >
+                akulsareen vs gennady
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setU1("akulsareen");
+                  setU2("gennady");
+                }}
+                className="hover:text-punch transition-colors"
+              >
+                5★ vs 7★ Showdown
+              </button>
+            </div>
+          ) : selectedPlatform === "leetcode" ? (
+            <div className="try">
+              <span className="mono">One click</span>
+              <Link
+                href="/battle/lc-neetcode-vs-larryny-legendary"
+                className="hover:text-punch transition-colors"
+              >
+                neetcode vs larryny
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setU1("lee215");
+                  setU2("StefanPochmann");
+                }}
+                className="hover:text-punch transition-colors"
+              >
+                lee215 vs StefanPochmann
+              </button>
+            </div>
+          ) : (
+            <div className="try">
+              <span className="mono">One click</span>
+              <Link
+                href="/battle/cf-tourist-vs-petr-legendary"
+                className="hover:text-punch transition-colors"
+              >
+                tourist vs Petr
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedPlatform("codeforces");
+                  setU1("ecnerwala");
+                  setU2("Benq");
+                }}
+                className="hover:text-punch transition-colors"
+              >
+                ecnerwala vs Benq
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedPlatform("codeforces");
+                  setU1("Radewoosh");
+                  setU2("Um_nik");
+                }}
+                className="hover:text-punch transition-colors"
+              >
+                Radewoosh vs Um_nik
+              </button>
+            </div>
+          ))}
 
         {/* Status / Cooldown Feedback */}
         {isBattleEnabled(selectedPlatform) && (

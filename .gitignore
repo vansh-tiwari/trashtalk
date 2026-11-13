@@ -1,26 +1,28 @@
-# Next.js
+# Next.js & Build Output
 .next/
 out/
 build/
 dist/
 .data/
+.turbo/
 
 # Dependencies
 node_modules/
 .pnp
 .pnp.js
 
-# Environment Variables
+# Environment Variables & Secrets
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
+.env.production
+.env.development
+.env.test
+!.env.example
 
 # Vercel
 .vercel
 
-# TypeScript
+# TypeScript & Compilers
 *.tsbuildinfo
 next-env.d.ts
 
@@ -34,9 +36,17 @@ env/
 venv/
 ENV/
 
-# System files
+# System & IDE files
 .DS_Store
+Thumbs.db
 *.pem
+.idea/
+.vscode/
+
+# Testing & Tooling artifacts
 .superpowers/
+.aistudio/
 test-results/
 playwright-report/
+coverage/
+blob-report/

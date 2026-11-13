@@ -6,12 +6,14 @@ import {
   type CardFormat,
   getCanonicalBattleUrl,
   getCardUrl,
+  getWhatsAppShareUrl,
+  shareOrDownloadCardImage,
   copyText,
   shareBattle,
 } from "@/lib/share/client";
 import { buildBattleCopy } from "@/lib/battle/copy";
 import { Reveal } from "@/components/motion/Reveal";
-import { X, Copy, Check, Share2, Download, RefreshCw, Image as ImageIcon } from "lucide-react";
+import { X, Copy, Check, Share2, Download, RefreshCw, Image as ImageIcon, MessageCircle, Camera } from "lucide-react";
 
 export interface ShareDialogProps {
   snapshot: BattleSnapshot;
@@ -51,11 +53,14 @@ export default function ShareDialog({ snapshot, open, onClose }: ShareDialogProp
 
   const [copyState, setCopyState] = useState<"idle" | "copying" | "copied" | "error">("idle");
   const [copyImageState, setCopyImageState] = useState<"idle" | "copying" | "copied" | "error">("idle");
+  const [instaState, setInstaState] = useState<"idle" | "sharing" | "done">("idle");
   const [shareError, setShareError] = useState<string | null>(null);
   const [canDeviceShare, setCanDeviceShare] = useState(false);
+  const [origin, setOrigin] = useState("");
 
-  // Check device share support on client mount
+  // Check device share support & origin on client mount
   useEffect(() => {
+    setOrigin(window.location.origin);
     if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
       setCanDeviceShare(true);
     }
@@ -87,7 +92,6 @@ export default function ShareDialog({ snapshot, open, onClose }: ShareDialogProp
     return null;
   }
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
   const canonicalUrl = getCanonicalBattleUrl(origin, snapshot.id);
   const copy = buildBattleCopy(snapshot);
 
@@ -99,7 +103,9 @@ export default function ShareDialog({ snapshot, open, onClose }: ShareDialogProp
     ? `@${winner} took @${loser} to task (+${margin} pts) on @TrashTalkArena!\n\n"${copy.roastText}"\n\n`
     : `@${snapshot.player1.handle} vs @${snapshot.player2.handle} on trashtalk.\n\n"${copy.roastText}"\n\n`;
 
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetHeadline + canonicalUrl)}`;
+  const fullShareText = tweetHeadline + canonicalUrl;
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(fullShareText)}`;
+  const whatsappUrl = getWhatsAppShareUrl(fullShareText);
   const cardPreviewUrl = getCardUrl(snapshot.id, selectedFormat);
   const downloadUrl = getCardUrl(snapshot.id, selectedFormat, true);
 
@@ -145,6 +151,28 @@ export default function ShareDialog({ snapshot, open, onClose }: ShareDialogProp
     } catch {
       setCopyImageState("error");
       setTimeout(() => setCopyImageState("idle"), 3000);
+    }
+  };
+
+  const handleInstagramShare = async () => {
+    setInstaState("sharing");
+    setShareError(null);
+    const targetFormat = selectedFormat === "og" ? "story" : selectedFormat;
+    if (selectedFormat === "og") {
+      handleFormatChange("story");
+    }
+    try {
+      await shareOrDownloadCardImage({
+        id: snapshot.id,
+        format: targetFormat,
+        title: `@${snapshot.player1.handle} vs @${snapshot.player2.handle} · TrashTalk`,
+        caption: fullShareText,
+        url: canonicalUrl,
+      });
+      setInstaState("done");
+      setTimeout(() => setInstaState("idle"), 3000);
+    } catch {
+      setInstaState("idle");
     }
   };
 
@@ -308,7 +336,45 @@ export default function ShareDialog({ snapshot, open, onClose }: ShareDialogProp
 
         {/* Action Controls */}
         <div className="space-y-2.5 pt-1">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {/* Share to X */}
+            <a
+              href={tweetUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#111214] hover:bg-black text-white border-2 border-ink text-xs font-bold transition-colors min-h-[44px]"
+            >
+              <Share2 className="w-3.5 h-3.5 text-white/80" aria-hidden="true" />
+              <span>share to X</span>
+            </a>
+
+            {/* Share to WhatsApp */}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-[#111214] border-2 border-ink text-xs font-extrabold transition-colors min-h-[44px]"
+            >
+              <MessageCircle className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>WhatsApp</span>
+            </a>
+
+            {/* Share to Instagram (Story / Post) */}
+            <button
+              type="button"
+              onClick={handleInstagramShare}
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-[#FF5A52] to-[#FF9E2C] text-[#111214] border-2 border-ink text-xs font-extrabold transition-all min-h-[44px]"
+            >
+              <Camera className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>
+                {instaState === "sharing"
+                  ? "preparing..."
+                  : instaState === "done"
+                  ? "card + caption ready!"
+                  : "Instagram Story"}
+              </span>
+            </button>
+
             {/* Copy Link Button */}
             <button
               type="button"
@@ -352,17 +418,6 @@ export default function ShareDialog({ snapshot, open, onClose }: ShareDialogProp
                 </>
               )}
             </button>
-
-            {/* Share to X */}
-            <a
-              href={tweetUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white border-2 border-ink hover:bg-[#F4F4F6] text-xs font-bold text-ink transition-colors min-h-[44px]"
-            >
-              <Share2 className="w-3.5 h-3.5 text-secondary" aria-hidden="true" />
-              <span>share to X</span>
-            </a>
 
             {/* Download PNG for Selected Format */}
             <a

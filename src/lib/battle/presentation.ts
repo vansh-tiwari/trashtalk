@@ -234,6 +234,7 @@ export function toBattleViewModel(snapshot: BattleSnapshot): BattleViewModel {
         month: "short",
         day: "numeric",
         year: "numeric",
+        timeZone: "UTC",
       });
     }
   } catch {

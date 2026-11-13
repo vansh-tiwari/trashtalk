@@ -113,7 +113,7 @@ describe("On-Demand Serverless Battle Reconstruction", () => {
     expect(snapshot?.player1.handle.toLowerCase()).toBe("alice");
     expect(snapshot?.player2.handle.toLowerCase()).toBe("bob");
     expect(snapshot?.verdict.outcome).toBe("win");
-    expect(snapshot?.verdict.winnerHandle.toLowerCase()).toBe("alice");
+    expect(snapshot?.verdict.winnerHandle?.toLowerCase()).toBe("alice");
 
     // 4. Verify snapshot is now safely cached in store for subsequent requests
     const cached = await mockStore.get(battleId);

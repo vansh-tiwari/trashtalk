@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import type { BattleCopy } from "@/lib/battle/copy";
 import type { RoastPersona } from "@/lib/ai/schemas";
+import SocialShareStrip from "@/components/share/SocialShareStrip";
 
 export interface RoastMomentProps {
   copy: BattleCopy;
@@ -17,6 +18,13 @@ export interface RoastMomentProps {
   p2Roast?: string;
   languageToggle?: React.ReactNode;
   onPersonaChange?: (persona: RoastPersona) => void;
+  onShareClick?: () => void;
+  twitterShareUrl?: string;
+  whatsappShareUrl?: string;
+  onInstagramShare?: () => void;
+  onCopyLink?: () => void;
+  copied?: boolean;
+  instaReady?: boolean;
 }
 
 const PERSONA_CONFIG: Array<{ id: RoastPersona; label: string }> = [
@@ -33,10 +41,13 @@ export default function RoastMoment({
   p1Handle = "player1",
   p2Handle = "player2",
   headToHeadRoast,
-  p1Roast,
-  p2Roast,
   languageToggle,
-  onPersonaChange,
+  twitterShareUrl,
+  whatsappShareUrl,
+  onInstagramShare,
+  onCopyLink,
+  copied = false,
+  instaReady = false,
 }: RoastMomentProps) {
   const isDraw =
     copy.outcomeLine.toLowerCase().includes("draw") ||
@@ -116,8 +127,20 @@ export default function RoastMoment({
         )}
       </div>
 
-      {/* Rematch Action (.rx) */}
-      <div className="rx" aria-label="Roast actions">
+      {/* Rematch & Quick Social Share Actions (.rx) */}
+      <div className="rx flex flex-wrap items-center gap-3" aria-label="Roast actions">
+        {twitterShareUrl && whatsappShareUrl && onInstagramShare && onCopyLink && (
+          <SocialShareStrip
+            twitterUrl={twitterShareUrl}
+            whatsappUrl={whatsappShareUrl}
+            onInstagramShare={onInstagramShare}
+            onCopyLink={onCopyLink}
+            copied={copied}
+            instaReady={instaReady}
+            theme="light"
+          />
+        )}
+
         <Link
           href={rematchHref}
           className="fb g"

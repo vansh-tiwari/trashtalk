@@ -70,6 +70,7 @@ describe("ScoreBreakdown Component", () => {
 
   it("renders tie matches with clean counter-advantage narrative", () => {
     const p1Score = {
+      handle: "alpha",
       total: 85,
       axes: {
         algorithmicGrit: 90,
@@ -78,8 +79,16 @@ describe("ScoreBreakdown Component", () => {
         recentVelocity: 85,
         topicBreadth: 85,
       },
+      metrics: {
+        rating: 2000,
+        maxRating: 2100,
+        solvedCount: 500,
+        recentAcceptedCount: 50,
+        distinctTagsCount: 20,
+      },
     };
     const p2Score = {
+      handle: "beta",
       total: 85,
       axes: {
         algorithmicGrit: 80,
@@ -87,6 +96,13 @@ describe("ScoreBreakdown Component", () => {
         solveVolume: 85,
         recentVelocity: 85,
         topicBreadth: 85,
+      },
+      metrics: {
+        rating: 2000,
+        maxRating: 2200,
+        solvedCount: 500,
+        recentAcceptedCount: 50,
+        distinctTagsCount: 20,
       },
     };
 
@@ -97,6 +113,7 @@ describe("ScoreBreakdown Component", () => {
         p1Handle="alpha"
         p2Handle="beta"
         outcome="draw"
+        winnerHandle={null}
         margin={0}
         platform="codeforces"
       />

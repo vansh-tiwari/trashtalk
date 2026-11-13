@@ -1,6 +1,6 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI, ThinkingLevel, Type } from "@google/genai";
 import { BattleVerdict } from "../battle/types";
-import { LeetcodeEvidence, Platform, PlatformEvidence } from "../platforms/contracts";
+import { Platform, PlatformEvidence } from "../platforms/contracts";
 import { generateLocalCommentary } from "./local-roaster";
 import { PERSONA_DEFINITIONS, PROMPT_VERSION } from "./personas";
 import { CommentaryResult, CommentaryResultSchema, RoastPersona } from "./schemas";
@@ -17,6 +17,29 @@ export interface CommentaryRequest {
   regionInfo?: GlobalRegionInfo;
 }
 
+const ROAST_ANGLES = [
+  "Focus on contest choke under timer pressure vs padding easy practice problems.",
+  "Focus on algorithmic complexity sins (O(N^2) brute force, TLE on pretest 2, memory limits).",
+  "Focus on the gap between peak rating pedigree and volume grinding.",
+  "Focus on submission hygiene, wrong-answer penalties, and editorial tab dependency.",
+  "Focus on comfort-zone problem tags vs real high-difficulty algorithmic grit.",
+  "Focus on ego vs actual scoreboard receipts when the round goes live.",
+  "Focus on velocity and recent form vs dusty historical achievements.",
+  "Focus on shipping real code/solutions vs tutorial cloning and surface-level metrics.",
+];
+
+function boundPunchlineText(raw: string): string {
+  let cleaned = raw.trim().replace(/^["'“”]+|["'“”]+$/g, "").trim();
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  if (words.length > 21) {
+    cleaned = words.slice(0, 20).join(" ").replace(/[,;:-]+$/, "") + ".";
+  }
+  if (Array.from(cleaned).length > 145) {
+    cleaned = Array.from(cleaned).slice(0, 140).join("").trim() + "…";
+  }
+  return cleaned;
+}
+
 export async function generateCommentary({
   p1Evidence,
   p2Evidence,
@@ -27,7 +50,15 @@ export async function generateCommentary({
   modelName,
   regionInfo,
 }: CommentaryRequest): Promise<CommentaryResult> {
-  const key = apiKey || process.env.GEMINI_API_KEY;
+  const rawKey = apiKey !== undefined ? apiKey : process.env.GEMINI_API_KEY;
+  const key =
+    rawKey &&
+    rawKey.trim() !== "" &&
+    rawKey.trim() !== "MY_GEMINI_API_KEY" &&
+    rawKey.trim() !== "dummy-test-key"
+      ? rawKey.trim()
+      : "";
+
   const isLeetcode =
     platform === "leetcode" ||
     p1Evidence.platform === "leetcode" ||
@@ -41,14 +72,22 @@ export async function generateCommentary({
     p1Evidence.platform === "github" ||
     p2Evidence.platform === "github";
 
-  // Local-First Default: If no API key is provided, return deterministic local commentary immediately
+  const targetPlatform: Platform = isGithub
+    ? "github"
+    : isLeetcode
+    ? "leetcode"
+    : isCodechef
+    ? "codechef"
+    : "codeforces";
+
+  // Local-First Default: If no valid API key is provided, return dynamic local commentary immediately
   if (!key) {
     return generateLocalCommentary({
       p1Evidence,
       p2Evidence,
       verdict,
       persona,
-      platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+      platform: targetPlatform,
       regionInfo,
     });
   }
@@ -57,14 +96,21 @@ export async function generateCommentary({
   const configuredModel = modelName || process.env.GEMINI_MODEL;
   const candidateModels = Array.from(
     new Set(
-      [configuredModel, "gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"].filter(
+      [configuredModel, "gemini-3.8-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"].filter(
         (m): m is string => Boolean(m)
       )
     )
   );
 
   try {
-    const genAI = new GoogleGenerativeAI(key);
+    const ai = new GoogleGenAI({
+      apiKey: key,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        },
+      },
+    });
 
     const isDraw = verdict.outcome === "draw";
     const winnerText = isDraw ? "DRAW (No winner)" : `Winner: @${verdict.winnerHandle}`;
@@ -75,6 +121,9 @@ export async function generateCommentary({
       : isCodechef
       ? "Platform: CodeChef (focus on star ratings 1★-7★, divisions Div 1-4, Starters/Cook-Off/Lunchtime/Long Challenge, chef hats, and kitchen roasting puns)."
       : "Platform: Codeforces (focus on rating pedigree, contest peaks, algorithmic grit, and speed).";
+
+    const randomAngle = ROAST_ANGLES[Math.floor(Math.random() * ROAST_ANGLES.length)];
+    const variationSeed = Math.floor(Math.random() * 100000);
 
     const languageDirective =
       regionInfo && !regionInfo.isEnglishDefault
@@ -92,67 +141,85 @@ CRITICAL TONE REQUIREMENT:
 `;
 
     const compactPrompt = `
-Showdown Evidence:
+Showdown Evidence (Variation Seed #${variationSeed}):
 - ${platformFlavor}
-- Player 1: @${verdict.player1Score.handle} (Rating: ${verdict.player1Score.metrics.rating}, Peak: ${verdict.player1Score.metrics.maxRating}, Solved: ${verdict.player1Score.metrics.solvedCount})
-- Player 2: @${verdict.player2Score.handle} (Rating: ${verdict.player2Score.metrics.rating}, Peak: ${verdict.player2Score.metrics.maxRating}, Solved: ${verdict.player2Score.metrics.solvedCount})
+- Creative Angle: ${randomAngle}
+- Player 1: @${verdict.player1Score.handle} (Composite Score: ${verdict.player1Score.total}/100, Rating: ${verdict.player1Score.metrics.rating}, Peak: ${verdict.player1Score.metrics.maxRating}, Solved: ${verdict.player1Score.metrics.solvedCount}, Velocity: ${verdict.player1Score.axes.recentVelocity}/100, Breadth: ${verdict.player1Score.axes.topicBreadth}/100)
+- Player 2: @${verdict.player2Score.handle} (Composite Score: ${verdict.player2Score.total}/100, Rating: ${verdict.player2Score.metrics.rating}, Peak: ${verdict.player2Score.metrics.maxRating}, Solved: ${verdict.player2Score.metrics.solvedCount}, Velocity: ${verdict.player2Score.axes.recentVelocity}/100, Breadth: ${verdict.player2Score.axes.topicBreadth}/100)
 - LOCKED VERDICT: ${winnerText}. Margin: ${verdict.margin} pts. Reason: ${verdict.reasoning}
 ${languageDirective}
-Task: Write a concise, humorous commentary matching your persona.
-Respond ONLY with a valid JSON object matching this schema:
-{
-  "headToHeadRoast": "paragraph comparing both players",
-  "player1Roast": "short direct line targeting Player 1",
-  "player2Roast": "short direct line targeting Player 2",
-  "punchline": "punchy concluding victory or draw line"
-}
-Do not wrap in markdown quotes. Return raw JSON.
+Task: Write a fresh, original, humorous commentary matching your persona. Never reuse generic cliché lines.
+CRITICAL LENGTH RULE FOR "punchline": Must be a single brutal sentence between 8 and 18 words (strictly under 130 characters) targeting the loser by handle.
 `;
 
     let text = "";
-    let lastError: unknown = null;
 
     for (const candidateModel of candidateModels) {
       try {
-        const model = genAI.getGenerativeModel({
+        let timeoutId: NodeJS.Timeout | undefined;
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(
+            () => reject(new Error(`AI generation timeout on ${candidateModel}`)),
+            4500
+          );
+        });
+
+        const callPromise = ai.models.generateContent({
           model: candidateModel,
-          generationConfig: {
-            maxOutputTokens: 350,
-            temperature: 0.7,
+          contents: compactPrompt,
+          config: {
+            systemInstruction: personaDef.systemInstruction,
+            responseMimeType: "application/json",
+            thinkingConfig:
+              candidateModel.startsWith("gemini-3.8") || candidateModel.startsWith("gemini-4")
+                ? { thinkingLevel: ThinkingLevel.LOW }
+                : undefined,
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                headToHeadRoast: {
+                  type: Type.STRING,
+                  description: "2-3 sharp sentences comparing both players using their actual numbers",
+                },
+                player1Roast: {
+                  type: Type.STRING,
+                  description: "Short direct line targeting Player 1",
+                },
+                player2Roast: {
+                  type: Type.STRING,
+                  description: "Short direct line targeting Player 2",
+                },
+                punchline: {
+                  type: Type.STRING,
+                  description: "Short brutal 8-18 word concluding victory or draw line",
+                },
+              },
+              required: ["headToHeadRoast", "player1Roast", "player2Roast", "punchline"],
+            },
           },
         });
 
-        // 3.5-second timeout deadline with clean timer disposal to ensure responsive user experience
-        let timeoutId: NodeJS.Timeout | undefined;
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          timeoutId = setTimeout(() => reject(new Error(`AI generation timeout on ${candidateModel}`)), 3500);
-        });
-
-        const callPromise = model.generateContent([
-          { text: personaDef.systemInstruction },
-          { text: compactPrompt },
-        ]);
-
         try {
           const result = await Promise.race([callPromise, timeoutPromise]);
-          text = result.response.text().trim();
+          text = (result.text ?? "").trim();
           if (text) break;
         } finally {
           if (timeoutId) clearTimeout(timeoutId);
         }
-      } catch (err: unknown) {
-        lastError = err;
-        const msg = err instanceof Error ? err.message : String(err);
-        if (msg.includes("404") || msg.includes("not found") || msg.includes("no longer available")) {
-          console.warn(`Model ${candidateModel} unavailable (${msg}). Trying next fallback model...`);
-          continue;
-        }
-        throw err;
+      } catch {
+        continue;
       }
     }
 
     if (!text) {
-      throw lastError || new Error("Failed to generate content with available Gemini models");
+      return generateLocalCommentary({
+        p1Evidence,
+        p2Evidence,
+        verdict,
+        persona,
+        platform: targetPlatform,
+        regionInfo,
+      });
     }
 
     const cleanJson = text.replace(/^```json\s*/, "").replace(/\s*```$/, "");
@@ -174,35 +241,36 @@ Do not wrap in markdown quotes. Return raw JSON.
         h2hLower.includes(`@${loser} is the winner`);
 
       if (indicatesLoserVictory) {
-        console.warn("AI generated prose contradicts deterministic verdict. Falling back to local commentary.");
         return generateLocalCommentary({
           p1Evidence,
           p2Evidence,
           verdict,
           persona,
-          platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+          platform: targetPlatform,
           regionInfo,
         });
       }
     } else if (isDraw) {
       const punchlineLower = (parsed.punchline || "").toLowerCase();
       if (punchlineLower.startsWith("winner:")) {
-        console.warn("AI generated winner in a draw match. Falling back to local commentary.");
         return generateLocalCommentary({
           p1Evidence,
           p2Evidence,
           verdict,
           persona,
-          platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+          platform: targetPlatform,
           regionInfo,
         });
       }
     }
 
-    // Authoritative punchline locked to deterministic result
-    const cleanPunchline = (parsed.punchline || "").replace(/^Winner:\s*@[a-zA-Z0-9_-]+\.?\s*/i, "");
+    // Authoritative punchline locked to deterministic result and bounded for selectShortRoast
+    const strippedPunchline = (parsed.punchline || "").replace(/^Winner:\s*@[a-zA-Z0-9_.-]+\.?\s*/i, "");
+    const cleanPunchline = boundPunchlineText(strippedPunchline);
     const authoritativePunchline = isDraw
-      ? (parsed.punchline || "DRAW: An evenly matched clash of coding titans.")
+      ? cleanPunchline.toUpperCase().startsWith("DRAW")
+        ? cleanPunchline
+        : `DRAW: ${cleanPunchline || "An evenly matched clash of coding titans."}`
       : `Winner: @${verdict.winnerHandle}. ${cleanPunchline}`;
 
     // Validate structured output
@@ -218,15 +286,14 @@ Do not wrap in markdown quotes. Return raw JSON.
     });
 
     return validated;
-  } catch (err) {
+  } catch {
     // Graceful, automatic fallback to local template roaster on timeout, rate-limit, or schema error
-    console.warn("AI commentary unavailable or failed, falling back to local roaster:", err);
     return generateLocalCommentary({
       p1Evidence,
       p2Evidence,
       verdict,
       persona,
-      platform: isGithub ? "github" : isLeetcode ? "leetcode" : isCodechef ? "codechef" : "codeforces",
+      platform: targetPlatform,
       regionInfo,
     });
   }

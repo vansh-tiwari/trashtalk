@@ -18,7 +18,7 @@
 Six years later, it has been re-architected to showcase the evolution from a **student experiment** into a **production-grade, shareable developer battle arena built with senior engineering principles**.
 
 > [!NOTE]
-> **Preserved Heritage:** The original 2020 student codebase is preserved untouched in the [`legacy/`](file:///Users/rtiwar36/Documents/PP/trashtalk/legacy/) directory.
+> **Preserved Heritage:** The original 2020 student codebase is preserved untouched in the [`legacy/`](legacy/) directory.
 
 | Dimension | 2020 Student Era | 2026 Senior Staff Era |
 | :--- | :--- | :--- |
@@ -35,7 +35,7 @@ Six years later, it has been re-architected to showcase the evolution from a **s
 
 ## ✨ Features
 
-- **🥊 Codeforces 1v1 Battle Arena:** Enter two Codeforces handles to trigger a head-to-head statistical showdown. (Active launch platform; LeetCode, GitHub, and CodeChef are planned for future milestones).
+- **🥊 Multi-Platform 1v1 Battle Arena:** Enter two handles across **Codeforces**, **LeetCode**, **GitHub**, or **CodeChef** to trigger a head-to-head statistical showdown with verified receipts.
 - **⚡ 3-Second Hook & Instant Demos:** Pre-seeded with legendary matchups (e.g., `cf-tourist-vs-petr-legendary`) that open in milliseconds without external API requests.
 - **🏆 Problem Overlap Arena ($P_1 \cap P_2$):** Interactive 3-way trophy room displaying:
   - *Common Solved:* Clickable problem pills linking directly to problem statements, color-coded by difficulty.
@@ -132,6 +132,6 @@ Open [http://localhost:3000](http://localhost:3000) to view the Battle Arena.
 ## 📜 Credits & License
 
 - Original 2020 Concept & Code: [Raghuvansh Mani Tiwari](https://github.com/vansh-tiwari)
-- Preserved 2020 Source: [`legacy/`](file:///Users/rtiwar36/Documents/PP/trashtalk/legacy/)
+- Preserved 2020 Source: [`legacy/`](legacy/)
 - 2026 Revamp: Built with Next.js 15, TypeScript, Tailwind CSS, and Superpowers TDD.
 - License: [Apache-2.0](LICENSE)

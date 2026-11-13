@@ -6,8 +6,12 @@ import CompareForm from "@/components/compare/CompareForm";
 import * as registry from "@/lib/platforms/registry";
 
 describe("CompareForm Layout", () => {
-  it("isolates .form-strip-container as an inner card so .try is rendered outside it", () => {
-    const html = renderToStaticMarkup(<CompareForm platform="codeforces" />);
+  it("hides One click (.try) usernames by default and isolates .form-strip-container when showQuickTry is enabled", () => {
+    const defaultHtml = renderToStaticMarkup(<CompareForm platform="codeforces" />);
+    const defaultRoot = parse(defaultHtml);
+    expect(defaultRoot.querySelector(".try")).toBeNull();
+
+    const html = renderToStaticMarkup(<CompareForm platform="codeforces" showQuickTry={true} />);
     const root = parse(html);
 
     const form = root.querySelector("form");
@@ -25,7 +29,7 @@ describe("CompareForm Layout", () => {
     // .try should NOT be inside .form-strip-container
     expect(stripContainer?.querySelector(".try")).toBeNull();
 
-    // .try should be directly under form or outside the stripContainer
+    // .try should be directly under form or outside the stripContainer when showQuickTry is true
     const tryElem = form?.querySelector(".try");
     expect(tryElem).not.toBeNull();
   });

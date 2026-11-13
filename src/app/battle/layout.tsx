@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "New Matchup",
   description:
     "Enter any two developer handles on Codeforces, LeetCode, CodeChef, or GitHub to calculate mathematical algorithmic grit and get a roast.",
+  alternates: {
+    canonical: "/battle",
+  },
   openGraph: {
     title: "New Developer Battle · TrashTalk",
     description: "Drop two handles and let the verified receipts decide the winner.",

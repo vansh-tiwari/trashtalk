@@ -10,7 +10,7 @@ export default function Footer() {
             TrashTalk<sup className="text-punch">2.0</sup>
           </Link>
           <div className="flex flex-wrap items-center justify-center gap-4 text-white/70 text-xs sm:text-sm">
-            <span>Rebuilt from a 2020 college project · Live & sample receipts</span>
+            <span>Rebuilt from a 2020 college project · Live &amp; sample receipts</span>
             <span aria-hidden="true">·</span>
             <Link href="/evolution" className="hover:text-white transition-colors">
               The lore
@@ -19,6 +19,16 @@ export default function Footer() {
             <Link href="/privacy" className="hover:text-white transition-colors">
               Privacy
             </Link>
+            <span aria-hidden="true">·</span>
+            <a
+              href="https://github.com/vansh-tiwari/trashtalk/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors inline-flex items-center gap-1"
+            >
+              <span>Report a bug</span>
+              <span aria-hidden="true" className="text-xs">↗</span>
+            </a>
             <span aria-hidden="true">·</span>
             <a
               href="https://github.com/vansh-tiwari/trashtalk"

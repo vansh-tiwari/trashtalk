@@ -3,6 +3,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { PREPARED_TOURIST_VS_PETR } from "@/lib/demo/prepared-battles";
 import ShareDialog from "@/components/share/ShareDialog";
+import SocialShareStrip from "@/components/share/SocialShareStrip";
 
 describe("ShareDialog Component", () => {
   it("renders accessible modal with title, tabs, preview, and actions when open", () => {
@@ -60,3 +61,26 @@ describe("ShareDialog Component", () => {
     expect(html).not.toContain("/api/og?id=cf-tourist-vs-petr-legendary");
   });
 });
+
+describe("SocialShareStrip Component", () => {
+  it("renders unified share-strip-cell items with hidden leading X icon when SHARE TO X is active", () => {
+    const html = renderToStaticMarkup(
+      <SocialShareStrip
+        twitterUrl="https://twitter.com/intent/tweet?text=test"
+        whatsappUrl="https://api.whatsapp.com/send?text=test"
+        onInstagramShare={() => {}}
+        onCopyLink={() => {}}
+        theme="light"
+      />
+    );
+
+    expect(html).toContain("share-strip is-light");
+    expect(html).toContain("share-strip-x-icon is-hidden");
+    expect(html).toContain("share-strip-label is-open-no-icon");
+    expect(html).toContain("SHARE TO X");
+    expect(html).toContain("SHARE TO WHATSAPP");
+    expect(html).toContain("SHARE TO INSTAGRAM STORY");
+    expect(html).toContain("SHARE LINK");
+  });
+});
+

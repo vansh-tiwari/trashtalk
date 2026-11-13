@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy & Data Transparency",
   description:
     "TrashTalk is local-first, cookie-free, and queries 100% public APIs. Learn how developer stats are processed and how to unlist snapshots.",
+  alternates: {
+    canonical: "/privacy",
+  },
   openGraph: {
     title: "Privacy Policy & Data Transparency · TrashTalk",
     description: "No tracking cookies, no secret analytics, 100% public receipts only.",
