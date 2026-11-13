@@ -69,19 +69,19 @@ export default function RoastMoment({
   }
 
   return (
-    <section className="sec2 select-none" aria-label="The Roast" style={{ paddingTop: "48px" }}>
+    <section className="sec2 select-none pt-6 sm:pt-12" aria-label="The Roast">
       {/* Section Header */}
       <div className="sh2 flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-baseline gap-3">
+        <div className="flex items-baseline gap-3 flex-wrap">
           <h2>The roast</h2>
           <span className="mono text-xs opacity-75">{copy.outcomeLine}</span>
         </div>
         <span className="sr-only">savage dev</span>
-        {languageToggle && <div>{languageToggle}</div>}
+        {languageToggle && <div className="w-full sm:w-auto">{languageToggle}</div>}
       </div>
 
       {/* Unified Single-Statement Roast */}
-      <div className="roast-unified-block my-6 p-6 sm:p-8 bg-surface border-2 border-ink shadow-[4px_4px_0px_#111214]">
+      <div className="roast-unified-block my-5 sm:my-6 p-5 sm:p-8 bg-surface border-2 border-ink shadow-[4px_4px_0px_#111214]">
         <div className="flex items-center gap-2 mb-4">
           <i
             style={{
@@ -98,7 +98,7 @@ export default function RoastMoment({
           </span>
         </div>
 
-        <p className="rl" style={{ fontSize: "clamp(24px, 3.2vw, 42px)", lineHeight: 1.15, fontWeight: 800 }}>
+        <p className="rl" style={{ fontSize: "clamp(22px, 3.2vw, 42px)", lineHeight: 1.15, fontWeight: 800 }}>
           <span className="sr-only">{unifiedRoast}</span>
           <span aria-hidden="true">
             {unifiedRoast.split(" ").map((word, i) => {
@@ -143,7 +143,7 @@ export default function RoastMoment({
 
         <Link
           href={rematchHref}
-          className="fb g"
+          className="fb g w-full sm:w-auto"
           style={{
             border: "2px solid var(--ink)",
             background: "#fff",

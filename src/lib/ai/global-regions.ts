@@ -25,6 +25,9 @@ export function resolveGlobalRegion(
 ): GlobalRegionInfo {
   if (overrideLang) {
     const norm = overrideLang.toLowerCase().trim();
+    if (norm === "en" || norm === "english") {
+      return DEFAULT_GLOBAL_REGION;
+    }
     if (norm === "es" || norm === "spanish" || norm === "mexico") {
       return {
         countryCode: "MX",

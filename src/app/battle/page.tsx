@@ -25,7 +25,7 @@ function BattleContent() {
   const persona = (searchParams.get("persona") as RoastPersona) || "savage_dev";
 
   return (
-    <div className="space-y-6 sm:space-y-8 py-4 sm:py-6 max-w-2xl mx-auto">
+    <div className="space-y-6 sm:space-y-8 py-4 sm:py-6 px-4 sm:px-6 max-w-2xl mx-auto">
       {/* Header */}
       <div className="space-y-2 pb-4 border-b border-rule">
         <div className="flex items-center justify-between gap-2 flex-wrap">

@@ -115,7 +115,7 @@ return renderBattleCard(snapshot, format);`,
   ];
 
   return (
-    <div className="space-y-8 sm:space-y-10 py-4 sm:py-6 max-w-container mx-auto">
+    <div className="space-y-8 sm:space-y-10 py-4 sm:py-6 px-4 sm:px-6 max-w-container mx-auto">
       {/* Header */}
       <div className="space-y-2 pb-6 border-b border-rule">
         <div className="inline-flex items-center gap-2 text-xs text-muted font-medium">

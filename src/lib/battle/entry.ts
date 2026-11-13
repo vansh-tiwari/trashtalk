@@ -45,6 +45,7 @@ export interface PreparedBattleRequest {
   u1: string;
   u2: string;
   persona: RoastPersona;
+  regionOverride?: string;
 }
 
 export function prepareBattleRequest(params: {
@@ -52,6 +53,7 @@ export function prepareBattleRequest(params: {
   u1: string;
   u2: string;
   persona: RoastPersona;
+  regionOverride?: string;
 }): PreparedBattleRequest {
   if (!isBattleEnabled(params.platform)) {
     throw new Error(
@@ -64,5 +66,8 @@ export function prepareBattleRequest(params: {
     u1: params.u1,
     u2: params.u2,
     persona: params.persona,
+    ...(params.regionOverride && params.regionOverride !== "auto"
+      ? { regionOverride: params.regionOverride }
+      : {}),
   };
 }

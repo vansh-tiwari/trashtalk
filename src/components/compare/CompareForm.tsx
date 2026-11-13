@@ -8,6 +8,9 @@ import type { Platform } from "@/lib/platforms/contracts";
 import { PLATFORM_REGISTRY, isBattleEnabled, parsePlatform } from "@/lib/platforms/registry";
 import type { RoastPersona } from "@/lib/ai/schemas";
 import { parseRetryAfterMs, prepareBattleRequest } from "@/lib/battle/entry";
+import { useRingsideContext, recordBoutFromSnapshot } from "@/lib/ringside/client";
+import RoastDialectSelector from "@/components/ringside/RoastDialectSelector";
+import RecentBoutsStrip from "@/components/ringside/RecentBoutsStrip";
 
 export interface CompareFormProps {
   platform?: Platform;
@@ -36,6 +39,14 @@ export default function CompareForm({
   onPlatformChange,
   className = "",
 }: CompareFormProps) {
+  const {
+    geo,
+    recentBouts,
+    dialectPref,
+    setDialectPreference,
+    clearHistory,
+  } = useRingsideContext();
+
   const resolvedInitU1 =
     initialU1 ?? (Array.isArray(initialHandles) ? initialHandles[0] : initialHandles?.u1) ?? "";
   const resolvedInitU2 =
@@ -126,6 +137,7 @@ export default function CompareForm({
         u1: cleanU1,
         u2: cleanU2,
         persona,
+        regionOverride: dialectPref !== "auto" ? dialectPref : undefined,
       });
     } catch (gateErr) {
       setStatus("error");
@@ -209,6 +221,10 @@ export default function CompareForm({
         setStatus("error");
         setErrorMessage("Couldn’t open that match. Try again.");
         return;
+      }
+
+      if (data.snapshot) {
+        recordBoutFromSnapshot(data.snapshot);
       }
 
       if (onCreated) {
@@ -363,6 +379,16 @@ export default function CompareForm({
             </button>
           </div>
         )}
+
+        {isBattleEnabled(selectedPlatform) && (
+          <RoastDialectSelector
+            value={dialectPref}
+            detectedRegion={geo?.detectedRegion}
+            onChange={setDialectPreference}
+            disabled={isPending}
+            idPrefix={idPrefix}
+          />
+        )}
         </div>
 
         {/* Quick Battle Shortcuts (.try) — only shown when explicitly enabled */}
@@ -460,6 +486,11 @@ export default function CompareForm({
               </button>
             </div>
           ))}
+
+        {/* Your Ringside History (Hybrid localStorage + 24h Salted IP-Hash Corner History) */}
+        {showQuickTry && recentBouts.length > 0 && (
+          <RecentBoutsStrip bouts={recentBouts} onClear={clearHistory} />
+        )}
 
         {/* Status / Cooldown Feedback */}
         {isBattleEnabled(selectedPlatform) && (

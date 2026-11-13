@@ -31,6 +31,9 @@ import {
 } from "@/lib/share/client";
 import type { CardFormat } from "@/lib/share/card-model";
 import type { RoastPersona } from "@/lib/ai/schemas";
+import { resolveGlobalRegion } from "@/lib/ai/global-regions";
+import { generateRegionalLocalRoast } from "@/lib/ai/regional-templates";
+import { recordBoutFromSnapshot, useRingsideContext } from "@/lib/ringside/client";
 
 export interface BattleResultProps {
   snapshot: BattleSnapshot;
@@ -42,22 +45,63 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
   const [copied, setCopied] = useState(false);
   const [instaReady, setInstaReady] = useState(false);
   const [origin, setOrigin] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
+  const { geo, dialectPref, setDialectPreference } = useRingsideContext();
 
-  const hasRegionalRoast = Boolean(
+  const snapshotHasRegional = Boolean(
     snapshot.englishCommentary &&
     snapshot.regionInfo &&
     !snapshot.regionInfo.isEnglishDefault
   );
-  const [languageMode, setLanguageMode] = useState<"regional" | "english">("regional");
+
+  const [languageMode, setLanguageMode] = useState<"regional" | "english">(
+    snapshotHasRegional ? "regional" : "english"
+  );
+  const [customDialect, setCustomDialect] = useState<string>(
+    snapshot.regionInfo && !snapshot.regionInfo.isEnglishDefault
+      ? snapshot.regionInfo.languageCode
+      : "hi"
+  );
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+    setMounted(true);
+    recordBoutFromSnapshot(snapshot);
+  }, [snapshot]);
+
+  // Sync detected non-English IP dialect on client mount if snapshot was English-only (e.g. demo battles)
+  useEffect(() => {
+    if (!snapshotHasRegional && mounted) {
+      const targetRegion =
+        dialectPref && dialectPref !== "auto" && dialectPref !== "en"
+          ? resolveGlobalRegion(null, dialectPref)
+          : geo?.detectedRegion && !geo.detectedRegion.isEnglishDefault
+          ? geo.detectedRegion
+          : null;
+
+      if (targetRegion && !targetRegion.isEnglishDefault) {
+        setCustomDialect(targetRegion.languageCode);
+      }
+    }
+  }, [snapshotHasRegional, mounted, dialectPref, geo]);
+
+  const resolvedRegionalInfo = resolveGlobalRegion(null, customDialect);
+  const baseEnglishCommentary = snapshot.englishCommentary || snapshot.commentary;
+
+  const activeRegionalCommentary =
+    snapshotHasRegional &&
+    snapshot.regionInfo?.languageCode === resolvedRegionalInfo.languageCode
+      ? snapshot.commentary
+      : generateRegionalLocalRoast({
+          verdict: snapshot.verdict,
+          persona: (snapshot.persona as RoastPersona) || "savage_dev",
+          platform: snapshot.platform,
+          regionInfo: resolvedRegionalInfo,
+        });
 
   const activeCommentary =
-    languageMode === "english" && snapshot.englishCommentary
-      ? snapshot.englishCommentary
-      : snapshot.commentary;
+    languageMode === "english" ? baseEnglishCommentary : activeRegionalCommentary;
 
   const activeSnapshot = {
     ...snapshot,
@@ -176,8 +220,21 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
     }
   };
 
+  const showLanguageToggle = snapshotHasRegional || mounted;
+  const activeRegionalLabel =
+    snapshotHasRegional && snapshot.regionInfo?.languageCode === customDialect
+      ? snapshot.regionInfo?.toggleLabel || resolvedRegionalInfo.toggleLabel
+      : resolvedRegionalInfo.toggleLabel;
+
   return (
     <div className="w-full max-w-full overflow-x-hidden">
+      {/* 0. Dark-Stage Match Header with Live Broadcast Dateline */}
+      <div className="bg-[#15171B] text-[#F4F4F4]">
+        <div className="w">
+          <MatchHeader vm={vm} />
+        </div>
+      </div>
+
       {/* 1. Full-Screen Split Horizontal Hero (.split-hero-stage) */}
       <Scoreboard vm={vm} />
 
@@ -223,18 +280,23 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
           copied={copied}
           instaReady={instaReady}
           languageToggle={
-            hasRegionalRoast ? (
+            showLanguageToggle ? (
               <RoastLanguageToggle
                 languageMode={languageMode}
                 onToggle={setLanguageMode}
-                regionalLabel={snapshot.regionInfo?.toggleLabel || "REGIONAL"}
+                regionalLabel={activeRegionalLabel}
+                selectedDialect={customDialect}
+                onDialectChange={(code) => {
+                  setCustomDialect(code);
+                  setDialectPreference(code);
+                }}
               />
             ) : undefined
           }
         />
 
         {/* Head to Head (5 Axes Paired Bars + Radar Chart) */}
-        <section className="sec2 select-none" aria-label="Head to Head Breakdown" style={{ paddingTop: "48px" }}>
+        <section className="sec2 select-none pt-8 sm:pt-12" aria-label="Head to Head Breakdown">
           <div className="sh2">
             <h2>Head to head</h2>
             <span>5 axes</span>
@@ -264,7 +326,7 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
         </section>
 
         {/* Form Guide (Activity Heatmap + Tale of the Tape / Stack Summary) */}
-        <section className="sec2 select-none" aria-label="Form Guide" style={{ paddingTop: "48px" }}>
+        <section className="sec2 select-none pt-8 sm:pt-12" aria-label="Form Guide">
           <div className="sh2">
             <h2>Form guide</h2>
             <span>
@@ -332,7 +394,7 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
       </div>
 
       {/* 4. Dedicated In-Page Share Arena (.dk.shs) */}
-      <section id="share-arena" className="dk shs" style={{ marginTop: "96px" }}>
+      <section id="share-arena" className="dk shs mt-12 sm:mt-20 lg:mt-24">
         <div className="w">
           <div className="shg">
             <div className="shl">
@@ -392,7 +454,7 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
                 <a
                   href={downloadUrl}
                   download
-                  className="fb gw"
+                  className="fb gw w-full sm:w-auto"
                   style={{ minHeight: "48px" }}
                 >
                   Download PNG
@@ -407,9 +469,9 @@ export default function BattleResult({ snapshot }: BattleResultProps) {
                 style={{
                   width:
                     selectedFormat === "story"
-                      ? "280px"
+                      ? "min(280px, 100%)"
                       : selectedFormat === "square"
-                      ? "380px"
+                      ? "min(380px, 100%)"
                       : "min(640px, 100%)",
                 }}
               >

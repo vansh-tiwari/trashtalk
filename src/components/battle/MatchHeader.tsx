@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import type { BattleViewModel } from "@/lib/battle/presentation";
+import BroadcastDateline from "@/components/ringside/BroadcastDateline";
 
 export interface MatchHeaderProps {
   vm: BattleViewModel;
@@ -9,7 +10,7 @@ export interface MatchHeaderProps {
 
 export default function MatchHeader({ vm, actions }: MatchHeaderProps) {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-2.5 border-b border-white/10">
       {/* Compact breadcrumb / matchup context */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-mono flex-wrap">
         <Link
@@ -23,18 +24,17 @@ export default function MatchHeader({ vm, actions }: MatchHeaderProps) {
           @{vm.p1.handle} vs @{vm.p2.handle}
         </span>
         {vm.isSample && (
-          <span className="px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
-            demo
+          <span className="text-[10px] font-bold text-[#A3A6AE] uppercase tracking-wider">
+            · demo
           </span>
         )}
       </nav>
 
-      {/* Share / Top Actions */}
-      {actions && (
-        <div className="flex items-center gap-2 shrink-0">
-          {actions}
-        </div>
-      )}
+      {/* Live IP Broadcast Dateline & Optional Actions */}
+      <div className="flex items-center gap-3 shrink-0 flex-wrap">
+        <BroadcastDateline variant="inline" />
+        {actions}
+      </div>
     </div>
   );
 }

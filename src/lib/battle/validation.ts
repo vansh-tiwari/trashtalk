@@ -150,6 +150,7 @@ export const CreateBattleRequestSchema = z.object({
     .default("codeforces"),
   clientTimezone: z.string().optional(),
   clientLang: z.string().optional(),
+  regionOverride: z.string().max(24).optional(),
 });
 
 export type CreateBattleRequest = z.infer<typeof CreateBattleRequestSchema>;

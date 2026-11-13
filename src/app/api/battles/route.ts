@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { executeBattleFlow, getBattleSnapshot } from "@/lib/battle/service";
 import { CreateBattleRequestSchema } from "@/lib/battle/validation";
 import { defaultIdempotencyStore } from "@/lib/storage/battle-store";
+import { defaultRingsideHistoryStore, hashVisitorIp } from "@/lib/ringside/context";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,7 +25,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { u1, u2, persona, platform, clientTimezone, clientLang } = parseResult.data;
+    const { u1, u2, persona, platform, clientTimezone, clientLang, regionOverride } =
+      parseResult.data;
 
     // Compute request digest and identify idempotency key
     const canonicalPayload = JSON.stringify({
@@ -32,6 +34,9 @@ export async function POST(req: NextRequest) {
       u2: u2.toLowerCase(),
       persona,
       platform,
+      ...(regionOverride && regionOverride !== "auto"
+        ? { regionOverride: regionOverride.toLowerCase() }
+        : {}),
     });
     const requestDigest = crypto.createHash("sha256").update(canonicalPayload).digest("hex");
     const clientKey = req.headers.get("idempotency-key");
@@ -75,11 +80,30 @@ export async function POST(req: NextRequest) {
         persona,
         platform,
         headers: req.headers,
+        regionOverride: regionOverride && regionOverride !== "auto" ? regionOverride : null,
         clientTimezone,
         clientLang,
       });
 
       await defaultIdempotencyStore.complete(idempotencyKey, snapshot.id);
+
+      try {
+        const ipHash = hashVisitorIp(req.headers);
+        defaultRingsideHistoryStore.recordBout(ipHash, {
+          id: snapshot.id,
+          platform: snapshot.platform,
+          u1: snapshot.player1.handle,
+          u2: snapshot.player2.handle,
+          winnerHandle: snapshot.verdict.winnerHandle,
+          margin: snapshot.verdict.margin,
+          p1Score: snapshot.player1.score.total,
+          p2Score: snapshot.player2.score.total,
+          createdAt: snapshot.createdAt,
+        });
+      } catch {
+        // Non-blocking history recording
+      }
+
       return NextResponse.json({ id: snapshot.id, snapshot }, { status: 201 });
     } catch (flowErr) {
       const msg = flowErr instanceof Error ? flowErr.message : "Generation failed";

@@ -5,8 +5,8 @@ import { PROMPT_VERSION } from "./personas";
 import { GlobalRegionInfo } from "./global-regions";
 
 interface RegionalRoastParams {
-  p1Evidence: PlatformEvidence;
-  p2Evidence: PlatformEvidence;
+  p1Evidence?: PlatformEvidence;
+  p2Evidence?: PlatformEvidence;
   verdict: BattleVerdict;
   persona: RoastPersona;
   platform?: string;

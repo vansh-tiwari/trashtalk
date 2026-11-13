@@ -165,7 +165,7 @@ export default function LandingExperience({
   return (
     <div className="w-full">
       {/* 1. Dark Arena Hero (.dk .hero2) */}
-      <section className="dk hero2" style={{ paddingBottom: "72px" }}>
+      <section className="dk hero2 pb-10 sm:pb-16 lg:pb-[72px]">
         <div className="w">
           <div className="hh">
             <div>
@@ -277,8 +277,7 @@ export default function LandingExperience({
       {/* 3. Three Taps to a Roast Process (.sec2 .g3) */}
       <section
         id="how-it-works"
-        className="w sec2"
-        style={{ paddingTop: "96px", paddingBottom: "88px" }}
+        className="w sec2 pt-12 pb-12 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-[88px]"
       >
         <div className="sh2">
           <h2>Three taps to a roast</h2>
@@ -370,8 +369,7 @@ export default function LandingExperience({
       {/* 4. Live Battle Arena Preview (Real 5-Axis Head-to-Head + Radar + Score Breakdown) */}
       <section
         id="arena-preview"
-        className="w sec2 select-none"
-        style={{ paddingTop: "16px", paddingBottom: "96px" }}
+        className="w sec2 select-none pt-4 pb-12 sm:pb-20 lg:pb-24"
         aria-label="Sample Battle Arena Breakdown"
       >
         <div className="sh2 flex-wrap">
@@ -382,7 +380,7 @@ export default function LandingExperience({
             <h2>Inside the arena</h2>
           </div>
 
-          <div className="seg2" role="tablist" aria-label="Sample platform battles">
+          <div className="seg2 flex-wrap" role="tablist" aria-label="Sample platform battles">
             {SAMPLE_ARENA_BATTLES.map((item) => (
               <button
                 key={item.key}
@@ -426,11 +424,11 @@ export default function LandingExperience({
           <div className="mono">
             Verdict: {copy.outcomeLine} — “{copy.roastText}”
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Link href="/roast" className="fb g">
+          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            <Link href="/roast" className="fb g flex-1 sm:flex-initial">
               Solo profile roaster
             </Link>
-            <Link href={`/battle/${activeSample.id}`} className="fb o">
+            <Link href={`/battle/${activeSample.id}`} className="fb o flex-1 sm:flex-initial">
               Open full battle
             </Link>
           </div>
@@ -496,7 +494,7 @@ export default function LandingExperience({
                 <a
                   href={sampleDownloadUrl}
                   download
-                  className="fb gw"
+                  className="fb gw w-full sm:w-auto"
                   style={{ minHeight: "48px" }}
                 >
                   Download PNG
@@ -510,9 +508,9 @@ export default function LandingExperience({
                 style={{
                   width:
                     selectedFormat === "story"
-                      ? "280px"
+                      ? "min(280px, 100%)"
                       : selectedFormat === "square"
-                      ? "380px"
+                      ? "min(380px, 100%)"
                       : "min(640px, 100%)",
                 }}
               >
