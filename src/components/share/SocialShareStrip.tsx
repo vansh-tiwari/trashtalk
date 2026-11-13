@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Instagram, MessageCircle, Share2, Check } from "lucide-react";
+import { trackArenaEvent } from "@/lib/analytics/client";
 
 export type SocialChannel = "x" | "whatsapp" | "instagram" | "copy";
 
@@ -55,7 +56,10 @@ export default function SocialShareStrip({
         rel="noopener noreferrer"
         onMouseEnter={() => handleHover("x")}
         onFocus={() => handleHover("x")}
-        onClick={() => onChannelSelect?.("x")}
+        onClick={() => {
+          trackArenaEvent("share_clicked", { channel: "x" });
+          onChannelSelect?.("x");
+        }}
         className={`share-strip-cell ${isXActive ? "is-active" : "is-collapsed"}`}
         aria-label="Share to X"
         title="Share to X"
@@ -81,7 +85,10 @@ export default function SocialShareStrip({
         rel="noopener noreferrer"
         onMouseEnter={() => handleHover("whatsapp")}
         onFocus={() => handleHover("whatsapp")}
-        onClick={() => onChannelSelect?.("whatsapp")}
+        onClick={() => {
+          trackArenaEvent("share_clicked", { channel: "whatsapp" });
+          onChannelSelect?.("whatsapp");
+        }}
         className={`share-strip-cell ${isWhatsappActive ? "is-active" : "is-collapsed"}`}
         aria-label="Share to WhatsApp"
         title="Share to WhatsApp"
@@ -101,6 +108,7 @@ export default function SocialShareStrip({
         onMouseEnter={() => handleHover("instagram")}
         onFocus={() => handleHover("instagram")}
         onClick={() => {
+          trackArenaEvent("share_clicked", { channel: "instagram" });
           onChannelSelect?.("instagram");
           onInstagramShare();
         }}
@@ -123,6 +131,7 @@ export default function SocialShareStrip({
         onMouseEnter={() => handleHover("copy")}
         onFocus={() => handleHover("copy")}
         onClick={() => {
+          trackArenaEvent("share_clicked", { channel: "copy" });
           onChannelSelect?.("copy");
           onCopyLink();
         }}

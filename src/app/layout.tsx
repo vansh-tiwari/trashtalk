@@ -4,6 +4,7 @@ import { hanken } from "./fonts/fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import ArenaAnalytics from "@/components/analytics/ArenaAnalytics";
 
 const publicAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://trashtalk.vercel.app";
 
@@ -106,6 +107,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </MotionProvider>
+        <ArenaAnalytics />
       </body>
     </html>
   );

@@ -11,6 +11,7 @@ import { parseRetryAfterMs, prepareBattleRequest } from "@/lib/battle/entry";
 import { useRingsideContext, recordBoutFromSnapshot } from "@/lib/ringside/client";
 import RoastDialectSelector from "@/components/ringside/RoastDialectSelector";
 import RecentBoutsStrip from "@/components/ringside/RecentBoutsStrip";
+import { trackArenaEvent } from "@/lib/analytics/client";
 
 export interface CompareFormProps {
   platform?: Platform;
@@ -226,6 +227,12 @@ export default function CompareForm({
       if (data.snapshot) {
         recordBoutFromSnapshot(data.snapshot);
       }
+
+      trackArenaEvent("battle_created", {
+        platform: selectedPlatform,
+        mode,
+        dialect: dialectPref,
+      });
 
       if (onCreated) {
         onCreated(data.id);
